@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include "StartSolutionFinder.h"
 #include "RSSCostCalculator.h"
+#ifdef USE_NAG
+#include "ParameterEstimator.h"
+#else
 #include "EigenParameterEstimator.h"
+#endif
+
 #include <math.h>
 #include <iostream>
 #include <cmath>

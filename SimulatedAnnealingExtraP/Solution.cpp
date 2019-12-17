@@ -2,7 +2,11 @@
 #include "Solution.h"
 #include "Configurator.h"
 #include <math.h>
+#ifdef USE_NAG
+#include "ParameterEstimator.h"
+#else
 #include "EigenParameterEstimator.h"
+#endif
 #include <iostream>
 #include <random>
 #include <omp.h>
@@ -36,13 +40,15 @@ Solution::Solution(MeasurementDB* mdb)
 	double split_c4_min = thread_id * split_c4_steps;
 	double split_c4_max = (thread_id + 1) * split_c4_steps;
 
+#ifdef USE_NAG
+	ParameterEstimator paramest = ParameterEstimator(mdb);	
+#else
 	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
+#endif
 	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
 
 	if (_len > 0)
-		_coefficients = new double[_len];
-
-	
+		_coefficients = new double[_len];	
 
 	double start_vals[5] = { 0, 0, 1, 0, 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];

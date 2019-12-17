@@ -10,7 +10,12 @@
 template<class SolutionType, class CostCalulatorType>
 SolutionModifier<SolutionType, CostCalulatorType>::SolutionModifier(MeasurementDB* mdb) : _mdb(mdb)
 {
+#ifdef USE_NAG
+	this->param_est = new ParameterEstimator(_mdb);
+#else
 	this->param_est = new EigenParameterEstimator(_mdb);
+#endif
+	
 	this->cost_calc = CostCalulatorType(_mdb);
 }
 

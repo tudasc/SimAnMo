@@ -7,6 +7,7 @@
 #include "MeasurementDB.h"
 #include "AbstractSolution.h"
 
+#ifdef USE_NAG
 class ParameterEstimator {
 public:
 	ParameterEstimator(MeasurementDB * _mdb, double relerr=0.0);
@@ -15,7 +16,7 @@ public:
 	ParameterEstimator & operator= (const ParameterEstimator & other);
 	~ParameterEstimator();
 	void estimateParameters(AbstractSolution* sol, double newrelerr = 0.0);
-	virtual void block() = 0;
+	//virtual void block() = 0;
 
 private:
 	double _relerr;
@@ -37,5 +38,6 @@ private:
 
 	MeasurementDB* _mdb;
 };
+#endif // USE_NAG
 
 #endif

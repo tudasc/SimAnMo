@@ -8,7 +8,6 @@
 
 #include "SolutionModifier.h"
 #include "RSSCostCalculator.h"
-#include "EigenParameterEstimator.h"
 #include "ExtraPSolution.h"
 
 template<class SolutionType>

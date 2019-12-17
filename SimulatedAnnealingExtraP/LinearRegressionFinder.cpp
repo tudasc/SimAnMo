@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "LinearRegressionFinder.h"
 
@@ -6,6 +7,7 @@
 #include <nagg02.h>
 #include <math.h>
 
+#ifdef USE_NAG
 LinearSolution LinearRegressionFinder::findSolution()
 {
 	Integer exit_status = 0, n;
@@ -32,7 +34,7 @@ LinearSolution LinearRegressionFinder::findSolution()
 	wtptr = NULL;
 
 	for (int i = 0; i < n; i++) {
-		const std::pair<double,double>& act_pair = _mdb->getPairAt(i);
+		const std::pair<double, double>& act_pair = _mdb->getPairAt(i);
 		x[i] = act_pair.first;
 		y[i] = log2(act_pair.second);
 	}
@@ -46,21 +48,8 @@ LinearSolution LinearRegressionFinder::findSolution()
 		return LinearSolution();
 	}
 
-	/*if (mean == Nag_AboutMean) {
-		printf("\nRegression constant a = %6.4f\n\n", a);
-		printf("Standard error of the regression constant a = %6.4f\n\n", err_a);
-	}
-
-	printf("Regression coefficient b = %6.4f\n\n", b);
-	printf("Standard error of the regression coefficient b = %6.4f\n\n", err_b);
-
-	printf("The regression coefficient of determination = %6.4f\n\n", rsq);
-	printf("The sum of squares of the residuals about the "
-		"regression = %6.4f\n\n", rss);
-	printf("Number of degrees of freedom about the "
-		"regression = %6.4f\n\n", df);*/
-
 	double coeffs[2] = { a, b };
 	LinearSolution lin_sol = LinearSolution(coeffs);
-	return lin_sol;
+	return lin_sol;	
 }
+#endif

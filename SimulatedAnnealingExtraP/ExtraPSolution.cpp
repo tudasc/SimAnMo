@@ -3,7 +3,11 @@
 #include <math.h>
 #include <iostream>
 #include <random>
+#ifdef USE_NAG
+#include "ParameterEstimator.h"
+#else
 #include "EigenParameterEstimator.h"
+#endif
 #include "RSSCostCalculator.h"
 #include "Configurator.h"
 
@@ -25,8 +29,12 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 
 	double min_c_3 = 0;
 	double max_c_3 = Configurator::getInstance().max_log_range;
-
+#ifdef USE_NAG
+	ParameterEstimator paramest = ParameterEstimator(mdb, 0.0);
+#else
 	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
+#endif
+	
 	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
 
 	if (_len > 0)
