@@ -2,7 +2,7 @@
 #include "ParameterEstimator.h"
 #include <iostream>
 
-//#ifdef USE_NAG
+#ifdef USE_NAG
 ParameterEstimator::ParameterEstimator() {
 	A = NULL;
 	b = NULL;
@@ -150,4 +150,4 @@ void ParameterEstimator::estimateParameters(AbstractSolution* sol, double newrel
 		}
 	}
 }
-//#endif
+#endif

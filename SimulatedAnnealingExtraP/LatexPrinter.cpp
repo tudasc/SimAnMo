@@ -28,6 +28,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 
 	printColorDefinitions(8, myfile);
 
+
 	myfile << "\\begin{document}" << endl
 		<< "\\section{Evaluation}" << endl;
 
@@ -74,7 +75,6 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "\\newlength\\figurewidth" << endl
 		<< "\\setlength\\figureheight{10cm}" << endl
 		<< "\\setlength\\figurewidth{10cm}" << endl
-		<< "\\definecolor{darkgreen}{RGB}{0,100,0}" << endl
 		<< "\\pgfplotsset{every tick label/.append style={font=\\small}}" << endl
 		<< "\\begin{tikzpicture}" << endl
 		<< "\\begin{axis}[" << endl
@@ -109,7 +109,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< " + " << calcinf.lin_sol.getAt(1) << " * \\x ) });" << endl
 		<< "\\addlegendentry{Linear Model};" << endl;*/
 
-	myfile	<< "\\addplot[only marks, mark=diamond,mark options={},draw=red,fill=red] coordinates {	" << endl;
+	myfile	<< "\\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	" << endl;
 		// Run over all Measurements and print them
 	for (int i = 0; i < mdb->get_size(); i++) {
 		pair<double, double> act_pair = mdb->getPairAt(i);
@@ -165,19 +165,34 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 
 	myfile.close();
 
+	string rm_str;
+#ifdef	__linux__
+	rm_str = "rm";
+#else
+	rm_str = "del";
+#endif
+
 	// LaTeX Config: Adapt commands 
 	std::string close_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /close \"" + Configurator::getInstance().outpath + "\\\\" + Configurator::getInstance().texfile + ".pdf\"";
 	std::cout << close_command << std::endl;
+#ifdef _WIN32
 	system(close_command.c_str());
+#endif
+
 	std::string create_command = "cd " + Configurator::getInstance().outpath + " && pdflatex " + Configurator::getInstance().texfile + ".tex"; //   -interaction=batchmode
 	system(create_command.c_str());
 	std::string open_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /A \"page=1&zoom=125\" \"" + Configurator::getInstance().outpath + "\\\\"+ Configurator::getInstance().texfile + ".pdf\"";
-	std::string clean_command = "cd " + Configurator::getInstance().outpath + " && rm " + Configurator::getInstance().texfile + ".log " + Configurator::getInstance().texfile + ".aux";
+	
+	std::string clean_command = "cd " + Configurator::getInstance().outpath + " && " + rm_str + " " + Configurator::getInstance().texfile + ".log " + Configurator::getInstance().texfile + ".aux";
 	system(clean_command.c_str());	
 	std::cout << create_command << std::endl;
 	std::cout << open_command << std::endl;	
+
+#ifdef _WIN32
 	system(open_command.c_str());
+#endif
 	system("exit");
+
 	exit( 0 );
 }
 
@@ -197,6 +212,8 @@ void LatexPrinter<SolType>::printColorDefinitions(int number, ofstream & stream)
 	for (int i = 0; i < number; i++) {
 		stream << colors[i].c_str() << std::endl;
 	}	
+
+	stream << "\\definecolor{darkorange}{RGB}{255,140,0}" << std::endl;
 }
 
 template<class SolType>
@@ -212,7 +229,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	int no_points = cinfo.datapoints->get_size();
 	AbstractSolution& minsol = cinfo.sol_per_thread[cinfo.thread_with_solution];
 
-	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.15);
+	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.03);
 
 	double ourfuncmax = minsol.evaluateModelFunctionAt(xdimension);
 	double linearfuncmax = cinfo.lin_sol.evaluateModelFunctionAt(xdimension);
@@ -229,7 +246,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			ydimension = (int)std::max<double>(ydimension,
 				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second);
 			xdimension = (int)std::max<double>(xdimension,
-				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first);
+				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first) + 1;
 		}
 	}
 
@@ -274,7 +291,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 
 	// print additional measurement points if configured
 	if (cinfo.print_measurepoints) {
-		myfile << "\\addplot[only marks, mark = diamond, mark options = {}, draw = green, fill = green] "
+		myfile << "\\addplot[only marks, mark = *, mark options = {scale=1.5, fill=darkorange}, draw = darkorange] "
 			<< "coordinates { " << std::endl;
 		for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
 			std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(i);
