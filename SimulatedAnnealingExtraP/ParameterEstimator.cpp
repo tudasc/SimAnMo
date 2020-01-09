@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ParameterEstimator.h"
 #include <iostream>
 

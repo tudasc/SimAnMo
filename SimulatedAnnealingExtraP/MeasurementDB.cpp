@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MeasurementDB.h"
 #include <iostream>
 

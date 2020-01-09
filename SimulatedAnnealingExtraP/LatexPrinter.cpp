@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LatexPrinter.h"
 #include <iostream>
 #include <fstream>

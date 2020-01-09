@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "AlglibLinearRegressionFinder.h"
 
 #include "alglib/dataanalysis.h"

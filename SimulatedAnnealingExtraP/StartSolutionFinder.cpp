@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "StartSolutionFinder.h"
 #include "RSSCostCalculator.h"
 #ifdef USE_NAG

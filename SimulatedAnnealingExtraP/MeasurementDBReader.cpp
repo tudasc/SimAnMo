@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MeasurementDBReader.h"
 #include <fstream>
 #include <sstream>

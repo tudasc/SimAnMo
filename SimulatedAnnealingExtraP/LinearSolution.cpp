@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LinearSolution.h"
 #include <random>
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Solution.h"
 #include "Configurator.h"
 #include <math.h>

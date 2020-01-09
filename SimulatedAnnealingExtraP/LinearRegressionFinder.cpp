@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 #include "LinearRegressionFinder.h"
 
 #include <nag.h>

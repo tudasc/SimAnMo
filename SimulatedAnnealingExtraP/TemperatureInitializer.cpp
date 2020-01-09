@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TemperatureInitializer.h"
 #include <vector>
 #include "Solution.h"

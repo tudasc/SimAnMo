@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ExtraPSolution.h"
 #include <math.h>
 #include <iostream>
