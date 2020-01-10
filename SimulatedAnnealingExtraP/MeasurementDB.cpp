@@ -1,6 +1,7 @@
 #include "MeasurementDB.h"
 #include <iostream>
 
+using namespace std;
 
 MeasurementDB::MeasurementDB() {
 	this->_no_trainingpoints = 0;
@@ -24,6 +25,7 @@ void MeasurementDB::addMeasurementPoint(std::pair<double, double>& measurement)
 	this->_ymeasure.push_back(measurement.second);
 	this->_no_measurements++;
 
+	//cout << "Adding " << measurement.first << " and " << measurement.second << endl;
 	if (_xmeasure.size() != _no_measurements) {
 		std::cerr << "ERROR: MeasurementDB is inconsistent.\n";
 		exit(-1);

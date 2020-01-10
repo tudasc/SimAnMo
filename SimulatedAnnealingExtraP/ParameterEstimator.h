@@ -1,13 +1,14 @@
 #ifndef PARAMETERESTIMATOR_H
 #define PARAMETERESTIMATOR_H
 
+#ifdef USE_NAG
 #include <nag.h>
 #include <nag_stdlib.h>
 #include <nage02.h>
 #include "MeasurementDB.h"
 #include "AbstractSolution.h"
 
-#ifdef USE_NAG
+
 class ParameterEstimator {
 public:
 	ParameterEstimator(MeasurementDB * _mdb, double relerr=0.0);

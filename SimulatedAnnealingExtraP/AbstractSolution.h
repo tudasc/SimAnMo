@@ -32,6 +32,7 @@ public:
 	AbstractSolution & operator= (const AbstractSolution & other) {
 		_costs = other._costs;
 		setRandomID();
+		return *this; 
 	}
 
 	~AbstractSolution() {

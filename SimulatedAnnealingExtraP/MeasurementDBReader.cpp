@@ -20,18 +20,23 @@ MeasurementDB * MeasurementDBReader::readInputFile(string file)
 	// Mode 0 = Read the training data
 	// Mode 1 = Read further measurements
 	int mode = 0;
+	const string addpoints = "#ADDPOINTS";
+	
 
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
 
 		iss >> c;
+		cout << line << endl;
+
 		// Ignore comments
 		if (c == '!')
 			break;
 
-		if (line == "#ADDPOINTS")
+		if (line.compare(addpoints) == 0) {
 			mode = 1;
+		}
 
 		if (line == "#STOPREADING")
 			break;

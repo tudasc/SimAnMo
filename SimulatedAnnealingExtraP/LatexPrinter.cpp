@@ -11,9 +11,25 @@ using namespace std;
 template<class SolType>
 void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution* sol, MeasurementDB * mdb, CalcuationInfo<SolType>& calcinf)
 {
+	string rm_str="";
+	string slash_str="";
+#ifdef	__linux__
+	rm_str = "rm";
+	slash_str = "/";
+	//cout << "Using Linux" << endl;
+	//cout << Configurator::getInstance().outpath << endl;
+#else
+	//cout << "Using Windows" << endl;
+	rm_str = "del";
+	slash_str = "\\\\";
+#endif
+
+	//int stop = 0;
+	//cin >> stop;
+
 	calcinf.min_sol = sol;
 	ofstream myfile;
-	std::string filepath = Configurator::getInstance().outpath + "\\\\" + Configurator::getInstance().texfile + ".tex";
+	std::string filepath = Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".tex";
 	myfile.open(filepath);
 
 	myfile << "\\documentclass{article}" << endl
@@ -164,30 +180,25 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 
 	myfile.close();
 
-	string rm_str;
-#ifdef	__linux__
-	rm_str = "rm";
-#else
-	rm_str = "del";
-#endif
-
 	// LaTeX Config: Adapt commands 
-	std::string close_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /close \"" + Configurator::getInstance().outpath + "\\\\" + Configurator::getInstance().texfile + ".pdf\"";
-	std::cout << close_command << std::endl;
+	std::string close_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /close \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";	
 #ifdef _WIN32
+	std::cout << close_command << std::endl;
 	system(close_command.c_str());
 #endif
 
 	std::string create_command = "cd " + Configurator::getInstance().outpath + " && pdflatex " + Configurator::getInstance().texfile + ".tex"; //   -interaction=batchmode
+	cout << create_command << endl;
 	system(create_command.c_str());
-	std::string open_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /A \"page=1&zoom=125\" \"" + Configurator::getInstance().outpath + "\\\\"+ Configurator::getInstance().texfile + ".pdf\"";
+	std::string open_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /A \"page=1&zoom=125\" \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";
 	
 	std::string clean_command = "cd " + Configurator::getInstance().outpath + " && " + rm_str + " " + Configurator::getInstance().texfile + ".log " + Configurator::getInstance().texfile + ".aux";
 	system(clean_command.c_str());	
-	std::cout << create_command << std::endl;
-	std::cout << open_command << std::endl;	
+
 
 #ifdef _WIN32
+	std::cout << clean_command << std::endl;
+	std::cout << open_command << std::endl;	
 	system(open_command.c_str());
 #endif
 	system("exit");
@@ -297,7 +308,13 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			myfile << "( " << act_pair.first << " , " << act_pair.second << " )" << std::endl;
 		}
 		myfile << "};" << std::endl
-			<< "\\addlegendentry{ Measurements };";
+			<< "\\addlegendentry{ Measurements };" << endl;
+
+		for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
+			std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(i);
+			myfile << "\\addplot +[mark=none, very thin] coordinates {(" << act_pair.first 
+				<< ", 0) ( " << act_pair.first << ", 60000)};" << endl;  
+		}
 	}
 
 	myfile << "\\end{axis}" << endl

@@ -29,10 +29,12 @@
 
 FILE _iob[] = { *stdin, *stdout, *stderr };
 
+#ifdef _WIN32
 extern "C" FILE * __cdecl __iob_func(void)
 {
 	return _iob;
 }
+#endif
 
 int no_threads = 1;
 
@@ -113,9 +115,9 @@ int doAnnealing() {
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
 
-		while (T > 0000001) { // 0.000001
+		while (T > 000000001) { // 0.000001
 			//cout << "Down";
-			for (int i = 0; i < 30; i++) {
+			for (int i = 0; i < 100; i++) {
 				// Generate new solution candidate
 				act_sol = solmod.randomModifySolution(&act_sol);
 
@@ -148,7 +150,7 @@ int doAnnealing() {
 #pragma omp atomic
 				stepcount++;
 			}
-			T = T * 0.996;
+			T = T * 0.998;
 		}
 
 		sol_per_thread[omp_get_thread_num()] = abs_min_sol_thread;

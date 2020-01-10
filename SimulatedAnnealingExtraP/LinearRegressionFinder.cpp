@@ -1,11 +1,12 @@
 #include "LinearRegressionFinder.h"
 
+#ifdef USE_NAG
 #include <nag.h>
 #include <nag_stdlib.h>
 #include <nagg02.h>
 #include <math.h>
 
-#ifdef USE_NAG
+
 LinearSolution LinearRegressionFinder::findSolution()
 {
 	Integer exit_status = 0, n;
