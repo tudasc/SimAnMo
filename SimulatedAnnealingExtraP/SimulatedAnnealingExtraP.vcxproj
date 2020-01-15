@@ -98,7 +98,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -175,6 +175,7 @@
     <ClInclude Include="Configurator.h" />
     <ClInclude Include="CostCalculator.h" />
     <ClInclude Include="EigenParameterEstimator.h" />
+    <ClInclude Include="ExponentialSolution.h" />
     <ClInclude Include="ExtraPSolution.h" />
     <ClInclude Include="LatexPrinter.h" />
     <ClInclude Include="LinearRegressionFinder.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="alglib\specialfunctions.cpp" />
     <ClCompile Include="alglib\statistics.cpp" />
     <ClCompile Include="EigenParameterEstimator.cpp" />
+    <ClCompile Include="ExponentialSolution.cpp" />
     <ClCompile Include="ExtraPSolution.cpp" />
     <ClCompile Include="LatexPrinter.cpp" />
     <ClCompile Include="LinearRegressionFinder.cpp" />

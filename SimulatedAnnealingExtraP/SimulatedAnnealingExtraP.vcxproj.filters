@@ -117,6 +117,9 @@
     <ClInclude Include="AlglibLinearRegressionFinder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ExponentialSolution.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -204,6 +207,9 @@
       <Filter>Quelldateien\alglib</Filter>
     </ClCompile>
     <ClCompile Include="AlglibLinearRegressionFinder.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ExponentialSolution.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

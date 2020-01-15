@@ -62,7 +62,7 @@ double RSSCostCalculator::calculateMetrics(AbstractSolution* sol)
 	// Set costs in relation to costs of constant model
 	this->RSS = rsscosts;
 	this->nnrRSS = nnrrsscost;
-
-	return rsscosts;
-	//return nnrrsscost/* / nnrrsscost constnnrrsscost*/;
+	
+	//return rsscosts;
+	return nnrrsscost;
 }

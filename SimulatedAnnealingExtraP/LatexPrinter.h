@@ -34,7 +34,7 @@ public:
 	void printColorDefinitions(int number, ofstream&  stream );
 private:
 	string colStr(int no);
-	void printPrediction(ofstream&, CalcuationInfo<SolType>&, int stepsize);
+	void printPrediction(ofstream&, CalcuationInfo<SolType>&, int stepsize, AbstractSolution* sol);
 	void printCostDevelopment(ofstream&, int);
 	void printCostDetails(ofstream&, CalcuationInfo<SolType>&, int stepsize);
 };

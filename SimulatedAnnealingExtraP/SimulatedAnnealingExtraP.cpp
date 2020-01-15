@@ -24,6 +24,7 @@
 #include <omp.h>
 #include <limits>
 #include "ExtraPSolution.h"
+#include "ExponentialSolution.h"
 #include "Configurator.h"
 
 
@@ -74,13 +75,13 @@ int doAnnealing() {
 	cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
 	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(1000, 32);
+	double temp_init = tempin.estimateInitialCost(500, 32);
 	double T = temp_init;
 
 	double tstart = omp_get_wtime();
 	unsigned int stepcount = 1;
 
-	Configurator::getInstance().num_threads = no_threads;
+ 	Configurator::getInstance().num_threads = no_threads;
 
 #pragma omp parallel
 	{
@@ -285,7 +286,7 @@ int main(int argc, char** argv)
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
-	doAnnealing<Solution>();
+	doAnnealing<ExponentialSolution>();
 	return 0;
 
 	//MeasurementDB* inputDB = dbreader.giveExampleMeasurementDB05();

@@ -4,6 +4,7 @@
 #include "QualityLogger.h"
 #include <string> 
 #include "ExtraPSolution.h"
+#include "ExponentialSolution.h"
 #include "Configurator.h"
 
 using namespace std;
@@ -139,7 +140,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 
 /////////////////// Print the comparison of our and linear model
 	int stepsize = QualityLogger::getInstance().get_size() / 200;
-	printPrediction(myfile, calcinf, stepsize);
+	printPrediction(myfile, calcinf, stepsize, sol);
 
 
 /////////////////// Draw the quality development
@@ -234,7 +235,7 @@ string LatexPrinter<SolType>::colStr(int no)
 }
 
 template<class SolType>
-void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<SolType> & cinfo, int stepsize)
+void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<SolType> & cinfo, int stepsize, AbstractSolution* sol)
 {
 	int no_points = cinfo.datapoints->get_size();
 	AbstractSolution& minsol = cinfo.sol_per_thread[cinfo.thread_with_solution];
@@ -256,10 +257,17 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			ydimension = (int)std::max<double>(ydimension,
 				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second);
 			xdimension = (int)std::max<double>(xdimension,
-				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first) + 1;
+				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first) + 2;
 		}
 	}
 
+	double funcVal = sol->evaluateModelFunctionAt(xdimension);
+	double maxaddedpoint = -1;
+	if (cinfo.datapoints->get_measures_size() > 0) {
+		maxaddedpoint = cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second;
+	}
+	funcVal = std::max<double>(funcVal, maxaddedpoint);
+	
 	myfile << "\\newpage" << endl;
 	myfile << "\\section{Prediction of Runtime}" << endl;
 
@@ -312,8 +320,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 
 		for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
 			std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(i);
-			myfile << "\\addplot +[mark=none, very thin] coordinates {(" << act_pair.first 
-				<< ", 0) ( " << act_pair.first << ", 60000)};" << endl;  
+			myfile << "\\addplot +[mark=none, very thin, black, dashed] coordinates {(" << act_pair.first 
+				<< ", 0) ( " << act_pair.first << ", " << funcVal << ")};" << endl;
 		}
 	}
 
@@ -444,3 +452,4 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 template class LatexPrinter<Solution>;
 template class LatexPrinter<ExtraPSolution>;
 template class LatexPrinter<LinearSolution>;
+template class LatexPrinter<ExponentialSolution>;
