@@ -241,7 +241,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	int no_points = cinfo.datapoints->get_size();
 	AbstractSolution& minsol = cinfo.sol_per_thread[cinfo.thread_with_solution];
 
-	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.03);
+	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.00);
+	int xstart = (int)(cinfo.datapoints->getPairAt(0).first);
 
 	double ourfuncmax = minsol.evaluateModelFunctionAt(xdimension);
 	double linearfuncmax = cinfo.lin_sol.evaluateModelFunctionAt(xdimension);
@@ -258,12 +259,12 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			ydimension = (int)std::max<double>(ydimension,
 				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second);
 			xdimension = (int)std::max<double>(xdimension,
-				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first) + 2;
+				cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).first);
 		}
 	}
 
 	double funcVal = sol->evaluateModelFunctionAt(xdimension);
-	double funcValMinus = sol->evaluateModelFunctionAt(xdimension, -0.43);
+	double funcValMinus = sol->evaluateModelFunctionAt(xdimension, -0.5);
 	double maxaddedpoint = -1;
 	if (cinfo.datapoints->get_measures_size() > 0) {
 		maxaddedpoint = cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second;
@@ -296,24 +297,24 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "\\addlegendentry{Linear Model};" << endl;*/
 
 	// print the found model function
-	myfile << "\\addplot [name path=func, domain=1:" << xdimension
+	myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
 		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
 		<< minsol.printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Our Model};" << endl;
 
-	myfile << "\\addplot [name path=funcplus, domain=1:" << xdimension
+	myfile << "\\addplot [name path=funcplus, domain=" << xstart << ":" << xdimension
 		<< ", samples=110,unbounded coords=jump, draw=color5, dashed, ] " << endl
 		<< minsol.printModelFunctionLatex(0.5).c_str() << ";" << endl
-		<< "\\addlegendentry{Model + 0.43};" << endl;
+		<< "\\addlegendentry{Model + 0.5};" << endl;
 
-	myfile << "\\addplot [name path=funcminus, domain=1:" << xdimension
+	myfile << "\\addplot [name path=funcminus, domain=" << xstart << ":" << xdimension
 		<< ", samples=110,unbounded coords=jump, draw=red, dashed, ] " << endl
-		<< minsol.printModelFunctionLatex(-0.43).c_str() << ";" << endl
-		<< "\\addlegendentry{Model - 0.43};" << endl;
+		<< minsol.printModelFunctionLatex(-0.5).c_str() << ";" << endl
+		<< "\\addlegendentry{Model - 0.5};" << endl;
 
 	// print the reference solution if configured
 	if(cinfo.print_ref_solution && 1==2) {
-		myfile << "\\addplot [domain=1:" << xdimension
+		myfile << "\\addplot [domain=" << xstart << ":" << xdimension
 			<< ", samples=110, unbounded coords=jump, draw=magenta, very thick] " << endl
 			<< cinfo.ref_solution.printModelFunctionLatex().c_str() << ";" << endl
 			<< "\\addlegendentry{Reference Model};" << endl;
@@ -338,8 +339,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 				<< ", " << start_y << ") ( " << act_pair.first << ", " << end_y << ")};" << endl;
 		}*/
 
-		myfile << "\\draw[help lines, name path = clippath]"
-			<< "(0, " << funcValMinus << ") -- " << "(" << xdimension << " , " << funcValMinus << ");" << endl;
+		myfile << "\\draw[help lines, name path = clippath, white, very thin]"
+			<< "(" << xstart << ", " << funcValMinus << ") -- " << "(" << xdimension << " , " << funcValMinus << ");" << endl;
 
 		myfile << "\\addplot fill between[" << endl
 			<< "of = funcplus and funcminus," << endl
@@ -350,7 +351,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		myfile << "\\addplot fill between[" << endl
 			<< "of = funcplus and func," << endl
 			<< "every even segment/.style = { gray,opacity = .5 }," << endl
-			<< "soft clip = { domain = 0:" << xdimension << "}," << endl
+			<< "soft clip = { domain = " << xstart << ":" << xdimension << "}," << endl
 			<< "]; " << endl;
 	}
 
