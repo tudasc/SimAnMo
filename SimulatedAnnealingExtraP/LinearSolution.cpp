@@ -64,7 +64,7 @@ LinearSolution LinearSolution::getNeighborSolution() {
 	return random_sol;
 }
 
-double LinearSolution::evaluateModelFunctionAt(double p)
+double LinearSolution::evaluateModelFunctionAt(double p, double scale)
 {
 	double* c = _coefficients; // just to make access brief
 	double exp = c[0] + p * c[1];

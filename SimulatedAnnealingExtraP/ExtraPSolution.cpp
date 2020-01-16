@@ -132,7 +132,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	return random_sol;
 }
 
-double ExtraPSolution::evaluateModelFunctionAt(double p) {
+double ExtraPSolution::evaluateModelFunctionAt(double p, double scale) {
 	double* c = _coefficients; // just to make access brief
  	double y = c[0] + c[1] * pow(p, c[2]) * pow(log2(p), c[3]);
 	return y;
@@ -151,7 +151,7 @@ void ExtraPSolution::printModelFunction() {
 		<< c[2] << " * log_2 ^ " << c[3] <<  "(p) " << std::endl;
 }
 
-std::string ExtraPSolution::printModelFunctionLatex() const {
+std::string ExtraPSolution::printModelFunctionLatex(double scale) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);
@@ -171,9 +171,19 @@ std::string ExtraPSolution::printModelFunctionLatex() const {
 	streamObj.str("");
 
 	std::string func = "";
-	func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
-		+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
-		+ ")});";
+	if (scale < std::abs(1e-5))
+	{
+		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
+			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
+			+ ")});";
+	}
+
+	else {
+		std::string  act_func = str_c0 + " + " + str_c1 + " * ( "
+			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
+			+ ")";
+		func += "(\\x, {" + act_func + "+" + std::to_string(scale) + "*(" + act_func + ")" + "})";
+	}
 	return func;
 }
 
@@ -197,6 +207,7 @@ std::string ExtraPSolution::printModelFunctionLatexShow() const {
 	streamObj.str("");
 
 	std::string func = "";
+
 	func += str_c0 + " + " + str_c1 + " * "
 		+ "x ^ {" + str_c2 + "} * log2(x) ^ {" + str_c3
 		+ "}";

@@ -126,10 +126,14 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 	return random_sol;
 }
 
-double ExponentialSolution::evaluateModelFunctionAt(double p)
+double ExponentialSolution::evaluateModelFunctionAt(double p, double scale)
 {
 	double* c = _coefficients; // just to make access brief
 	double y = c[0] + c[1] * pow(2.0, c[2]*p);
+
+	if (abs(scale) > 1e-5) {
+		y += scale * y;
+	}
 
 #ifdef SOLUTION_DEBUG
 	std::cout << "f(" << p << ") = " << c[0] << " + " << c[1] << " * exp"
@@ -159,7 +163,7 @@ void ExponentialSolution::printModelFunction() {
 		<< c[2] << " * p)" << std::endl;
 }
 
-std::string ExponentialSolution::printModelFunctionLatex() const {
+std::string ExponentialSolution::printModelFunctionLatex(double scale) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);
@@ -183,8 +187,16 @@ std::string ExponentialSolution::printModelFunctionLatex() const {
 	streamObj.str("");
 
 	std::string func = "";
-	func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ ("
-		+ str_c2 + " * \\x })";
+	if (std::abs(scale) < std::abs(1e-5))
+	{
+		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ (" + str_c2 + " * \\x )})";
+	}
+
+	else
+	{
+		std::string  act_func = str_c0 + " + " + str_c1 + " * 2 ^ ("+ str_c2 + " * \\x )";
+		func += "(\\x, {" + act_func + "+" + std::to_string(scale) + "*(" + act_func +")" + "})";		
+	}
 
 	return func;
 }

@@ -181,7 +181,7 @@ Solution Solution::getNeighborSolution() {
 	return random_sol;
 }
 
-double Solution::evaluateModelFunctionAt(double p)
+double Solution::evaluateModelFunctionAt(double p, double scale)
 {
 	double* c = _coefficients; // just to make access brief
 	double exp = c[2] * pow(p, c[3]) /* pow(log10(p), c[4])*/;
@@ -218,7 +218,7 @@ void Solution::printModelFunction() {
 		<< c[2] << " * p^" << c[3] << " ) p^ * " << c[4] << std::endl;
 }
 
-std::string Solution::printModelFunctionLatex() const {
+std::string Solution::printModelFunctionLatex(double scale) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);
@@ -242,8 +242,17 @@ std::string Solution::printModelFunctionLatex() const {
 	streamObj.str("");
 
 	std::string func = "";
-	func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ ("
-		+ str_c2 + " * \\x ^ (" + str_c3 + ")) * \\x ^" + str_c4 + "})";
+	if (scale < std::abs(1e-5))
+	{
+		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ ("
+			+ str_c2 + " * \\x ^ (" + str_c3 + ")) * \\x ^" + str_c4 + "})";
+	}
+	else {
+		std::string act_func = str_c0 + " + " + str_c1 + " * 2 ^ ("
+			+ str_c2 + " * \\x ^ (" + str_c3 + ")) * \\x ^" + str_c4;
+		func += "(\\x, {" + act_func + "+" + std::to_string(scale) + "*(" + act_func + ")" + "})";
+	}
+
 
 	return func;
 }

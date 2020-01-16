@@ -40,7 +40,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "\\pgfplotsset{compat=newest}" << endl
 		<< "\\usetikzlibrary{pgfplots.statistics}" << endl
 		<< "\\usetikzlibrary{patterns}" << endl
-		<< "\\usetikzlibrary{calc}" << endl;
+		<< "\\usetikzlibrary{calc}" << endl
+		<< "\\usepgfplotslibrary{fillbetween}" << endl;
 
 	printColorDefinitions(8, myfile);
 
@@ -262,6 +263,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	}
 
 	double funcVal = sol->evaluateModelFunctionAt(xdimension);
+	double funcValMinus = sol->evaluateModelFunctionAt(xdimension, -0.43);
 	double maxaddedpoint = -1;
 	if (cinfo.datapoints->get_measures_size() > 0) {
 		maxaddedpoint = cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second;
@@ -294,10 +296,20 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "\\addlegendentry{Linear Model};" << endl;*/
 
 	// print the found model function
-	myfile << "\\addplot [domain=1:" << xdimension
+	myfile << "\\addplot [name path=func, domain=1:" << xdimension
 		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
 		<< minsol.printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Our Model};" << endl;
+
+	myfile << "\\addplot [name path=funcplus, domain=1:" << xdimension
+		<< ", samples=110,unbounded coords=jump, draw=color5, dashed, ] " << endl
+		<< minsol.printModelFunctionLatex(0.5).c_str() << ";" << endl
+		<< "\\addlegendentry{Model + 0.43};" << endl;
+
+	myfile << "\\addplot [name path=funcminus, domain=1:" << xdimension
+		<< ", samples=110,unbounded coords=jump, draw=red, dashed, ] " << endl
+		<< minsol.printModelFunctionLatex(-0.43).c_str() << ";" << endl
+		<< "\\addlegendentry{Model - 0.43};" << endl;
 
 	// print the reference solution if configured
 	if(cinfo.print_ref_solution && 1==2) {
@@ -318,11 +330,28 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		myfile << "};" << std::endl
 			<< "\\addlegendentry{ Measurements };" << endl;
 
-		for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
+		/*for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
 			std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(i);
-			myfile << "\\addplot +[mark=none, very thin, black, dashed] coordinates {(" << act_pair.first 
-				<< ", 0) ( " << act_pair.first << ", " << funcVal << ")};" << endl;
-		}
+			double start_y = act_pair.second - (funcVal*0.43);
+			double end_y = act_pair.second + (funcVal*0.43);
+			myfile << "\\addplot +[mark=none, thick, black, dashed] coordinates {(" << act_pair.first 
+				<< ", " << start_y << ") ( " << act_pair.first << ", " << end_y << ")};" << endl;
+		}*/
+
+		myfile << "\\draw[help lines, name path = clippath]"
+			<< "(0, " << funcValMinus << ") -- " << "(" << xdimension << " , " << funcValMinus << ");" << endl;
+
+		myfile << "\\addplot fill between[" << endl
+			<< "of = funcplus and funcminus," << endl
+			<< "every even segment/.style = { gray,opacity = .5 }," << endl
+			<< "soft clip = { clippath }," << endl
+			<< "];" << endl;
+
+		myfile << "\\addplot fill between[" << endl
+			<< "of = funcplus and func," << endl
+			<< "every even segment/.style = { gray,opacity = .5 }," << endl
+			<< "soft clip = { domain = 0:" << xdimension << "}," << endl
+			<< "]; " << endl;
 	}
 
 	myfile << "\\end{axis}" << endl

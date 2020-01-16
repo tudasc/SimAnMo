@@ -14,11 +14,11 @@ public:
 
 	Solution getNeighborSolution();
 
-	double evaluateModelFunctionAt(double x);
+	double evaluateModelFunctionAt(double x, double scale = 0);
 	double evaluateConstantTermAt(double x);
 	void printModelFunction();	
 
-	std::string printModelFunctionLatex() const;
+	std::string printModelFunctionLatex(double scale=0.0) const;
 	std::string printModelFunctionLatexShow() const;
 
 protected:

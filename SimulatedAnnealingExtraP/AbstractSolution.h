@@ -49,13 +49,13 @@ public:
 	double get_costs() { return _costs; }
 	void set_costs(double costs) { _costs = costs; }
 
-	virtual double evaluateModelFunctionAt(double x) = 0;
+	virtual double evaluateModelFunctionAt(double x, double scale=0) = 0;
 	virtual double evaluateConstantTermAt(double x) = 0;
 
 	void updateAt(int pos, double val) { _coefficients[pos] = val; }
 
 	virtual void printModelFunction() = 0;
-	virtual std::string printModelFunctionLatex() const = 0;
+	virtual std::string printModelFunctionLatex(double scale=0.0) const = 0;
 	virtual std::string printModelFunctionLatexShow() const = 0;
 
 protected:
