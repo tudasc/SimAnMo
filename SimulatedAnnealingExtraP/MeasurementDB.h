@@ -7,6 +7,7 @@
 class MeasurementDB {
 public:
 	MeasurementDB();
+	MeasurementDB* cloneToLog2Version(MeasurementDB* inputDB);
 	void addTrainingPoint(std::pair<double, double>& measurement);
 	void addMeasurementPoint(std::pair<double, double>& measurement);
 

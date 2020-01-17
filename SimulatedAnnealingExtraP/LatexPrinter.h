@@ -2,6 +2,7 @@
 #define LATEXPRINTER_H
 
 #include "Solution.h"
+#include "ExtraPSolution.h"
 #include "MeasurementDB.h"
 #include <cstring>
 #include <string.h>
@@ -13,6 +14,7 @@ using namespace std;
 template<class SolType>
 struct CalcuationInfo{
 	AbstractSolution* min_sol = NULL;
+	ExtraPSolution* min_sol_log = NULL;
 	double runtime = 0.0;
 	double RSScost = 0.0;
 	int thread_with_solution = -1;

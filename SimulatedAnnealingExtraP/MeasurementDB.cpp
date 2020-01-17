@@ -8,6 +8,32 @@ MeasurementDB::MeasurementDB() {
 	this->_no_measurements = 0;
 }
 
+MeasurementDB* MeasurementDB::cloneToLog2Version(MeasurementDB* inputDB) {
+	MeasurementDB* newLogDB = new MeasurementDB();	
+
+	// Keep the training data
+	auto itx = inputDB->_xvals.begin();
+	auto ity = inputDB->_yvals.begin();
+
+	for (;	itx != inputDB->_xvals.end(); ++itx, ++ity) {
+		newLogDB->_xvals.push_back((*itx));
+		newLogDB->_yvals.push_back(log2(*ity));
+		newLogDB->_no_trainingpoints++;
+	}
+
+	// Keep additional measurements
+	auto itmy = inputDB->_ymeasure.begin();
+
+	for (auto itmx = inputDB->_xmeasure.begin(); itmx != inputDB->_xmeasure.end(); itmx++) {
+		newLogDB->_xmeasure.push_back((*itmx));
+		newLogDB->_ymeasure.push_back(log2(*itmy));
+		newLogDB->_no_measurements++;
+		itmy++;
+	}
+
+	return newLogDB;
+}
+
 void MeasurementDB::addTrainingPoint(std::pair<double, double>& measurement) {
 	this->_xvals.push_back( measurement.first);
 	this->_yvals.push_back(measurement.second);

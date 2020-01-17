@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kvardim.txt" --outpath "C:/temp" --texfile "g6k80-130vardim" --nt 8</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kdim80-130Log2.txt" --outpath "C:/temp" --texfile "g6kMixedSeedsLog2" --nt 1  --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kdim80-130.txt" --outpath "C:/temp" --texfile "g6kMixedSeeds" --nt 8</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kdim80-130.txt" --outpath "C:/temp" --texfile "g6kMixedSeedsLog2" --nt 1  --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

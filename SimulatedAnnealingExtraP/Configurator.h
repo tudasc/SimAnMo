@@ -22,6 +22,12 @@ public:
 	std::string texfile;
 	std::string outpath;
 
+	bool create_log_exp_model;
+
+	// Print Configuration
+	bool print_confidence;
+	double confidence_interval;
+
 private:
 	Configurator() {
 		texfile = "";
@@ -29,7 +35,11 @@ private:
 		std_exp_range = 20;
 		num_threads = 1;
 		max_pol_range = 3;
-		max_log_range = 2.5;
+		max_log_range = 0.0;// 2.5;
+
+		create_log_exp_model = true;
+		print_confidence = false;
+		confidence_interval = 0.0;
 	}
 
 	Configurator(const Configurator&);

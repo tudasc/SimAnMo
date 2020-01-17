@@ -55,7 +55,7 @@ public:
 	void updateAt(int pos, double val) { _coefficients[pos] = val; }
 
 	virtual void printModelFunction() = 0;
-	virtual std::string printModelFunctionLatex(double scale=0.0) const = 0;
+	virtual std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const = 0;
 	virtual std::string printModelFunctionLatexShow() const = 0;
 
 protected:

@@ -151,7 +151,7 @@ void ExtraPSolution::printModelFunction() {
 		<< c[2] << " * log_2 ^ " << c[3] <<  "(p) " << std::endl;
 }
 
-std::string ExtraPSolution::printModelFunctionLatex(double scale) const {
+std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);
@@ -171,11 +171,17 @@ std::string ExtraPSolution::printModelFunctionLatex(double scale) const {
 	streamObj.str("");
 
 	std::string func = "";
-	if (scale < std::abs(1e-5))
+	if (scale < std::abs(1e-5) && !powed)
 	{
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
 			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
 			+ ")});";
+	}
+
+	else if (powed) {
+		func += "(\\x, { 2^(" + str_c0 + " + " + str_c1 + " * ( "
+			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
+			+ "))});";
 	}
 
 	else {

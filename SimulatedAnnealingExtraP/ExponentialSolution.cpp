@@ -163,7 +163,7 @@ void ExponentialSolution::printModelFunction() {
 		<< c[2] << " * p)" << std::endl;
 }
 
-std::string ExponentialSolution::printModelFunctionLatex(double scale) const {
+std::string ExponentialSolution::printModelFunctionLatex(double scale, bool powed) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);

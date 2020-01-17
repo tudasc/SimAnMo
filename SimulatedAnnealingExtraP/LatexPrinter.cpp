@@ -12,8 +12,8 @@ using namespace std;
 template<class SolType>
 void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution* sol, MeasurementDB * mdb, CalcuationInfo<SolType>& calcinf)
 {
-	string rm_str="";
-	string slash_str="";
+	string rm_str = "";
+	string slash_str = "";
 #ifdef	__linux__
 	rm_str = "rm";
 	slash_str = "/";
@@ -65,9 +65,9 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 	myfile << "}" << endl;
 
 	// Print Information on reference model if configured
-	if (calcinf.print_ref_solution && 1==2) {
+	if (calcinf.print_ref_solution && 1 == 2) {
 		myfile
-		<< "\\begin{equation}" << endl
+			<< "\\begin{equation}" << endl
 			<< "f_{model}(x) = "
 			<< calcinf.ref_solution.printModelFunctionLatexShow().c_str() << std::endl
 			<< "\\end{equation}"
@@ -80,12 +80,12 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< " + " << calcinf.ref_solution.getAt(1) << " * 2 ^ {"
 		<< calcinf.ref_solution.getAt(2) << "* x ^ {" << calcinf.ref_solution.getAt(3) << "}}$" << endl;*/
 
-	/*if (calcinf.print_lin_sol) {
-	myfile 	<< "\\begin{equation}" << endl
-		<< "f_{linear}(x) = 2 ^ {" << calcinf.lin_sol.getAt(0)
-		<< " + " << calcinf.lin_sol.getAt(1) << " * x}\\\\" << endl
-		<< "\\end{equation}";
-	}*/		
+		/*if (calcinf.print_lin_sol) {
+		myfile 	<< "\\begin{equation}" << endl
+			<< "f_{linear}(x) = 2 ^ {" << calcinf.lin_sol.getAt(0)
+			<< " + " << calcinf.lin_sol.getAt(1) << " * x}\\\\" << endl
+			<< "\\end{equation}";
+		}*/
 	myfile << "\\begin{figure}[htb]" << endl
 		<< "\\centering" << endl
 		<< "\\newlength\\figureheight" << endl
@@ -105,10 +105,19 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "]" << endl;
 
 	// print the found model function
-	myfile  << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" <<  mdb->getPairAt(mdb->get_size()-1).first
+	myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
 		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
 		<< sol->printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Our Model};" << endl;
+
+	if (Configurator::getInstance().create_log_exp_model)
+	{
+
+		myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
+			<< ", samples=110,unbounded coords=jump, draw=color7, very thick] " << endl
+			<< calcinf.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
+			<< "\\addlegendentry{Model from Log2};" << endl;
+	}
 
 	// print the reference model function if configured
 	if (calcinf.print_ref_solution && 1==2) {
@@ -240,6 +249,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 {
 	int no_points = cinfo.datapoints->get_size();
 	AbstractSolution& minsol = cinfo.sol_per_thread[cinfo.thread_with_solution];
+	double cv = Configurator::getInstance().confidence_interval;
 
 	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.00);
 	int xstart = (int)(cinfo.datapoints->getPairAt(0).first);
@@ -264,7 +274,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	}
 
 	double funcVal = sol->evaluateModelFunctionAt(xdimension);
-	double funcValMinus = sol->evaluateModelFunctionAt(xdimension, -0.5);
+	double funcValMinus = sol->evaluateModelFunctionAt(xdimension, -cv);
 	double maxaddedpoint = -1;
 	if (cinfo.datapoints->get_measures_size() > 0) {
 		maxaddedpoint = cinfo.datapoints->getMeasurePairAt(cinfo.datapoints->get_measures_size() - 1).second;
@@ -284,8 +294,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		//<< "ymax=" << ydimension * 1.05 << ","
-		<< "ylabel={costs}," << endl
-		<< "xlabel={step}," << endl
+		<< "ylabel={rank of lattice $d$}," << endl
+		<< "xlabel={runtime in s}," << endl
 		<< "legend style={at={(0.05, 0.95)},anchor=north west, legend cell align=left}," << endl
 		<< "]" << endl;
 
@@ -302,15 +312,17 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< minsol.printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Our Model};" << endl;
 
-	myfile << "\\addplot [name path=funcplus, domain=" << xstart << ":" << xdimension
-		<< ", samples=110,unbounded coords=jump, draw=color5, dashed, ] " << endl
-		<< minsol.printModelFunctionLatex(0.5).c_str() << ";" << endl
-		<< "\\addlegendentry{Model + 0.5};" << endl;
+	if (Configurator::getInstance().print_confidence) {		
+		myfile << "\\addplot [name path=funcplus, domain=" << xstart << ":" << xdimension
+			<< ", samples=110,unbounded coords=jump, draw=color5, dashed, ] " << endl
+			<< minsol.printModelFunctionLatex(cv).c_str() << ";" << endl
+			<< "\\addlegendentry{Model + " << cv << "};" << endl;
 
-	myfile << "\\addplot [name path=funcminus, domain=" << xstart << ":" << xdimension
-		<< ", samples=110,unbounded coords=jump, draw=red, dashed, ] " << endl
-		<< minsol.printModelFunctionLatex(-0.5).c_str() << ";" << endl
-		<< "\\addlegendentry{Model - 0.5};" << endl;
+		myfile << "\\addplot [name path=funcminus, domain=" << xstart << ":" << xdimension
+			<< ", samples=110,unbounded coords=jump, draw=red, dashed, ] " << endl
+			<< minsol.printModelFunctionLatex(-cv).c_str() << ";" << endl
+			<< "\\addlegendentry{Model - " << cv << "};" << endl;
+	}
 
 	// print the reference solution if configured
 	if(cinfo.print_ref_solution && 1==2) {
@@ -338,21 +350,30 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			myfile << "\\addplot +[mark=none, thick, black, dashed] coordinates {(" << act_pair.first 
 				<< ", " << start_y << ") ( " << act_pair.first << ", " << end_y << ")};" << endl;
 		}*/
+		if (Configurator::getInstance().print_confidence) {
+			myfile << "\\draw[help lines, name path = clippath, white, very thin]"
+				<< "(" << xstart << ", " << funcValMinus << ") -- " << "(" << xdimension << " , " << funcValMinus << ");" << endl;
 
-		myfile << "\\draw[help lines, name path = clippath, white, very thin]"
-			<< "(" << xstart << ", " << funcValMinus << ") -- " << "(" << xdimension << " , " << funcValMinus << ");" << endl;
+			myfile << "\\addplot fill between[" << endl
+				<< "of = funcplus and funcminus," << endl
+				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "soft clip = { clippath }," << endl
+				<< "];" << endl;
 
-		myfile << "\\addplot fill between[" << endl
-			<< "of = funcplus and funcminus," << endl
-			<< "every even segment/.style = { gray,opacity = .5 }," << endl
-			<< "soft clip = { clippath }," << endl
-			<< "];" << endl;
+			myfile << "\\addplot fill between[" << endl
+				<< "of = funcplus and func," << endl
+				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "soft clip = { domain = " << xstart << ":" << xdimension << "}," << endl
+				<< "]; " << endl;
+		}
+	}
 
-		myfile << "\\addplot fill between[" << endl
-			<< "of = funcplus and func," << endl
-			<< "every even segment/.style = { gray,opacity = .5 }," << endl
-			<< "soft clip = { domain = " << xstart << ":" << xdimension << "}," << endl
-			<< "]; " << endl;
+	// Print powed logarithmic model
+	if (Configurator::getInstance().create_log_exp_model) {
+		myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
+			<< ", samples=110,unbounded coords=jump, draw=color6, very thick] " << endl
+			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
+			<< "\\addlegendentry{Model from Log2};" << endl;
 	}
 
 	myfile << "\\end{axis}" << endl

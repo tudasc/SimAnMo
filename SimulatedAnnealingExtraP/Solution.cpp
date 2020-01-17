@@ -218,7 +218,7 @@ void Solution::printModelFunction() {
 		<< c[2] << " * p^" << c[3] << " ) p^ * " << c[4] << std::endl;
 }
 
-std::string Solution::printModelFunctionLatex(double scale) const {
+std::string Solution::printModelFunctionLatex(double scale, bool powed) const {
 	std::ostringstream streamObj;
 
 	streamObj << getAt(0);
