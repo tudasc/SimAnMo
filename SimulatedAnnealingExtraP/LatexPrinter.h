@@ -36,6 +36,7 @@ public:
 	void printColorDefinitions(int number, ofstream&  stream );
 private:
 	string colStr(int no);
+	void printLogModel(ofstream & myfile, AbstractSolution* sol, MeasurementDB * mdb, CalcuationInfo<SolType>& calcinf);
 	void printPrediction(ofstream&, CalcuationInfo<SolType>&, int stepsize, AbstractSolution* sol);
 	void printCostDevelopment(ofstream&, int);
 	void printCostDetails(ofstream&, CalcuationInfo<SolType>&, int stepsize);

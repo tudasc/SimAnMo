@@ -6,6 +6,7 @@
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
 #include "Configurator.h"
+#include <cmath>
 
 using namespace std;
 
@@ -24,9 +25,6 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 	rm_str = "del";
 	slash_str = "\\\\";
 #endif
-
-	//int stop = 0;
-	//cin >> stop;
 
 	calcinf.min_sol = sol;
 	ofstream myfile;
@@ -110,13 +108,13 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< sol->printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Our Model};" << endl;
 
+	// print the logarithmized model function if configured
 	if (Configurator::getInstance().create_log_exp_model)
 	{
-
-		myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
-			<< ", samples=110,unbounded coords=jump, draw=color7, very thick] " << endl
+		myfile << "\\addplot [draw=darkorange , domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
+			<< ", samples=110,unbounded coords=jump, very thick] " << endl
 			<< calcinf.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
-			<< "\\addlegendentry{Model from Log2};" << endl;
+			<< "\\addlegendentry{Log Model};" << endl;
 	}
 
 	// print the reference model function if configured
@@ -147,6 +145,20 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 	myfile << "\\end{axis}" << endl
 		<< "\\end{tikzpicture}" << endl
 		<< "\\end{figure}" << endl;
+
+	if (Configurator::getInstance().create_log_exp_model)
+	{
+		printLogModel(myfile, sol, mdb, calcinf);
+	}
+
+// If configured, also show the Exponential Model
+// Print powed logarithmic model
+/*	if (Configurator::getInstance().create_log_exp_model) {
+		myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
+			<< ", samples=110,unbounded coords=jump, draw=color6, very thick] " << endl
+			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
+			<< "\\addlegendentry{Model from Log2};" << endl;
+	}*/
 
 /////////////////// Print the comparison of our and linear model
 	int stepsize = QualityLogger::getInstance().get_size() / 200;
@@ -243,6 +255,48 @@ string LatexPrinter<SolType>::colStr(int no)
 	string str = "color" + std::to_string(no);
 	return str;
 }
+template<class SolType>
+void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* sol, MeasurementDB * mdb, CalcuationInfo<SolType>& calcinf)
+{
+	myfile << endl << "\\newpage" << endl
+		<< "\\section{Log-Function Evaluation}" << endl;
+	myfile << "\\begin{figure}[htb]" << endl
+		<< "\\centering" << endl
+		<< "\\setlength\\figureheight{10cm}" << endl
+		<< "\\setlength\\figurewidth{10cm}" << endl
+		<< "\\pgfplotsset{every tick label/.append style={font=\\small}}" << endl
+		<< "\\begin{tikzpicture}" << endl
+		<< "\\begin{axis}[" << endl
+		<< "width=\\figurewidth," << endl
+		<< "height=\\figureheight," << endl
+		<< "scale only axis," << endl
+		<< "ylabel={runtime in s}," << endl
+		<< "xlabel={rank of lattice d}," << endl
+		<< "legend style={at={(0.20, 0.999)},anchor=north west, legend cell align=left}," << endl
+		<< "]" << endl;
+
+	// print the found model function
+	myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
+		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
+		<< calcinf.min_sol_log->printModelFunctionLatex().c_str() << ";" << endl
+		<< "\\addlegendentry{Log Model};" << endl;
+
+	// Draw all logarithmized training data points
+	myfile << "\\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	" << endl;
+	for (int i = 0; i < mdb->get_size(); i++) {
+		pair<double, double> act_pair = mdb->getPairAt(i);
+		myfile << "(" << act_pair.first << ", " << log2(act_pair.second) << ")" << endl;
+	}
+	myfile << "};" << endl
+		<< "\\addlegendentry{ Training data };" << endl;
+
+	myfile << "\\end{axis}" << endl
+		<< "\\end{tikzpicture}" << endl
+		<< "\\end{figure}" << endl;
+
+
+}
+
 
 template<class SolType>
 void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<SolType> & cinfo, int stepsize, AbstractSolution* sol)

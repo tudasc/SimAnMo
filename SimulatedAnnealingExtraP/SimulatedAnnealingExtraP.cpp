@@ -217,7 +217,7 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 #pragma omp atomic
 				stepcount++;
 			}
-			T = T * 0.9;
+			T = T * 0.998;
 		}
 
 		sol_per_thread[omp_get_thread_num()] = abs_min_sol_thread;
