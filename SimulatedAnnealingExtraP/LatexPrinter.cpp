@@ -260,6 +260,13 @@ void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* s
 {
 	myfile << endl << "\\newpage" << endl
 		<< "\\section{Log-Function Evaluation}" << endl;
+
+	myfile << "{\\large" << endl
+		<< "\\begin{equation}" << endl
+		<< "f_{log-model}(x) = "
+		<< calcinf.min_sol_log->printModelFunctionLatexShow().c_str() << std::endl
+		<< "\\end{equation}}" << endl;
+
 	myfile << "\\begin{figure}[htb]" << endl
 		<< "\\centering" << endl
 		<< "\\setlength\\figureheight{10cm}" << endl
