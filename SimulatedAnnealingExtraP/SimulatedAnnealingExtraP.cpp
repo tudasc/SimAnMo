@@ -26,6 +26,7 @@
 #include <limits>
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
+#include "ExponentialPolynomSolution.h"
 #include "Configurator.h"
 
 using namespace std;
@@ -42,87 +43,6 @@ extern "C" FILE * __cdecl __iob_func(void)
 
 int no_threads = 1;
 
-template<class SolutionType>
-int annealingManager() {
-	std::string inputfile = Configurator::getInstance().inputfile;
-	SolutionType* sol_per_thread = new SolutionType[no_threads];
-	MeasurementDBReader dbreader = MeasurementDBReader();
-	MeasurementDB* inputDB = dbreader.readInputFile(inputfile);
-	CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-	unsigned int stepcount = 1;
-
-	double tstart = omp_get_wtime();
-	doAnnealing<SolutionType>(inputDB, sol_per_thread, calcinf, stepcount);
-
-	// Prepare the report generation	
-	// Get the minimal solution out of all
-	double min_cost = std::numeric_limits<double>::max();
-	SolutionType abs_min_sol;
-	for (int i = 0; i < no_threads; i++) {
-		calcinf.sol_per_thread.push_back(sol_per_thread[i]);
-		if (min_cost > sol_per_thread[i].get_costs()) {
-			min_cost = sol_per_thread[i].get_costs();
-			abs_min_sol = sol_per_thread[i];
-			calcinf.thread_with_solution = i;
-		}
-	}
-
-	double tduration = omp_get_wtime() - tstart;
-
-	calcinf.datapoints = inputDB;
-	calcinf.runtime = tduration;
-	calcinf.RSScost = abs_min_sol.get_costs();
-
-	std::cout << "Found minimal solution cost: " << abs_min_sol.get_costs()
-		<< " in " << stepcount << " steps ("
-		<< tduration << " s)"
-		<< std::endl;
-	abs_min_sol.printModelFunction();
-
-	std::cout << abs_min_sol.printModelFunctionLatex().c_str() << std::endl;
-	std::cout << abs_min_sol.printModelFunctionLatexShow().c_str() << std::endl;
-
-	CalcuationInfo<ExtraPSolution> calcinf_log = CalcuationInfo<ExtraPSolution>();
-	ExtraPSolution abs_min_sol_log;
-	// If it is desired to create a solution based on logarithmic curve fitting
-	if (Configurator::getInstance().create_log_exp_model)
-	{
-		double max_log_range_back = Configurator::getInstance().max_log_range;
-		Configurator::getInstance().max_log_range = 0.0;
-		stepcount = 1;
-
-		ExtraPSolution* sol_per_thread_log = new ExtraPSolution[no_threads];		
-		MeasurementDB* inputDB_log = inputDB->cloneToLog2Version(inputDB);
-		//inputDB = inputDB_log;
-
-		doAnnealing<ExtraPSolution>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false);
-		Configurator::getInstance().max_log_range = max_log_range_back;
-
-		min_cost = std::numeric_limits<double>::max();		
-		for (int i = 0; i < no_threads; i++) {
-			calcinf_log.sol_per_thread.push_back(sol_per_thread_log[i]);
-			if (min_cost > sol_per_thread_log[i].get_costs()) {
-				min_cost = sol_per_thread_log[i].get_costs();
-				abs_min_sol_log = sol_per_thread_log[i];
-				calcinf_log.thread_with_solution = i;
-			}
-		}
-		std::cout << "Found minimal solution cost: " << abs_min_sol_log.get_costs()
-			<< " in " << stepcount << " steps ("
-			<< tduration << " s)"
-			<< std::endl;
-		abs_min_sol_log.printModelFunction();
-		calcinf.min_sol_log = &abs_min_sol_log;
-	}
-
-	// LaTeX Config: Comment out to disable
-	LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
-	latprint.printSolution("", &abs_min_sol, inputDB, calcinf);
-
-	delete inputDB;
-	return 0;
-}
-
 
 template<class SolutionType>
 int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
@@ -134,14 +54,14 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 	EigenParameterEstimator paramest = EigenParameterEstimator(inputDB);
 #endif
 
-	double ref_array[5] = { 37.760, 0.360, 0.300, 1.0, 2.0 }; // LLLRRDelta
+	double ref_array[5] = { 25, 3.75E-18, 0.1, 1.5, 0.0 }; // LLLRRDelta
 
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
 	cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
 	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(50, 32);
+	double temp_init = tempin.estimateInitialCost(150, 32);
 	double T = temp_init;
 
  	Configurator::getInstance().num_threads = no_threads;
@@ -177,9 +97,9 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
 
-		while (T > 0.000001) { // 0.000001
+		while (T > 0.0000001) { // 0.000001
 			//cout << "Down";
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 200; i++) {
 				// Generate new solution candidate
 				act_sol = solmod.randomModifySolution(&act_sol);
 
@@ -240,6 +160,95 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 	calcinf.print_ref_solution = true;
 	calcinf.ref_solution = ref_sol;
 	calcinf.print_measurepoints = true;	
+	return 0;
+}
+
+template<class SolutionType>
+int annealingManager() {
+	std::string inputfile = Configurator::getInstance().inputfile;
+	SolutionType* sol_per_thread = new SolutionType[no_threads];
+	MeasurementDBReader dbreader = MeasurementDBReader();
+	MeasurementDB* inputDB = dbreader.readInputFile(inputfile);
+	CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
+	unsigned int stepcount = 1;
+
+	double tstart = omp_get_wtime();
+	doAnnealing<SolutionType>(inputDB, sol_per_thread, calcinf, stepcount);
+
+	// Prepare the report generation	
+	// Get the minimal solution out of all
+	double min_cost = std::numeric_limits<double>::max();
+	SolutionType abs_min_sol;
+	for (int i = 0; i < no_threads; i++) {
+		calcinf.sol_per_thread.push_back(sol_per_thread[i]);
+		if (min_cost > sol_per_thread[i].get_costs()) {
+			min_cost = sol_per_thread[i].get_costs();
+			abs_min_sol = sol_per_thread[i];
+			calcinf.thread_with_solution = i;
+		}
+	}
+
+	double tduration = omp_get_wtime() - tstart;
+
+	calcinf.datapoints = inputDB;
+	calcinf.runtime = tduration;
+	calcinf.RSScost = abs_min_sol.get_costs();
+
+	std::cout << "Found minimal solution cost: " << abs_min_sol.get_costs()
+		<< " in " << stepcount << " steps ("
+		<< tduration << " s)"
+		<< std::endl;
+	abs_min_sol.printModelFunction();
+
+	std::cout << abs_min_sol.printModelFunctionLatex().c_str() << std::endl;
+	std::cout << abs_min_sol.printModelFunctionLatexShow().c_str() << std::endl;
+
+	CalcuationInfo<ExtraPSolution> calcinf_log = CalcuationInfo<ExtraPSolution>();
+	ExtraPSolution abs_min_sol_log;
+	// If it is desired to create a solution based on logarithmic curve fitting
+	if (Configurator::getInstance().create_log_exp_model)
+	{
+		double max_log_range_back = Configurator::getInstance().max_log_range;
+		double max_pol_range_back = Configurator::getInstance().max_pol_range;
+		double min_pol_range_back = Configurator::getInstance().min_pol_range;
+
+		Configurator::getInstance().max_log_range = 0.0;
+		//Configurator::getInstance().max_pol_range = 1.001;
+		//Configurator::getInstance().min_pol_range = 0.999;
+
+		stepcount = 1;
+
+		ExtraPSolution* sol_per_thread_log = new ExtraPSolution[no_threads];
+		MeasurementDB* inputDB_log = inputDB->cloneToLog2Version(inputDB);
+		//inputDB = inputDB_log;
+
+		doAnnealing<ExtraPSolution>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false);
+		Configurator::getInstance().max_log_range = max_log_range_back;
+		//Configurator::getInstance().max_pol_range = max_pol_range_back;
+		//Configurator::getInstance().min_pol_range = min_pol_range_back;
+
+		min_cost = std::numeric_limits<double>::max();
+		for (int i = 0; i < no_threads; i++) {
+			calcinf_log.sol_per_thread.push_back(sol_per_thread_log[i]);
+			if (min_cost > sol_per_thread_log[i].get_costs()) {
+				min_cost = sol_per_thread_log[i].get_costs();
+				abs_min_sol_log = sol_per_thread_log[i];
+				calcinf_log.thread_with_solution = i;
+			}
+		}
+		std::cout << "Found minimal solution cost: " << abs_min_sol_log.get_costs()
+			<< " in " << stepcount << " steps ("
+			<< tduration << " s)"
+			<< std::endl;
+		abs_min_sol_log.printModelFunction();
+		calcinf.min_sol_log = &abs_min_sol_log;
+	}
+
+	// LaTeX Config: Comment out to disable
+	LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
+	latprint.printSolution("", &abs_min_sol, inputDB, calcinf);
+
+	delete inputDB;
 	return 0;
 }
 
@@ -358,7 +367,8 @@ int main(int argc, char** argv)
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
-	annealingManager<ExponentialSolution>();
+	//annealingManager<ExponentialSolution>();
+	annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
 

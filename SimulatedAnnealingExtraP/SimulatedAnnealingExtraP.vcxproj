@@ -175,6 +175,7 @@
     <ClInclude Include="Configurator.h" />
     <ClInclude Include="CostCalculator.h" />
     <ClInclude Include="EigenParameterEstimator.h" />
+    <ClInclude Include="ExponentialPolynomSolution.h" />
     <ClInclude Include="ExponentialSolution.h" />
     <ClInclude Include="ExtraPSolution.h" />
     <ClInclude Include="LatexPrinter.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="alglib\specialfunctions.cpp" />
     <ClCompile Include="alglib\statistics.cpp" />
     <ClCompile Include="EigenParameterEstimator.cpp" />
+    <ClCompile Include="ExponentialPolynomSolution.cpp" />
     <ClCompile Include="ExponentialSolution.cpp" />
     <ClCompile Include="ExtraPSolution.cpp" />
     <ClCompile Include="LatexPrinter.cpp" />

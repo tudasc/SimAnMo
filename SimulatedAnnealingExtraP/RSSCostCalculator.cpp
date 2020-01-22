@@ -64,5 +64,5 @@ double RSSCostCalculator::calculateMetrics(AbstractSolution* sol)
 	this->nnrRSS = nnrrsscost;
 	
 	//return rsscosts;
-	return nnrrsscost;
+	return 1.0 / nnrrsscost - 1;
 }

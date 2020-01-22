@@ -110,13 +110,7 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
-	std::uniform_int_distribution<int> dist2_4(2, 4);
 	std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
-	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
-	std::uniform_int_distribution<int> dist0or1(0, 1);
-
-	// Decide which coefficient to change c_2, c_3 or c_4
-	int coeff = dist2_4(engine);
 
 	// Change c_3
 	double val = double(dist20(engine)) / 200.0;

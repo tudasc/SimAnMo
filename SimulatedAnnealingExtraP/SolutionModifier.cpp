@@ -6,6 +6,7 @@
 #include "LinearSolution.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
+#include "ExponentialPolynomSolution.h"
 
 template<class SolutionType, class CostCalulatorType>
 SolutionModifier<SolutionType, CostCalulatorType>::SolutionModifier(MeasurementDB* mdb) : _mdb(mdb)
@@ -42,3 +43,4 @@ template class SolutionModifier<Solution, RSSCostCalculator>;
 template class SolutionModifier<LinearSolution, RSSCostCalculator>;
 template class SolutionModifier<ExtraPSolution, RSSCostCalculator>;
 template class SolutionModifier<ExponentialSolution, RSSCostCalculator>;
+template class SolutionModifier<ExponentialPolynomSolution, RSSCostCalculator>;

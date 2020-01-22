@@ -23,7 +23,7 @@ ExtraPSolution::ExtraPSolution()
 }
 
 ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
-	double min_c_2 = 0;
+	double min_c_2 = Configurator::getInstance().min_pol_range;
 	double max_c_2 = Configurator::getInstance().max_pol_range;
 
 	double min_c_3 = 0;
@@ -39,16 +39,17 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 	if (_len > 0)
 		_coefficients = new double[_len];
 
-	double start_vals[4] = { 0, 0, 1, 0 };
+	double start_vals[4] = { 0, 0, 0, 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];
 
 	paramest.estimateParameters(this);
 	costcalc.calculateCost(this);
+	this->_costs = std::numeric_limits<double>::max();
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
-	std::uniform_real_distribution<double> distc23_pol(0, Configurator::getInstance().max_pol_range);
-	std::uniform_real_distribution<double> distc23_log(0, Configurator::getInstance().max_log_range);
+	std::uniform_real_distribution<double> distc23_pol(min_c_2, max_c_2);
+	std::uniform_real_distribution<double> distc23_log(min_c_3, max_c_3);
 
 	ExtraPSolution act_sol = *this;
 	int count = 0;

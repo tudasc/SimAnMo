@@ -5,6 +5,7 @@
 #include <string> 
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
+#include "ExponentialPolynomSolution.h"
 #include "Configurator.h"
 #include <cmath>
 
@@ -565,3 +566,4 @@ template class LatexPrinter<Solution>;
 template class LatexPrinter<ExtraPSolution>;
 template class LatexPrinter<LinearSolution>;
 template class LatexPrinter<ExponentialSolution>;
+template class LatexPrinter<ExponentialPolynomSolution>;

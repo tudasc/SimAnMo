@@ -1,5 +1,6 @@
 #include "MeasurementDB.h"
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 

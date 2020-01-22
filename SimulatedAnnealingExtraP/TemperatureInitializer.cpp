@@ -9,6 +9,7 @@
 #include "RSSCostCalculator.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
+#include "ExponentialPolynomSolution.h"
 
 template<class SolutionType>
 double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size, int neighbor_size)
@@ -111,3 +112,4 @@ double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size
 template class TemperatureInitializer<Solution>;
 template class TemperatureInitializer<ExtraPSolution>;
 template class TemperatureInitializer<ExponentialSolution>;
+template class TemperatureInitializer<ExponentialPolynomSolution>;
