@@ -75,10 +75,10 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(double* coefficients)
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) {
-		if (i == 2 && coefficients[i] >= 0.1)
-			_coefficients[2] = coefficients[i];
+		if (i == 2 && coefficients[i] >= 0.05)
+			_coefficients[2] = 0.05;
 		else
-			_coefficients[i] = 0.1;
+			_coefficients[i] = coefficients[i];
 	}
 }
 
@@ -110,45 +110,56 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
-	std::uniform_int_distribution<int> dist2_3(2, 3); // To choose coefficient 
+	std::uniform_int_distribution<int> dist2_3(2, 3);
 	std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
-	std::uniform_int_distribution<int> distc_2_3_change(-10000, 10000);
+	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
+	std::uniform_int_distribution<int> dist0or1(0, 1);
 
 	// Decide which coefficient to change c_2, c_3 or c_4
 	int coeff = dist2_3(engine);
 
+	/*
+	Er muss doch in Solution nicht in Random Sol nach coefficients suchen, oder?
+	*/
+
 	// Change c_2
+	double new_val = -1000;
 	if (coeff == 2) {
-		double val = 0.0;
 		do
 		{
-			double perc = double(distc_2_3_change(engine)) / 100000.0; // Between |10| and |0.01| % 
-			val = perc * random_sol.getAt(2);
-			//std::cout << "2: " << val << " to " << random_sol.getAt(3) + val << std::endl;
+			int fac;
+			if (dist0or1(engine) == 1)
+				fac = 1;
+			else
+				fac = -1;
+
+			double val = random_sol.getAt(2);
+			int log_of_val = int(log10(val));
+			double change = fac * pow(10, log_of_val - 1);
+
+			new_val = val + change;
+			// Check if we break from 10^x to 10^(x-1) or 10^(x+1)
+			if (int(log10(val)) > int(log10(new_val))) {
+				change = change * 0.1;
+				new_val = val + change;
+			}
+			else {
+				// Everything okay
+			}
 		}
-		while (!((random_sol.getAt(2) + val > 0.10) && (random_sol.getAt(2) + val < 1.0)));
-		random_sol.updateAt(2, random_sol.getAt(2) + val);		
-		//std::cout << "Fin" << std::endl;
+
+		// Limit the search space to exclude unrealistic results
+		while (!(new_val > 0.05) || !(new_val < 2.0));
+
+		random_sol.updateAt(2, new_val);
 	}
 
 	// Change c_3
 	else if (coeff == 3) {
-		double val = 0.0;
+		double val = double(dist20(engine)) / 200.0;
 
-		do {
-			double perc = double(distc_2_3_change(engine)) / 500000.0; // Between |10| and |0.01| % 			
-			val = perc * random_sol.getAt(3);
-		} 
-		while (!((random_sol.getAt(3) + val > 0.00) && (random_sol.getAt(3) + val < Configurator::getInstance().std_exp_range)));
-		random_sol.updateAt(3, random_sol.getAt(3) + val);
-		//std::cout << "Fin" << std::endl;
-	}
-
-	if (random_sol.getAt(2) < 0.1) {
-		std::cout << "Warning" << std::endl;
-		int stop = 0;
-		std::cin >> stop;
-
+		if (random_sol.getAt(3) + val > 0.00)
+			random_sol.updateAt(3, random_sol.getAt(3) + val);
 	}
 
 

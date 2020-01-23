@@ -24,7 +24,7 @@ ExponentialSolution::ExponentialSolution()
 ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 {
 	double min_c_3 = 10e-2;
-	double max_c_3 = 1e0;
+	double max_c_3 = 4;
 
 	double min_c_4 = 0.2;
 	double max_c_4 = 1.0;
@@ -62,6 +62,7 @@ ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 
 	ExponentialSolution act_sol = *this;
 	int count = 0;
+	double mincost = std::numeric_limits<double>::max();
 
 	do
 	{
@@ -69,7 +70,7 @@ ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
 		count++;
-	} while ((act_sol.get_costs() > this->get_costs()) || std::isnan(act_sol.get_costs()));
+	} while ((act_sol.get_costs() > mincost) || std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }

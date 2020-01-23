@@ -99,7 +99,7 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 		while (T > 0.0000001) { // 0.000001
 			//cout << "Down";
-			for (int i = 0; i < 200; i++) {
+			for (int i = 0; i < 100; i++) {
 				// Generate new solution candidate
 				act_sol = solmod.randomModifySolution(&act_sol);
 
