@@ -12,6 +12,10 @@
 #include "Configurator.h"
 #include "RSSCostCalculator.h"
 #include <sstream>
+#include <stdio.h>
+#include <time.h>
+#include <dos.h>
+#include <windows.h>
 
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
@@ -24,9 +28,9 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 {
 	double min_c_2 = 0.1;
-	double max_c_2 = 1.0;
+	double max_c_2 = 2.01;
 
-	double min_c_3 = 0.0;
+	double min_c_3 = 0.25;
 	double max_c_3 = Configurator::getInstance().std_exp_range;
 
 	int num_threads = Configurator::getInstance().num_threads;
@@ -75,9 +79,9 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(double* coefficients)
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) {
-		if (i == 2 && coefficients[i] >= 0.05)
-			_coefficients[2] = 0.05;
-		else
+		//if (i == 2 && coefficients[i] >= 0.05)
+		//	_coefficients[2] = 0.05;
+		//else
 			_coefficients[i] = coefficients[i];
 	}
 }
@@ -114,6 +118,31 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 	std::uniform_int_distribution<int> dist0or1(0, 1);
+	std::uniform_real_distribution<double> distTrial(-1, 1);
+	double new_val = -1000;
+
+	// Do changes to both constants at once
+	// Change c_2
+	do
+	{
+		double perc = distTrial(engine) / 20.0;
+		double change = perc * random_sol.getAt(2);
+		new_val = random_sol.getAt(2) + change;
+
+	} while (!((new_val > 0.1) && (new_val <= 2.00)));
+	random_sol.updateAt(2, new_val);
+
+	// Change c_3
+	do
+	{
+		double perc = distTrial(engine) / 20.0;
+		double change = perc * random_sol.getAt(3);
+		new_val = random_sol.getAt(3) + change;
+
+	} while (!(new_val > 0.25 && new_val<Configurator::getInstance().std_exp_range));
+	random_sol.updateAt(3, new_val);
+
+	return random_sol;
 
 	// Decide which coefficient to change c_2, c_3 or c_4
 	int coeff = dist2_3(engine);
@@ -123,11 +152,17 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	*/
 
 	// Change c_2
-	double new_val = -1000;
+	
 	if (coeff == 2) {
 		do
 		{
-			int fac;
+			double perc = distTrial(engine) / 100.0;
+			double change = perc * random_sol.getAt(2);
+			new_val = random_sol.getAt(2) + change;
+			//std::cout << "Val: " << change << std::endl;
+			//Sleep(500);
+
+			/*int fac;
 			if (dist0or1(engine) == 1)
 				fac = 1;
 			else
@@ -138,6 +173,9 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			double change = fac * pow(10, log_of_val - 1);
 
 			new_val = val + change;
+
+			
+
 			// Check if we break from 10^x to 10^(x-1) or 10^(x+1)
 			if (int(log10(val)) > int(log10(new_val))) {
 				change = change * 0.1;
@@ -145,18 +183,20 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			}
 			else {
 				// Everything okay
-			}
+			}*/
 		}
 
 		// Limit the search space to exclude unrealistic results
-		while (!(new_val > 0.05) || !(new_val < 2.0));
-
+		while (! ((new_val > 0.07) && (new_val < 0.13)));
 		random_sol.updateAt(2, new_val);
 	}
 
 	// Change c_3
 	else if (coeff == 3) {
-		double val = double(dist20(engine)) / 200.0;
+		double val = double(dist20(engine)) / 400.0;
+
+		//std::cout << "Val: " << change << std::endl;
+		//Sleep(500);
 
 		if (random_sol.getAt(3) + val > 0.00)
 			random_sol.updateAt(3, random_sol.getAt(3) + val);

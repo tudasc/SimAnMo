@@ -183,6 +183,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "width=\\figurewidth," << endl
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
+		<< "ymode = log," << endl
 		//<< "ymax=" << QualityLogger::getInstance().get_max_cost() * 1.2 << "," << endl
 		//<< "ymax=" << QualityLogger::getInstance().get_max_cost_to_print(stepsize) * 1.1 << "," << endl
 		<< "ylabel={costs}," << endl

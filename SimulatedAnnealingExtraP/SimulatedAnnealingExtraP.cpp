@@ -61,7 +61,7 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 	cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
 	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(150, 32);
+	double temp_init = 1.0;// tempin.estimateInitialCost(150, 32);
 	double T = temp_init;
 
  	Configurator::getInstance().num_threads = no_threads;
@@ -97,15 +97,29 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
 
-		while (T > 0.0000001) { // 0.000001
-			//cout << "Down";
+		int without_glob_improve = 0;
+		int without_glob_improve2 = 0;
+		while (T > 0.00000005) { // 0.000001
 			for (int i = 0; i < 100; i++) {
+				if (without_glob_improve == 50) {
+					act_sol = abs_min_sol_thread;
+					without_glob_improve = 0;
+				}
+
+				if (without_glob_improve == 20000) {
+					cout << "Thread " << tid << " ends." << endl;
+					break;
+				}
+
+
 				// Generate new solution candidate
 				act_sol = solmod.randomModifySolution(&act_sol);
 
 				// Accept solution since it is better
 				if (act_sol.get_costs() < min_sol.get_costs()) {
 					min_sol = act_sol;
+					//cout << "Cost:" << act_sol.get_costs() << " vs " << min_sol.get_costs()  
+					//	<< " vs " << abs_min_sol_thread.get_costs() << endl;
 					
 					if (do_quality_log) {
 						std::pair<unsigned int, double> newpair(stepcount, min_sol.get_costs());
@@ -114,6 +128,10 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 					if (act_sol.get_costs() < abs_min_sol_thread.get_costs()) {
 						abs_min_sol_thread = act_sol;
+					}
+					else {
+						without_glob_improve++;
+						without_glob_improve2++;
 					}
 				}
 
@@ -137,7 +155,7 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 #pragma omp atomic
 				stepcount++;
 			}
-			T = T * 0.998;
+			T = T * 0.999;
 		}
 
 		sol_per_thread[omp_get_thread_num()] = abs_min_sol_thread;
@@ -367,8 +385,8 @@ int main(int argc, char** argv)
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
-	//annealingManager<ExponentialSolution>();
-	annealingManager<ExponentialPolynomSolution>();
+	annealingManager<ExponentialSolution>();
+	//annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
 

@@ -14,7 +14,7 @@ public:
 
 	// Configuration variables
 	// For Standard Solution
-	int std_exp_range;
+	double std_exp_range;
 	int num_threads;
 
 	double min_pol_range;
@@ -35,7 +35,7 @@ private:
 	Configurator() {
 		texfile = "";
 		outpath = "";
-		std_exp_range = 20;
+		std_exp_range = 2.1;
 		num_threads = 1;
 
 		min_pol_range = 1;
