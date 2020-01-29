@@ -7,6 +7,7 @@
 
 #include "SolutionModifier.h"
 #include "RSSCostCalculator.h"
+#include "nnrRSSCostCalculator.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"

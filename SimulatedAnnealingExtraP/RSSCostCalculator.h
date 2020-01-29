@@ -6,7 +6,8 @@
 
 class RSSCostCalculator : public CostCalculator {
 public:
-	RSSCostCalculator() : CostCalculator() {}
+	RSSCostCalculator() : CostCalculator() {
+	}
 	RSSCostCalculator(MeasurementDB * mdb);
 	double calculateCost(AbstractSolution* sol);
 

@@ -123,6 +123,9 @@
     <ClInclude Include="ExponentialPolynomSolution.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="nnrRSSCostCalculator.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -216,6 +219,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ExponentialPolynomSolution.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="nnrRSSCostCalculator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

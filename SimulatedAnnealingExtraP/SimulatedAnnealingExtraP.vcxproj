@@ -183,6 +183,7 @@
     <ClInclude Include="LinearSolution.h" />
     <ClInclude Include="MeasurementDB.h" />
     <ClInclude Include="MeasurementDBReader.h" />
+    <ClInclude Include="nnrRSSCostCalculator.h" />
     <ClInclude Include="ParameterEstimator.h" />
     <ClInclude Include="QualityLogger.h" />
     <ClInclude Include="RingQueue.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="LinearSolution.cpp" />
     <ClCompile Include="MeasurementDB.cpp" />
     <ClCompile Include="MeasurementDBReader.cpp" />
+    <ClCompile Include="nnrRSSCostCalculator.cpp" />
     <ClCompile Include="ParameterEstimator.cpp" />
     <ClCompile Include="QualityLogger.cpp" />
     <ClCompile Include="RSSCostCalculator.cpp" />

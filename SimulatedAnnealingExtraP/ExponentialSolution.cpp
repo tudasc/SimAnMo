@@ -117,7 +117,7 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 	// Change c_3
 	double ne_wval = 0;
 	do {
-		double perc = double(dist20(engine)) / 20.0;
+		double perc = double(dist20(engine)) / 500.0;
 		double val = random_sol.getAt(2) * perc;
 		ne_wval = random_sol.getAt(2) + val;
 	} while (!((ne_wval > 0.00) && (ne_wval < 2.1)));

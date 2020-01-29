@@ -28,7 +28,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 {
 	double min_c_2 = 0.1;
-	double max_c_2 = 2.01;
+	double max_c_2 = 2.1;
 
 	double min_c_3 = 0.25;
 	double max_c_3 = Configurator::getInstance().std_exp_range;
@@ -125,17 +125,17 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	// Change c_2
 	do
 	{
-		double perc = distTrial(engine) / 20.0;
+		double perc = distTrial(engine) / 350.0;
 		double change = perc * random_sol.getAt(2);
 		new_val = random_sol.getAt(2) + change;
 
-	} while (!((new_val > 0.1) && (new_val <= 2.00)));
+	} while (!((new_val > 0.1) && (new_val <= 2.1)));
 	random_sol.updateAt(2, new_val);
 
 	// Change c_3
 	do
 	{
-		double perc = distTrial(engine) / 20.0;
+		double perc = distTrial(engine) / 350.0;
 		double change = perc * random_sol.getAt(3);
 		new_val = random_sol.getAt(3) + change;
 

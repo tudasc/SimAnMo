@@ -3,6 +3,7 @@
 #include "Solution.h"
 #include "SolutionModifier.h"
 #include "RSSCostCalculator.h"
+#include "nnrRSSCostCalculator.h"
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #include "LinearRegressionFinder.h"
@@ -44,35 +45,35 @@ extern "C" FILE * __cdecl __iob_func(void)
 int no_threads = 1;
 
 
-template<class SolutionType>
+template<class SolutionType, class CostCalculatorType>
 int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
-	unsigned int& stepcount = 1, bool do_quality_log = true) {
-	RSSCostCalculator refCostCalc = RSSCostCalculator(inputDB);
+	unsigned int& stepcount = 1, bool do_quality_log = false) {
+	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
 #else
 	EigenParameterEstimator paramest = EigenParameterEstimator(inputDB);
 #endif
 
-	double ref_array[5] = { 25, 3.75E-18, 0.1, 1.5, 0.0 }; // LLLRRDelta
+	double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
 	cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
 	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
-	double temp_init = 1.0;// tempin.estimateInitialCost(150, 32);
-	double T = temp_init;
+	double temp_init = 1.0;// tempin.estimateInitialCost(150, 32);	
 
  	Configurator::getInstance().num_threads = no_threads;
 
 #pragma omp parallel
 	{
 		int tid = omp_get_thread_num();
+		double T = temp_init;
 		SolutionType act_sol = SolutionType();
 		SolutionType abs_min_sol_thread = SolutionType();
-		SolutionModifier<SolutionType, RSSCostCalculator> solmod = SolutionModifier<SolutionType, RSSCostCalculator>(inputDB);
-		StartSolutionFinder<SolutionType, RSSCostCalculator> startfind = StartSolutionFinder<SolutionType, RSSCostCalculator>(inputDB);
+		SolutionModifier<SolutionType, CostCalculatorType> solmod = SolutionModifier<SolutionType, CostCalculatorType>(inputDB);
+		StartSolutionFinder<SolutionType, CostCalculatorType> startfind = StartSolutionFinder<SolutionType, CostCalculatorType>(inputDB);
 
 #pragma omp barrier
 
@@ -85,7 +86,8 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 				<< act_sol.get_costs() << " with temp: " << temp_init << std::endl;
 			// Step 0 is the initial cost
 			std::pair<unsigned int, double> newpair(0, act_sol.get_costs());
-			QualityLogger::getInstance().insertEntry(newpair, tid);
+			if(do_quality_log)
+				QualityLogger::getInstance().insertEntry(newpair, tid);
 		}
 
 		act_sol.printModelFunction();
@@ -99,18 +101,18 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;
-		while (T > 0.00000005) { // 0.000001
-			for (int i = 0; i < 100; i++) {
-				if (without_glob_improve == 50) {
+		while (T > 0.00000005) { // 0.00000005
+			for (int i = 0; i < 150; i++) {
+				if (without_glob_improve == 150) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
 				}
 
-				if (without_glob_improve == 20000) {
+				if (without_glob_improve2 == 200000) {
 					cout << "Thread " << tid << " ends." << endl;
+					T = 0;
 					break;
 				}
-
 
 				// Generate new solution candidate
 				act_sol = solmod.randomModifySolution(&act_sol);
@@ -183,6 +185,9 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 template<class SolutionType>
 int annealingManager() {
+
+	//Configurator::getInstance().noLogModel();
+
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
 	MeasurementDBReader dbreader = MeasurementDBReader();
@@ -191,7 +196,7 @@ int annealingManager() {
 	unsigned int stepcount = 1;
 
 	double tstart = omp_get_wtime();
-	doAnnealing<SolutionType>(inputDB, sol_per_thread, calcinf, stepcount);
+	doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true);
 
 	// Prepare the report generation	
 	// Get the minimal solution out of all
@@ -231,8 +236,8 @@ int annealingManager() {
 		double min_pol_range_back = Configurator::getInstance().min_pol_range;
 
 		Configurator::getInstance().max_log_range = 0.0;
-		//Configurator::getInstance().max_pol_range = 1.001;
-		//Configurator::getInstance().min_pol_range = 0.999;
+		Configurator::getInstance().max_pol_range = 1.001;
+		Configurator::getInstance().min_pol_range = 0.999;
 
 		stepcount = 1;
 
@@ -240,10 +245,10 @@ int annealingManager() {
 		MeasurementDB* inputDB_log = inputDB->cloneToLog2Version(inputDB);
 		//inputDB = inputDB_log;
 
-		doAnnealing<ExtraPSolution>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false);
+		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false);
 		Configurator::getInstance().max_log_range = max_log_range_back;
-		//Configurator::getInstance().max_pol_range = max_pol_range_back;
-		//Configurator::getInstance().min_pol_range = min_pol_range_back;
+		Configurator::getInstance().max_pol_range = max_pol_range_back;
+		Configurator::getInstance().min_pol_range = min_pol_range_back;
 
 		min_cost = std::numeric_limits<double>::max();
 		for (int i = 0; i < no_threads; i++) {
@@ -385,8 +390,8 @@ int main(int argc, char** argv)
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
-	annealingManager<ExponentialSolution>();
-	//annealingManager<ExponentialPolynomSolution>();
+	//annealingManager<ExponentialSolution>();
+	annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
 

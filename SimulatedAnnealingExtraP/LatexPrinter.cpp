@@ -286,7 +286,7 @@ void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* s
 
 	// print the found model function
 	myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
-		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
+		<< ", samples=110,unbounded coords=jump, draw=darkorange, very thick] " << endl
 		<< calcinf.min_sol_log->printModelFunctionLatex().c_str() << ";" << endl
 		<< "\\addlegendentry{Log Model};" << endl;
 
@@ -316,6 +316,13 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 
 	int xdimension = (int)((cinfo.datapoints->getPairAt(no_points - 1).first) * 1.00);
 	int xstart = (int)(cinfo.datapoints->getPairAt(0).first);
+
+	if (cinfo.datapoints->get_measures_size() > 0)
+	{
+		std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(0);
+		xstart = std::max<int>((int)act_pair.first-6, 0);
+	}
+
 
 	double ourfuncmax = minsol.evaluateModelFunctionAt(xdimension);
 	double linearfuncmax = cinfo.lin_sol.evaluateModelFunctionAt(xdimension);
@@ -357,8 +364,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		//<< "ymax=" << ydimension * 1.05 << ","
-		<< "ylabel={rank of lattice $d$}," << endl
-		<< "xlabel={runtime in s}," << endl
+		<< "xlabel={rank of lattice $d$}," << endl
+		<< "ylabel={runtime in s}," << endl
 		<< "legend style={at={(0.05, 0.95)},anchor=north west, legend cell align=left}," << endl
 		<< "]" << endl;
 
@@ -395,9 +402,17 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			<< "\\addlegendentry{Reference Model};" << endl;
 	}
 
+	// Print powed logarithmic model if configured
+	if (Configurator::getInstance().create_log_exp_model) {
+		myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
+			<< ", samples=110,unbounded coords=jump, draw=darkorange, very thick] " << endl
+			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
+			<< "\\addlegendentry{Model from Log2};" << endl;
+	}
+
 	// print additional measurement points if configured
 	if (cinfo.print_measurepoints) {
-		myfile << "\\addplot[only marks, mark = *, mark options = {scale=1.5, fill=darkorange}, draw = darkorange] "
+		myfile << "\\addplot[only marks, mark = *, mark options = {scale=1.5, fill=color5}, draw = color5] "
 			<< "coordinates { " << std::endl;
 		for (int i = 0; i < cinfo.datapoints->get_measures_size(); i++) {
 			std::pair<double, double> act_pair = cinfo.datapoints->getMeasurePairAt(i);
@@ -431,13 +446,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		}
 	}
 
-	// Print powed logarithmic model
-	if (Configurator::getInstance().create_log_exp_model) {
-		myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
-			<< ", samples=110,unbounded coords=jump, draw=color6, very thick] " << endl
-			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
-			<< "\\addlegendentry{Model from Log2};" << endl;
-	}
+
 
 	myfile << "\\end{axis}" << endl
 		<< "\\end{tikzpicture}" << endl
@@ -488,7 +497,7 @@ void LatexPrinter<SolType>::printCostDevelopment(ofstream & myfile, int stepsize
 			<< "draw=" << colStr(tid + 1).c_str() << ",fill=" << colStr(tid + 1).c_str() << "] coordinates {	" << endl;
 
 		// Run over all Log-Entries and print them
-		for (int j = 0; j < QualityLogger::getInstance().get_size(tid); j += stepsize) {
+		for (int j = 1; j < QualityLogger::getInstance().get_size(tid); j += stepsize) {
 			pair<unsigned int, double> act_pair = QualityLogger::getInstance().get_entry_at(j, tid);
 			myfile << "(" << act_pair.first << ", " << act_pair.second << ")" << endl;
 		}
@@ -536,7 +545,8 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 			<< "\\begin{axis}[" << endl
 			<< "width=\\figurewidth," << endl
 			<< "height=\\figureheight," << endl
-			<< "scale only axis," << endl			
+			<< "scale only axis," << endl		
+			<< "ymode = log," << endl
 			<< "ymax=" << QualityLogger::getInstance().get_max_cost_to_print(stepsize, tid) * 1.1 << "," << endl
 			<< "ylabel={costs}," << endl
 			<< "xlabel={step}," << endl
@@ -546,7 +556,7 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 			myfile << "\\addplot[thick] coordinates {	" << endl;
 
 			// Run over all Log-Entries and print them
-			for (int j = 0; j < QualityLogger::getInstance().get_size(tid); j += stepsize) {
+			for (int j = 1; j < QualityLogger::getInstance().get_size(tid); j += stepsize) {
 				pair<unsigned int, double> act_pair = QualityLogger::getInstance().get_entry_at(j, tid);
 				myfile << "(" << act_pair.first << ", " << act_pair.second << ")" << endl;
 			}

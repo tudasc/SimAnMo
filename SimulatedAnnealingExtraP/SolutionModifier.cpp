@@ -3,6 +3,7 @@
 #include <math.h>
 #include "Configurator.h"
 #include "RSSCostCalculator.h"
+#include "nnrRSSCostCalculator.h"
 #include "LinearSolution.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
@@ -44,3 +45,10 @@ template class SolutionModifier<LinearSolution, RSSCostCalculator>;
 template class SolutionModifier<ExtraPSolution, RSSCostCalculator>;
 template class SolutionModifier<ExponentialSolution, RSSCostCalculator>;
 template class SolutionModifier<ExponentialPolynomSolution, RSSCostCalculator>;
+
+
+template class SolutionModifier<Solution, nnrRSSCostCalculator>;
+template class SolutionModifier<LinearSolution, nnrRSSCostCalculator>;
+template class SolutionModifier<ExtraPSolution, nnrRSSCostCalculator>;
+template class SolutionModifier<ExponentialSolution, nnrRSSCostCalculator>;
+template class SolutionModifier<ExponentialPolynomSolution, nnrRSSCostCalculator>;

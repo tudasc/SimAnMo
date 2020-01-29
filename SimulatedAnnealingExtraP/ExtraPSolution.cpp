@@ -113,8 +113,8 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double val = random_sol.getAt(2);
 		do {
 			double temp = (double)distc_2_3_change(engine);
-			change = temp / 100.0;
-		} while (!((val + change) >= 0.0 && (val + change <= Configurator::getInstance().max_pol_range)));
+			change = temp / 1000.0;
+		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
 	}
@@ -124,7 +124,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
 		do {
-			change = (double)distc_2_3_change(engine) / 100.0;
+			change = (double)distc_2_3_change(engine) / 1000.0;
 		} while (!((val + change) >= 0.0 && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);

@@ -116,7 +116,8 @@ Solution Solution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_4(2, 4);
-	std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
+	// former in distribution
+	std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 	std::uniform_int_distribution<int> dist0or1(0,1);
 

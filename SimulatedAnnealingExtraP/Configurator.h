@@ -11,6 +11,7 @@ public:
 	}
 
 	static Configurator* _instance;
+	inline void noLogModel() { this->create_log_exp_model = false; }
 
 	// Configuration variables
 	// For Standard Solution
@@ -43,7 +44,7 @@ private:
 
 		max_log_range = 2.5;
 
-		create_log_exp_model = false;
+		create_log_exp_model = true;
 		print_confidence = false;
 		confidence_interval = 0.0;
 	}
