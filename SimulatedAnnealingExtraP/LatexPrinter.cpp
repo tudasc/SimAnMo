@@ -99,15 +99,17 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "scale only axis," << endl
 		//<< "ymax=" << mdb->getPairAt(mdb->get_size() - 1).second << "," << endl
 		<< "ylabel={runtime in s}," << endl
-		<< "xlabel={rank of lattice d}," << endl
-		<< "legend style={at={(0.20, 0.999)},anchor=north west, legend cell align=left}," << endl
+		<< "xlabel={rank of lattice $n$}," << endl
+		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
 	// print the found model function
 	myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
 		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
 		<< sol->printModelFunctionLatex().c_str() << ";" << endl
-		<< "\\addlegendentry{Our Model};" << endl;
+		<< "\\addlegendentry{Our model $"
+		<<	sol->printModelFunctionLatexShow()
+		<< "$ };" << endl;
 
 	// print the logarithmized model function if configured
 	if (Configurator::getInstance().create_log_exp_model)
@@ -115,7 +117,9 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		myfile << "\\addplot [draw=darkorange , domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
 			<< ", samples=110,unbounded coords=jump, very thick] " << endl
 			<< calcinf.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
-			<< "\\addlegendentry{Log Model};" << endl;
+			<< "\\addlegendentry{Lin-Log model $"
+			<< calcinf.min_sol_log->printModelFunctionLatexShow()	
+			<< "$ };" << endl;
 	}
 
 	// print the reference model function if configured
@@ -123,7 +127,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		myfile << "\\addplot [domain=1:" << mdb->getPairAt(mdb->get_size() - 1).first
 			<< ", samples=110,unbounded coords=jump, draw=magenta, very thick] " << endl
 			<< calcinf.ref_solution.printModelFunctionLatex().c_str() << ";" << endl
-			<< "\\addlegendentry{Reference Model};" << endl;
+			<< "\\addlegendentry{Reference model};" << endl;
 	}
 
 
@@ -184,21 +188,19 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		<< "ymode = log," << endl
-		//<< "ymax=" << QualityLogger::getInstance().get_max_cost() * 1.2 << "," << endl
-		//<< "ymax=" << QualityLogger::getInstance().get_max_cost_to_print(stepsize) * 1.1 << "," << endl
 		<< "ylabel={costs}," << endl
 		<< "xlabel={step}," << endl
-		<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left}," << endl
+		<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
-	printCostDevelopment(myfile, stepsize);
+	//printCostDevelopment(myfile, stepsize);
 
 	myfile << "\\end{axis}" << endl;
 	myfile << "\\end{tikzpicture}" << endl
 		<< "\\end{figure}" << endl;
 
 //////////////////// Print more details
-	printCostDetails(myfile, calcinf, stepsize);
+	//printCostDetails(myfile, calcinf, stepsize);
 
 	myfile	<< "\\end{document}" << endl;
 
@@ -280,15 +282,17 @@ void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* s
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		<< "ylabel={runtime in s}," << endl
-		<< "xlabel={rank of lattice d}," << endl
-		<< "legend style={at={(0.20, 0.999)},anchor=north west, legend cell align=left}," << endl
+		<< "xlabel={rank of lattice $n$}," << endl
+		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
 	// print the found model function
 	myfile << "\\addplot [domain= " << mdb->getPairAt(0).first << ":" << mdb->getPairAt(mdb->get_size() - 1).first
 		<< ", samples=110,unbounded coords=jump, draw=darkorange, very thick] " << endl
 		<< calcinf.min_sol_log->printModelFunctionLatex().c_str() << ";" << endl
-		<< "\\addlegendentry{Log Model};" << endl;
+		<< "\\addlegendentry{Lin-log model $"
+		<< calcinf.min_sol_log->printModelFunctionLatexShow()
+		<< "$ };" << endl;
 
 	// Draw all logarithmized training data points
 	myfile << "\\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	" << endl;
@@ -364,9 +368,9 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		//<< "ymax=" << ydimension * 1.05 << ","
-		<< "xlabel={rank of lattice $d$}," << endl
+		<< "xlabel={rank of lattice $n$}," << endl
 		<< "ylabel={runtime in s}," << endl
-		<< "legend style={at={(0.05, 0.95)},anchor=north west, legend cell align=left}," << endl
+		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
 	// print the found linear function
@@ -380,7 +384,9 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
 		<< ", samples=110,unbounded coords=jump, draw=blue, very thick] " << endl
 		<< minsol.printModelFunctionLatex().c_str() << ";" << endl
-		<< "\\addlegendentry{Our Model};" << endl;
+		<< "\\addlegendentry{Our model $"
+		<< minsol.printModelFunctionLatexShow()
+		<< "$ };" << endl;
 
 	if (Configurator::getInstance().print_confidence) {		
 		myfile << "\\addplot [name path=funcplus, domain=" << xstart << ":" << xdimension
@@ -399,7 +405,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		myfile << "\\addplot [domain=" << xstart << ":" << xdimension
 			<< ", samples=110, unbounded coords=jump, draw=magenta, very thick] " << endl
 			<< cinfo.ref_solution.printModelFunctionLatex().c_str() << ";" << endl
-			<< "\\addlegendentry{Reference Model};" << endl;
+			<< "\\addlegendentry{Reference model};" << endl;
 	}
 
 	// Print powed logarithmic model if configured
@@ -407,7 +413,9 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		myfile << "\\addplot [name path=func, domain=" << xstart << ":" << xdimension
 			<< ", samples=110,unbounded coords=jump, draw=darkorange, very thick] " << endl
 			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
-			<< "\\addlegendentry{Model from Log2};" << endl;
+			<< "\\addlegendentry{Lin-log model $"
+			<< cinfo.min_sol_log->printModelFunctionLatexShow()
+			<< "$ };" << endl;
 	}
 
 	// print additional measurement points if configured
@@ -550,7 +558,7 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 			<< "ymax=" << QualityLogger::getInstance().get_max_cost_to_print(stepsize, tid) * 1.1 << "," << endl
 			<< "ylabel={costs}," << endl
 			<< "xlabel={step}," << endl
-			<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left}," << endl
+			<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 			<< "]" << endl;
 
 			myfile << "\\addplot[thick] coordinates {	" << endl;

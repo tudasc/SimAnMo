@@ -390,6 +390,7 @@ int main(int argc, char** argv)
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
+	//annealingManager<Solution>();
 	//annealingManager<ExponentialSolution>();
 	annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();

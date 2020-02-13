@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/synt3.txt" --outpath "C:/temp" --texfile "testschmonk" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kSeed0.txt" --outpath "C:/temp" --texfile "g6kSieveSeed0" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

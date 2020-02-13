@@ -112,7 +112,7 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	//std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
-	std::uniform_int_distribution<int> dist20(-1.0, 1.0);
+	std::uniform_real_distribution<double> dist20(-1.0, 1.0);
 
 	// Change c_3
 	double ne_wval = 0;
@@ -203,7 +203,7 @@ std::string ExponentialSolution::printModelFunctionLatex(double scale, bool powe
 std::string ExponentialSolution::printModelFunctionLatexShow() const {
 	std::ostringstream streamObj;
 
-	streamObj << getAt(0);
+	streamObj << roundf(getAt(0) * 100) / 100; //getAt(0);
 	std::string str_c0 = streamObj.str();
 	streamObj.str("");
 

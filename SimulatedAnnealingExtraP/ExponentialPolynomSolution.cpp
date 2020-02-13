@@ -282,24 +282,20 @@ std::string ExponentialPolynomSolution::printModelFunctionLatex(double scale, bo
 std::string ExponentialPolynomSolution::printModelFunctionLatexShow() const {
 	std::ostringstream streamObj;
 
-	streamObj << getAt(0);
+	streamObj << round(getAt(0) * 100) / 100; //getAt(0);
 	std::string str_c0 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(1);
+	streamObj << getAt(1); // round(getAt(1) * 100) / 100; //getAt(1);
 	std::string str_c1 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(2);
+	streamObj << round(getAt(2) * 100) / 100; //getAt(2);
 	std::string str_c2 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(3);
+	streamObj << round(getAt(3) * 100) / 100; //getAt(3);
 	std::string str_c3 = streamObj.str();
-	streamObj.str("");
-
-	streamObj << getAt(4);
-	std::string str_c4 = streamObj.str();
 	streamObj.str("");
 
 	std::string func = "";

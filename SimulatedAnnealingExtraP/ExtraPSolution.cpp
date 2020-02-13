@@ -26,7 +26,7 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 	double min_c_2 = Configurator::getInstance().min_pol_range;
 	double max_c_2 = Configurator::getInstance().max_pol_range;
 
-	double min_c_3 = 0;
+	double min_c_3 = Configurator::getInstance().min_log_range;
 	double max_c_3 = Configurator::getInstance().max_log_range;
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb, 0.0);
@@ -103,6 +103,8 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3 (2, 3);
 	std::uniform_int_distribution<int> distc_2_3_change (-300, 300);
+	double pos_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
+	std::uniform_real_distribution<double> dist_pol_change(pos_diff*(-300), pos_diff*(300));
 
 	// Decide which coefficient to change c_2 or c_3
 	int coeff = dist2_3(engine);
@@ -112,8 +114,9 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
 		do {
-			double temp = (double)distc_2_3_change(engine);
-			change = temp / 1000.0;
+			//double temp = (double)distc_2_3_change(engine);
+			double temp = (double)dist_pol_change(engine);
+			change = temp / 500.0;
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
@@ -125,7 +128,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double val = random_sol.getAt(3);
 		do {
 			change = (double)distc_2_3_change(engine) / 1000.0;
-		} while (!((val + change) >= 0.0 && (val + change <= Configurator::getInstance().max_log_range)));
+		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);
 	}
@@ -197,26 +200,29 @@ std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) co
 std::string ExtraPSolution::printModelFunctionLatexShow() const {
 	std::ostringstream streamObj;
 
-	streamObj << getAt(0);
+	streamObj << round(getAt(0) * 100) / 100; //getAt(0);
 	std::string str_c0 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(1);
+	streamObj << getAt(1); //round(getAt(1) * 100) / 100; //getAt(1);
 	std::string str_c1 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(2);
+	streamObj << round(getAt(2) * 100) / 100; //getAt(2);
 	std::string str_c2 = streamObj.str();
 	streamObj.str("");
 
-	streamObj << getAt(3);
+	streamObj << round(getAt(3) * 100) / 100; //getAt(3);
 	std::string str_c3 = streamObj.str();
 	streamObj.str("");
 
 	std::string func = "";
 
 	func += str_c0 + " + " + str_c1 + " * "
-		+ "x ^ {" + str_c2 + "} * log2(x) ^ {" + str_c3
-		+ "}";
+		+ "x ^ {" + str_c2 + "}"; 
+		
+	if (abs(getAt(3) > 1e-3)) {
+		func += " * log2(x) ^ {" + str_c3	+ "}";
+	}
 	return func;
 }
