@@ -74,25 +74,26 @@ ExtraPSolution::ExtraPSolution(double* coefficients)
 	for (int i = 0; i < _len; i++) _coefficients[i] = coefficients[i];
 }
 
-ExtraPSolution::ExtraPSolution(const ExtraPSolution& other) {
+ExtraPSolution::ExtraPSolution(const ExtraPSolution& other)
+	: AbstractSolution(other)
+{
 	if (_len > 0)
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < this->_len; i++)
 		this->_coefficients[i] = other._coefficients[i];
 
-	_costs = other._costs;
 	setRandomID();
 }
 
 ExtraPSolution & ExtraPSolution::operator= (const ExtraPSolution & other) {
+	AbstractSolution::operator=(other);
 	if (_len > 0)
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < this->_len; i++)
 		this->_coefficients[i] = other._coefficients[i];
 
-	_costs = other._costs;
 	setRandomID();
 	return *this;
 }
@@ -139,7 +140,13 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 double ExtraPSolution::evaluateModelFunctionAt(double p, double scale) {
 	double* c = _coefficients; // just to make access brief
  	double y = c[0] + c[1] * pow(p, c[2]) * pow(log2(p), c[3]);
-	return y;
+
+	if (is_wrapped) {
+		return pow(2, y);
+	}
+
+	else
+		return y;
 }
 
 double ExtraPSolution::evaluateConstantTermAt(double p)

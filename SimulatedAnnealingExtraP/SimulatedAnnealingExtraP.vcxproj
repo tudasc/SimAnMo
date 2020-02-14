@@ -181,6 +181,7 @@
     <ClInclude Include="LatexPrinter.h" />
     <ClInclude Include="LinearRegressionFinder.h" />
     <ClInclude Include="LinearSolution.h" />
+    <ClInclude Include="LinLogConversionRSSCalculator.h" />
     <ClInclude Include="MeasurementDB.h" />
     <ClInclude Include="MeasurementDBReader.h" />
     <ClInclude Include="nnrRSSCostCalculator.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="alglib\solvers.cpp" />
     <ClCompile Include="alglib\specialfunctions.cpp" />
     <ClCompile Include="alglib\statistics.cpp" />
+    <ClCompile Include="CostCalculator.cpp" />
     <ClCompile Include="EigenParameterEstimator.cpp" />
     <ClCompile Include="ExponentialPolynomSolution.cpp" />
     <ClCompile Include="ExponentialSolution.cpp" />

@@ -2,6 +2,7 @@
 #define SOLUTION_H
 
 #include "AbstractSolution.h"
+#include "CostCalculator.h"
 
 class Solution : public AbstractSolution {
 public:
@@ -23,6 +24,8 @@ public:
 
 protected:
 	const int _len = 5;
+	double rss = -1;
+	double rnnRSS = -1;
 };
 
 #endif

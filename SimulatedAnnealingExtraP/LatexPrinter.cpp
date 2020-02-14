@@ -59,9 +59,16 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "\\item Thread " << calcinf.thread_with_solution << " found solution in "
 		<< calcinf.iterations << " steps requiring "
 		<< calcinf.runtime << " seconds." << endl
-		<< "\\item Cost (RSS):" << calcinf.RSScost << endl
-		<< "\\end{itemize}" << endl;
-	myfile << "}" << endl;
+		<< "\\item Cost ( " << sol->_cost_calc_type
+		<< " ):" << calcinf.RSScost << endl
+		<< "\\item Metrics of our model: " << sol->metricDetailsToStr();
+
+	if (Configurator::getInstance().create_log_exp_model) {
+		myfile << "\\item Metrics of lin-log model : " << calcinf.min_sol_log->metricDetailsToStr();
+	}
+
+	myfile << "\\end{itemize}" << endl
+			<< "}" << endl;
 
 	// Print Information on reference model if configured
 	if (calcinf.print_ref_solution && 1 == 2) {

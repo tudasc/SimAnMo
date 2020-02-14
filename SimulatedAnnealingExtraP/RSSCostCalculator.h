@@ -16,13 +16,12 @@ public:
 
 	double getConstantModel();
 
+	string getCostTypeString() const {
+		return "RSS";
+	}
+
 private:
 	double calculateConstantModel();
-	double calculateMetrics(AbstractSolution* sol);
-	double const_model;
-
-	double RSS;
-	double nnrRSS;
 };
 
 #endif // !RSSCostCalculator

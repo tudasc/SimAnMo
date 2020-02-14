@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/HashSieve.txt" --outpath "C:/temp" --texfile "testschmonk" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/SubSieveTimetxt" --outpath "C:/temp" --texfile "SubSieveTest" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kSeed0.txt" --outpath "C:/temp" --texfile "g6kSieveSeed0" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/Aonofull.txt" --outpath "C:/temp" --texfile "Aonoall-2020-02-14" --nt 8  --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

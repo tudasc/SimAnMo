@@ -5,6 +5,8 @@
 #include "MeasurementDB.h"
 #include <string>
 
+using namespace std;
+
 class AbstractSolution {
 public:
 	AbstractSolution() 
@@ -26,11 +28,17 @@ public:
 
 	AbstractSolution(const AbstractSolution& other) {
 		_costs = other._costs;
+		_RSS = other._RSS;
+		_nnrRSS = other._nnrRSS;
+		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
 	}
 
 	AbstractSolution & operator= (const AbstractSolution & other) {
 		_costs = other._costs;
+		_RSS = other._RSS;
+		_nnrRSS = other._nnrRSS;
+		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
 		return *this; 
 	}
@@ -58,6 +66,17 @@ public:
 	virtual std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const = 0;
 	virtual std::string printModelFunctionLatexShow() const = 0;
 
+	std::string metricDetailsToStr() {
+		std::string str = "";
+		str += "RSS: " + std::to_string(this->_RSS) + " / ";
+		str += "arNRS: " + std::to_string(this->_nnrRSS);
+		return str;
+	}
+
+	double _RSS;
+	double _nnrRSS;
+	string _cost_calc_type;
+
 protected:
 	void setCoefficientLength() { 
 		std::cout << "Calling setCoefficientLength of superclass\n";
@@ -76,6 +95,7 @@ protected:
 	double _costs;
 	const int _len = -1;
 	int id;
+
 };
 
 #endif // !ABSTRACTSOLUTION_H

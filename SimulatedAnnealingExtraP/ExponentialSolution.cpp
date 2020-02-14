@@ -91,6 +91,9 @@ ExponentialSolution::ExponentialSolution(const ExponentialSolution& other) {
 		this->_coefficients[i] = other._coefficients[i];
 
 	_costs = other._costs;
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 }
 
@@ -102,6 +105,9 @@ ExponentialSolution & ExponentialSolution::operator= (const ExponentialSolution 
 		this->_coefficients[i] = other._coefficients[i];
 
 	_costs = other._costs;
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 	return *this;
 }
@@ -203,7 +209,7 @@ std::string ExponentialSolution::printModelFunctionLatex(double scale, bool powe
 std::string ExponentialSolution::printModelFunctionLatexShow() const {
 	std::ostringstream streamObj;
 
-	streamObj << roundf(getAt(0) * 100) / 100; //getAt(0);
+	streamObj << round(getAt(0) * 100) / 100; //getAt(0);
 	std::string str_c0 = streamObj.str();
 	streamObj.str("");
 

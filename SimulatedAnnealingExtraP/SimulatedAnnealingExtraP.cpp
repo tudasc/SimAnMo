@@ -46,7 +46,7 @@ int no_threads = 1;
 
 
 template<class SolutionType, class CostCalculatorType>
-int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
+int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf, double target_temp,
 	unsigned int& stepcount = 1, bool do_quality_log = false) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
@@ -101,7 +101,7 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;
-		while (T > 0.00000005) { // 0.00000005
+		while (T > target_temp) {
 			for (int i = 0; i < 150; i++) {
 				if (without_glob_improve == 150) {
 					act_sol = abs_min_sol_thread;
@@ -196,7 +196,7 @@ int annealingManager() {
 	unsigned int stepcount = 1;
 
 	double tstart = omp_get_wtime();
-	doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true);
+	doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 0.00000005, stepcount, true);
 
 	// Prepare the report generation	
 	// Get the minimal solution out of all
@@ -245,7 +245,7 @@ int annealingManager() {
 		MeasurementDB* inputDB_log = inputDB->cloneToLog2Version(inputDB);
 		//inputDB = inputDB_log;
 
-		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false);
+		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, 0.0005, stepcount, false);
 		Configurator::getInstance().max_log_range = max_log_range_back;
 		Configurator::getInstance().max_pol_range = max_pol_range_back;
 		Configurator::getInstance().min_pol_range = min_pol_range_back;
@@ -264,6 +264,12 @@ int annealingManager() {
 			<< tduration << " s)"
 			<< std::endl;
 		abs_min_sol_log.printModelFunction();
+
+		// Replace costs by costs for the non-logarithmized data
+		abs_min_sol_log.switchtoLinScale();
+		RSSCostCalculator refCostCalc = RSSCostCalculator(inputDB);
+		refCostCalc.calculateCost(&abs_min_sol_log);
+
 		calcinf.min_sol_log = &abs_min_sol_log;
 	}
 

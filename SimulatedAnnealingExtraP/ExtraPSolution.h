@@ -14,6 +14,14 @@ public:
 	ExtraPSolution & operator= (const ExtraPSolution & other);
 	~ExtraPSolution() {}
 
+	void switchtoLinScale() {
+		this->is_wrapped = true;
+	}
+
+	void switchtoLocScale() {
+		this->is_wrapped = false;
+	}
+
 	ExtraPSolution getNeighborSolution();
 	double evaluateModelFunctionAt(double x, double scale = 0);
 	double evaluateConstantTermAt(double p);
@@ -26,6 +34,8 @@ public:
 
 protected:
 	const int _len = 4;
+	ExtraPSolution* lin_log_sol;
+	bool is_wrapped;
 };
 
 #endif

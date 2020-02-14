@@ -91,6 +91,9 @@ Solution::Solution(const Solution& other) {
 		this->_coefficients[i] = other._coefficients[i];
 
 	_costs = other._costs;
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 }
 
@@ -104,6 +107,9 @@ Solution & Solution::operator= (const Solution & other) {
 		this->_coefficients[i] = other._coefficients[i];
 
 	_costs = other._costs;
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 	return *this;
 }

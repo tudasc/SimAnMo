@@ -93,6 +93,9 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(const ExponentialPolynomS
 	for (int i = 0; i < this->_len; i++)
 		this->_coefficients[i] = other._coefficients[i];
 
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	_costs = other._costs;
 	setRandomID();
 }
@@ -105,6 +108,9 @@ ExponentialPolynomSolution & ExponentialPolynomSolution::operator= (const Expone
 		this->_coefficients[i] = other._coefficients[i];
 
 	_costs = other._costs;
+	_RSS = other._RSS;
+	_nnrRSS = other._nnrRSS;
+	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 	return *this;
 }
@@ -115,7 +121,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3(2, 3);
-	std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
+	std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 	std::uniform_int_distribution<int> dist0or1(0, 1);
 	std::uniform_real_distribution<double> distTrial(-1, 1);
