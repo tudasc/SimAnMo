@@ -37,7 +37,7 @@ private:
 	Configurator() {
 		texfile = "";
 		outpath = "";
-		std_exp_range = 3.1;
+		std_exp_range = 1.8;
 		num_threads = 1;
 
 		min_pol_range = 0;

@@ -15,7 +15,7 @@
 template<class SolutionType>
 double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size, int neighbor_size)
 {
-	SolutionModifier<SolutionType, RSSCostCalculator> solmod = SolutionModifier<SolutionType, RSSCostCalculator>(_mdb);
+	SolutionModifier<SolutionType, nnrRSSCostCalculator> solmod = SolutionModifier<SolutionType, nnrRSSCostCalculator>(_mdb);
 	std::vector<std::vector<SolutionType>> solutions;
 	solutions.reserve(sample_size);
 	solutions.resize(sample_size);
@@ -38,18 +38,22 @@ double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size
 	double max = 0.0;
 
 	for (int i = 0; i < sample_size; i++) {
+
 		for (int j = 1; j < neighbor_size; j++) {
+		
 			double diff = abs(solutions[i][0].get_costs() - solutions[i][j].get_costs());
 
 			if (min > diff)
 				min = diff;
 
-			if (max < diff)
+			if (max < diff) {
 				max = diff;
+				//cout << diff << endl;
+			}
 		}
 	}
 
-	double T_init = -max / (log(0.8));
+	double T_init = -max / (log(0.9));
 	return T_init;
 
 	/*SolutionModifier<Solution, RSSCostCalculator> solmod = SolutionModifier<Solution, RSSCostCalculator>(_mdb);

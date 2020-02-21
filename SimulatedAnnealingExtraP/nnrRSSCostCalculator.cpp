@@ -8,6 +8,7 @@ nnrRSSCostCalculator::nnrRSSCostCalculator(MeasurementDB * mdb) : CostCalculator
 double nnrRSSCostCalculator::calculateCost(AbstractSolution* sol) {
 	calculateMetrics(sol);
 	sol->set_costs( this->nnrRSS );
+	
 	return sol->get_costs();
 }
 

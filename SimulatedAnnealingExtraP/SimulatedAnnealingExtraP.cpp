@@ -46,7 +46,7 @@ int no_threads = 1;
 
 
 template<class SolutionType, class CostCalculatorType>
-int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf, double target_temp,
+double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf, double target_temp,
 	unsigned int& stepcount = 1, bool do_quality_log = false) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
@@ -59,11 +59,12 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
-	cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
+	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
 	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
-	double temp_init = 1.0;// tempin.estimateInitialCost(150, 32);	
+	double temp_init = tempin.estimateInitialCost(250, 32);	
 
+	//cout << "Temp is " << temp_init << endl;
  	Configurator::getInstance().num_threads = no_threads;
 
 #pragma omp parallel
@@ -82,16 +83,16 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 #pragma omp critical
 		{
-			std::cout << "Initial cost in thread: " << omp_get_thread_num() << " is "
-				<< act_sol.get_costs() << " with temp: " << temp_init << std::endl;
+			//std::cout << "Initial cost in thread: " << omp_get_thread_num() << " is "
+			//	<< act_sol.get_costs() << " with temp: " << temp_init << std::endl;
 			// Step 0 is the initial cost
 			std::pair<unsigned int, double> newpair(0, act_sol.get_costs());
 			if(do_quality_log)
 				QualityLogger::getInstance().insertEntry(newpair, tid);
 		}
 
-		act_sol.printModelFunction();
-		SolutionType min_sol = act_sol;
+		//act_sol.printModelFunction();
+		//SolutionType min_sol = act_sol;
 		abs_min_sol_thread = act_sol;
 
 		// For decision if worse solution is accepted
@@ -101,30 +102,32 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;
+
+		target_temp = T * target_temp;
+
 		while (T > target_temp) {
 			for (int i = 0; i < 150; i++) {
-				if (without_glob_improve == 150) {
+
+				/*if (without_glob_improve == 15000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
-				}
+				}*/
 
-				if (without_glob_improve2 == 200000) {
-					cout << "Thread " << tid << " ends." << endl;
+				if (without_glob_improve2 == 50000) {
+					//cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
 				}
 
 				// Generate new solution candidate
-				act_sol = solmod.randomModifySolution(&act_sol);
+				SolutionType act_sol_now = solmod.randomModifySolution(&act_sol);
 
 				// Accept solution since it is better
-				if (act_sol.get_costs() < min_sol.get_costs()) {
-					min_sol = act_sol;
-					//cout << "Cost:" << act_sol.get_costs() << " vs " << min_sol.get_costs()  
-					//	<< " vs " << abs_min_sol_thread.get_costs() << endl;
-					
+				if (act_sol_now.get_costs() < act_sol.get_costs()) {
+					act_sol = act_sol_now;
+
 					if (do_quality_log) {
-						std::pair<unsigned int, double> newpair(stepcount, min_sol.get_costs());
+						std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
 						QualityLogger::getInstance().insertEntry(newpair, tid);
 					}
 
@@ -138,29 +141,34 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 				}
 
 				// Randomize if the worse solution is accepted
-				else if (act_sol.get_costs() > min_sol.get_costs()) {
-					double prob = exp(-(act_sol.get_costs() - min_sol.get_costs()) / T);
+				else if (act_sol_now.get_costs() >= act_sol.get_costs()) {
+					double prob = exp(-(act_sol_now.get_costs() - act_sol.get_costs()) / T);
 					double accept_prob = distreal(rng);
 
-					if (accept_prob < prob) {
-						min_sol = act_sol;
+					//cout << accept_prob  << " :" <<  act_sol_now.get_costs() << " " << act_sol.get_costs() << endl;
+
+					if (accept_prob > prob) {
+						act_sol = act_sol_now;
 						if (do_quality_log) {
 							std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
 							QualityLogger::getInstance().insertEntry(newpair, tid);
 						}
 					}
-					else
-						act_sol = min_sol;
+					/*else
+						act_sol = min_sol;*/
 				}
-				else
-					act_sol = min_sol;
+				else {
+					cerr << "Illegal flow in Annealing" << endl;   //act_sol = min_sol;
+					exit(200);
+				}
+					
 #pragma omp atomic
 				stepcount++;
 			}
 			T = T * 0.999;
 		}
 
-		sol_per_thread[omp_get_thread_num()] = abs_min_sol_thread;
+		sol_per_thread[tid] = abs_min_sol_thread;
 	} // End OMP parallel
 
 
@@ -186,45 +194,59 @@ int doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuation
 template<class SolutionType>
 int annealingManager() {
 
-	//Configurator::getInstance().noLogModel();
+	Configurator::getInstance().noLogModel();
 
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
 	MeasurementDBReader dbreader = MeasurementDBReader();
 	MeasurementDB* inputDB = dbreader.readInputFile(inputfile);
-	CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-	unsigned int stepcount = 1;
-
+	CalcuationInfo<SolutionType> best_calcinf = CalcuationInfo<SolutionType>();
+	double best_cost = std::numeric_limits<double>::max();
+	SolutionType best_abs_min_sol;
 	double tstart = omp_get_wtime();
-	doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 0.00000005, stepcount, true);
 
-	// Prepare the report generation	
-	// Get the minimal solution out of all
+	unsigned int stepcount = 1;
 	double min_cost = std::numeric_limits<double>::max();
-	SolutionType abs_min_sol;
-	for (int i = 0; i < no_threads; i++) {
-		calcinf.sol_per_thread.push_back(sol_per_thread[i]);
-		if (min_cost > sol_per_thread[i].get_costs()) {
-			min_cost = sol_per_thread[i].get_costs();
-			abs_min_sol = sol_per_thread[i];
-			calcinf.thread_with_solution = i;
+	for (int i = 0; i < 25; i++)
+	{
+		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
+		stepcount = 1;
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-11, stepcount, true);
+
+		// Prepare the report generation	
+		// Get the minimal solution out of all
+		min_cost = std::numeric_limits<double>::max();
+		SolutionType abs_min_sol;
+		for (int i = 0; i < no_threads; i++) {
+			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
+			if (min_cost > sol_per_thread[i].get_costs()) {
+				min_cost = sol_per_thread[i].get_costs();
+				abs_min_sol = sol_per_thread[i];
+				calcinf.thread_with_solution = i;
+			}
 		}
-	}
 
-	double tduration = omp_get_wtime() - tstart;
+		calcinf.RSScost = abs_min_sol.get_costs();
+		double tduration = omp_get_wtime() - tstart;
+		std::cout << "Found minimal solution cost: " << abs_min_sol.get_costs()
+			<< " in " << stepcount << " steps ("
+			<< tduration << " s)"
+			<< std::endl;
 
-	calcinf.datapoints = inputDB;
-	calcinf.runtime = tduration;
-	calcinf.RSScost = abs_min_sol.get_costs();
+		best_calcinf.runtime = tduration;
 
-	std::cout << "Found minimal solution cost: " << abs_min_sol.get_costs()
-		<< " in " << stepcount << " steps ("
-		<< tduration << " s)"
-		<< std::endl;
-	abs_min_sol.printModelFunction();
+		abs_min_sol.printModelFunction();
 
-	std::cout << abs_min_sol.printModelFunctionLatex().c_str() << std::endl;
-	std::cout << abs_min_sol.printModelFunctionLatexShow().c_str() << std::endl;
+		if (min_cost < best_cost) {
+			best_cost = min_cost;
+			best_calcinf = calcinf;
+			best_abs_min_sol = abs_min_sol;
+			cout << "Reducing global costs to " << min_cost << endl;
+		}
+	}	
+
+	best_calcinf.datapoints = inputDB;
+	
 
 	CalcuationInfo<ExtraPSolution> calcinf_log = CalcuationInfo<ExtraPSolution>();
 	ExtraPSolution abs_min_sol_log;
@@ -261,7 +283,7 @@ int annealingManager() {
 		}
 		std::cout << "Found minimal solution cost: " << abs_min_sol_log.get_costs()
 			<< " in " << stepcount << " steps ("
-			<< tduration << " s)"
+			//<< tduration << " s)"
 			<< std::endl;
 		abs_min_sol_log.printModelFunction();
 
@@ -270,12 +292,12 @@ int annealingManager() {
 		RSSCostCalculator refCostCalc = RSSCostCalculator(inputDB);
 		refCostCalc.calculateCost(&abs_min_sol_log);
 
-		calcinf.min_sol_log = &abs_min_sol_log;
+		best_calcinf.min_sol_log = &abs_min_sol_log;
 	}
 
 	// LaTeX Config: Comment out to disable
 	LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
-	latprint.printSolution("", &abs_min_sol, inputDB, calcinf);
+	latprint.printSolution("", &best_abs_min_sol, inputDB, best_calcinf);
 
 	delete inputDB;
 	return 0;

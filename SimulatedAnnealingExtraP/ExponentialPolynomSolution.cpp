@@ -16,6 +16,9 @@
 #include <time.h>
 #include <dos.h>
 #include <windows.h>
+#include "nnrRSSCostCalculator.h"
+
+#define MIN_C_2 1e-6
 
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
@@ -27,7 +30,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 {
-	double min_c_2 = 0.1;
+	double min_c_2 = MIN_C_2; // 0.1
 	double max_c_2 = 2.1;
 
 	double min_c_3 = 0.25;
@@ -41,7 +44,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 #else
 	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
 #endif
-	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
+	nnrRSSCostCalculator costcalc = nnrRSSCostCalculator(mdb);
 
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -128,25 +131,35 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	double new_val = -1000;
 
 	// Do changes to both constants at once
-	// Change c_2
-	do
+
+	// What to change
+	int choice = dist0or1(engine);
+
+	if (choice == 0)
 	{
-		double perc = distTrial(engine) / 350.0;
-		double change = perc * random_sol.getAt(2);
-		new_val = random_sol.getAt(2) + change;
+		// Change c_2
+		do
+		{
+			double perc = distTrial(engine) / 5000.0;
+			double change = perc * random_sol.getAt(2);
+			new_val = random_sol.getAt(2) + change;
 
-	} while (!((new_val > 0.1) && (new_val <= 2.1)));
-	random_sol.updateAt(2, new_val);
+		} while (!((new_val > MIN_C_2) && (new_val <= 2.1)));
+		random_sol.updateAt(2, new_val);
+	}
 
-	// Change c_3
-	do
+	else
 	{
-		double perc = distTrial(engine) / 350.0;
-		double change = perc * random_sol.getAt(3);
-		new_val = random_sol.getAt(3) + change;
+		// Change c_3
+		do
+		{
+			double perc = distTrial(engine) / 5000.0;
+			double change = perc * random_sol.getAt(3);
+			new_val = random_sol.getAt(3) + change;
 
-	} while (!(new_val > 0.25 && new_val<Configurator::getInstance().std_exp_range));
-	random_sol.updateAt(3, new_val);
+		} while (!(new_val > 0.25 && new_val<Configurator::getInstance().std_exp_range));
+		random_sol.updateAt(3, new_val);
+	}
 
 	return random_sol;
 
@@ -200,9 +213,6 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	// Change c_3
 	else if (coeff == 3) {
 		double val = double(dist20(engine)) / 400.0;
-
-		//std::cout << "Val: " << change << std::endl;
-		//Sleep(500);
 
 		if (random_sol.getAt(3) + val > 0.00)
 			random_sol.updateAt(3, random_sol.getAt(3) + val);
