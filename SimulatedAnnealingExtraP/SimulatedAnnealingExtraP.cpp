@@ -159,6 +159,10 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				}
 				else {
 					cerr << "Illegal flow in Annealing" << endl;   //act_sol = min_sol;
+					cerr << act_sol_now.get_costs() << " vs " << act_sol.get_costs() << endl;
+					act_sol_now.printModelFunction();
+					act_sol.printModelFunction();
+					cerr << endl;
 					exit(200);
 				}
 					
@@ -194,7 +198,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 template<class SolutionType>
 int annealingManager() {
 
-	Configurator::getInstance().noLogModel();
+	//Configurator::getInstance().noLogModel();
 
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
@@ -207,7 +211,7 @@ int annealingManager() {
 
 	unsigned int stepcount = 1;
 	double min_cost = std::numeric_limits<double>::max();
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
 		stepcount = 1;
