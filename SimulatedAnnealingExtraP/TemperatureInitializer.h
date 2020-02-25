@@ -3,7 +3,7 @@
 
 #include "MeasurementDB.h"
 
-template<class SolutionType>
+template<class SolutionType, class CostCalcType>
 class TemperatureInitializer {
 public:
 	TemperatureInitializer(MeasurementDB* mdb) :_mdb(mdb) {}

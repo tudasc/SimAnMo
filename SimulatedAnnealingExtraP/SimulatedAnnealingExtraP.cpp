@@ -61,10 +61,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 
-	TemperatureInitializer<SolutionType> tempin = TemperatureInitializer<SolutionType>(inputDB);
+	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
 	double temp_init = tempin.estimateInitialCost(250, 32);	
 
-	//cout << "Temp is " << temp_init << endl;
  	Configurator::getInstance().num_threads = no_threads;
 
 #pragma omp parallel
@@ -170,6 +169,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				stepcount++;
 			}
 			T = T * 0.999;
+			//cout << "Target: "<< target_temp << " / T: " << T << endl;
 		}
 
 		sol_per_thread[tid] = abs_min_sol_thread;
@@ -211,7 +211,7 @@ int annealingManager() {
 
 	unsigned int stepcount = 1;
 	double min_cost = std::numeric_limits<double>::max();
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
 		stepcount = 1;

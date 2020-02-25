@@ -35,6 +35,8 @@ template <class SolutionType, class CostCalcType>
 double StartSolutionFinder<SolutionType, CostCalcType>::findStartSolution(SolutionType * sol, int threadno, int nothreads)
 {
 	*sol = SolutionType(_mdb);
+	CostCalcType cost_calc = CostCalcType(_mdb);
+	cost_calc.calculateCost(sol);
 
 
 	/*CostCalcType costcalc = CostCalcType(_mdb);

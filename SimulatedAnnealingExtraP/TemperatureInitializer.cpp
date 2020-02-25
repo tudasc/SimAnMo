@@ -12,10 +12,10 @@
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
 
-template<class SolutionType>
-double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size, int neighbor_size)
+template<class SolutionType, class CostCalcType>
+double TemperatureInitializer<SolutionType, CostCalcType>::estimateInitialCost(int sample_size, int neighbor_size)
 {
-	SolutionModifier<SolutionType, nnrRSSCostCalculator> solmod = SolutionModifier<SolutionType, nnrRSSCostCalculator>(_mdb);
+	SolutionModifier<SolutionType, CostCalcType> solmod = SolutionModifier<SolutionType, CostCalcType>(_mdb);
 	std::vector<std::vector<SolutionType>> solutions;
 	solutions.reserve(sample_size);
 	solutions.resize(sample_size);
@@ -114,7 +114,12 @@ double TemperatureInitializer<SolutionType>::estimateInitialCost(int sample_size
 	return T_init;*/
 }
 
-template class TemperatureInitializer<Solution>;
-template class TemperatureInitializer<ExtraPSolution>;
-template class TemperatureInitializer<ExponentialSolution>;
-template class TemperatureInitializer<ExponentialPolynomSolution>;
+template class TemperatureInitializer<Solution, RSSCostCalculator>;
+template class TemperatureInitializer<ExtraPSolution, RSSCostCalculator>;
+template class TemperatureInitializer<ExponentialSolution, RSSCostCalculator>;
+template class TemperatureInitializer<ExponentialPolynomSolution, RSSCostCalculator>;
+
+template class TemperatureInitializer<Solution, nnrRSSCostCalculator>;
+template class TemperatureInitializer<ExtraPSolution, nnrRSSCostCalculator>;
+template class TemperatureInitializer<ExponentialSolution, nnrRSSCostCalculator>;
+template class TemperatureInitializer<ExponentialPolynomSolution, nnrRSSCostCalculator>;
