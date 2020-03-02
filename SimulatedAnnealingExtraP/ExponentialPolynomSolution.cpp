@@ -14,8 +14,6 @@
 #include <sstream>
 #include <stdio.h>
 #include <time.h>
-#include <dos.h>
-#include <windows.h>
 #include "nnrRSSCostCalculator.h"
 
 #define MIN_C_2 1e-6
@@ -89,7 +87,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(double* coefficients)
 	}
 }
 
-ExponentialPolynomSolution::ExponentialPolynomSolution(const ExponentialPolynomSolution& other) {
+ExponentialPolynomSolution::ExponentialPolynomSolution(const ExponentialPolynomSolution& other) : AbstractSolution(other) {
 	if (_len > 0)
 		_coefficients = new double[_len];
 
@@ -98,12 +96,14 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(const ExponentialPolynomS
 
 	_RSS = other._RSS;
 	_nnrRSS = other._nnrRSS;
+	_anRSS = other._anRSS;
 	_cost_calc_type = other._cost_calc_type;
 	_costs = other._costs;
 	setRandomID();
 }
 
-ExponentialPolynomSolution & ExponentialPolynomSolution::operator= (const ExponentialPolynomSolution & other) {
+ExponentialPolynomSolution & ExponentialPolynomSolution::operator= (const ExponentialPolynomSolution & other)  {
+	AbstractSolution::operator=(other);
 	if (_len > 0)
 		_coefficients = new double[_len];
 
@@ -113,6 +113,7 @@ ExponentialPolynomSolution & ExponentialPolynomSolution::operator= (const Expone
 	_costs = other._costs;
 	_RSS = other._RSS;
 	_nnrRSS = other._nnrRSS;
+	_anRSS = other._anRSS;
 	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 	return *this;

@@ -31,6 +31,7 @@ LinearSolution::LinearSolution(const LinearSolution& other) {
 	_costs = other._costs;
 	_RSS = other._RSS;
 	_nnrRSS = other._nnrRSS;
+	_anRSS = other._anRSS;
 	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 }
@@ -45,6 +46,7 @@ LinearSolution & LinearSolution::operator= (const LinearSolution & other) {
 	_costs = other._costs;
 	_RSS = other._RSS;
 	_nnrRSS = other._nnrRSS;
+	_anRSS = other._anRSS;
 	_cost_calc_type = other._cost_calc_type;
 	setRandomID();
 	return *this;

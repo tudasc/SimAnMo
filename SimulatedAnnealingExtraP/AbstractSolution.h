@@ -29,6 +29,7 @@ public:
 	AbstractSolution(const AbstractSolution& other) {
 		_costs = other._costs;
 		_RSS = other._RSS;
+		_anRSS = other._anRSS;
 		_nnrRSS = other._nnrRSS;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
@@ -38,6 +39,7 @@ public:
 		_costs = other._costs;
 		_RSS = other._RSS;
 		_nnrRSS = other._nnrRSS;
+		_anRSS = other._anRSS;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
 		return *this; 
@@ -69,11 +71,13 @@ public:
 	std::string metricDetailsToStr() {
 		std::string str = "";
 		str += "RSS: " + std::to_string(this->_RSS) + " / ";
-		str += "arNRS: " + std::to_string(this->_nnrRSS);
+		str += "anRSS: " + std::to_string(this->_anRSS) + " / ";
+		str += "arNRS: " + std::to_string(this->_nnrRSS);		
 		return str;
 	}
 
 	double _RSS;
+	double _anRSS;
 	double _nnrRSS;
 	string _cost_calc_type;
 

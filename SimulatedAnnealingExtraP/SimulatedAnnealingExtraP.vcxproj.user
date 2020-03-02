@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/aonolin.txt" --outpath "C:/temp" --texfile "Aono-2020-02-25RSS2" --nt 1 --ci 0.0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/aonolin.txt" --outpath "C:/temp" --texfile "aonoFull-2020-02-28" --nt 1 --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/aonolin.txt" --outpath "C:/temp" --texfile "Aono-2020-02-25Fullv2" --nt 8 --ci 0.0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/aonolin.txt" --outpath "C:/temp" --texfile "aonoFull-2020-02-28" --nt 4 --ci 0.0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

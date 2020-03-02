@@ -150,7 +150,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 						act_sol = act_sol_now;
 						if (do_quality_log) {
 							std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
-							QualityLogger::getInstance().insertEntry(newpair, tid);
+							QualityLogger::getInstance().insertEntry(newpair, tid);							
 						}
 					}
 					/*else
@@ -198,7 +198,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 template<class SolutionType>
 int annealingManager() {
 
-	//Configurator::getInstance().noLogModel();
+	Configurator::getInstance().noLogModel();
 
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
