@@ -65,11 +65,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	double temp_init = tempin.estimateInitialCost(250, 32);	
 
  	Configurator::getInstance().num_threads = no_threads;
-
+    target_temp = temp_init * target_temp;
 #pragma omp parallel
 	{
 		int tid = omp_get_thread_num();
-		double T = temp_init;
+		double T = temp_init;        
 		SolutionType act_sol = SolutionType();
 		SolutionType abs_min_sol_thread = SolutionType();
 		SolutionModifier<SolutionType, CostCalculatorType> solmod = SolutionModifier<SolutionType, CostCalculatorType>(inputDB);
@@ -100,12 +100,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
 
 		int without_glob_improve = 0;
-		int without_glob_improve2 = 0;
-
-		target_temp = T * target_temp;
-
-		while (T > target_temp) {
-			for (int i = 0; i < 150; i++) {
+		int without_glob_improve2 = 0;		
+		while (T > target_temp) {            
+			for (int i = 0; i < 50; i++) {
 
 				/*if (without_glob_improve == 15000) {
 					act_sol = abs_min_sol_thread;
@@ -198,7 +195,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 template<class SolutionType>
 int annealingManager() {
 
-	Configurator::getInstance().noLogModel();
+	//Configurator::getInstance().noLogModel();
 
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
@@ -211,11 +208,11 @@ int annealingManager() {
 
 	unsigned int stepcount = 1;
 	double min_cost = std::numeric_limits<double>::max();
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
 		stepcount = 1;
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-11, stepcount, true);
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-8, stepcount, true);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
