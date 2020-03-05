@@ -125,7 +125,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 			<< ", samples=110,unbounded coords=jump, very thick] " << endl
 			<< calcinf.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
 			<< "\\addlegendentry{Lin-Log model $"
-			<< calcinf.min_sol_log->printModelFunctionLatexShow()	
+			<< calcinf.min_sol_log->printModelFunctionLatexShow(true)
 			<< "$ };" << endl;
 	}
 
@@ -269,6 +269,7 @@ string LatexPrinter<SolType>::colStr(int no)
 template<class SolType>
 void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* sol, MeasurementDB * mdb, CalcuationInfo<SolType>& calcinf)
 {
+	int base = Configurator::getInstance().base_for_lin_log;
 	myfile << endl << "\\newpage" << endl
 		<< "\\section{Log-Function Evaluation}" << endl;
 
@@ -305,7 +306,7 @@ void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* s
 	myfile << "\\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	" << endl;
 	for (int i = 0; i < mdb->get_size(); i++) {
 		pair<double, double> act_pair = mdb->getPairAt(i);
-		myfile << "(" << act_pair.first << ", " << log2(act_pair.second) << ")" << endl;
+		myfile << "(" << act_pair.first << ", " << log(act_pair.second)/log(base) << ")" << endl;
 	}
 	myfile << "};" << endl
 		<< "\\addlegendentry{ Training data };" << endl;
@@ -421,7 +422,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			<< ", samples=110,unbounded coords=jump, draw=darkorange, very thick] " << endl
 			<< cinfo.min_sol_log->printModelFunctionLatex(0.0, true).c_str() << ";" << endl
 			<< "\\addlegendentry{Lin-log model $"
-			<< cinfo.min_sol_log->printModelFunctionLatexShow()
+			<< cinfo.min_sol_log->printModelFunctionLatexShow(true)
 			<< "$ };" << endl;
 	}
 
@@ -530,7 +531,7 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 	myfile << "\\newpage" << endl;
 	myfile << "\\section{Details of Costs}" << endl;
 
-	for (int tid = 0; tid < calcinf.sol_per_thread.size(); tid++) {
+	for (int tid = 0; tid < (int)calcinf.sol_per_thread.size(); tid++) {
 		const SolType & sol = calcinf.sol_per_thread[tid];
 		myfile << "\\subsection{Thread " << tid << "}" << endl
 			<< "\\begin{itemize}" << endl

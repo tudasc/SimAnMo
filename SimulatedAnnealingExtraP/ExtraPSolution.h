@@ -31,6 +31,7 @@ public:
 	std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const;
 
 	std::string printModelFunctionLatexShow() const;
+	std::string printModelFunctionLatexShow(bool set) const;
 
 protected:
 	const int _len = 4;

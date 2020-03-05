@@ -1,4 +1,5 @@
 #include "MeasurementDB.h"
+#include "Configurator.h"
 #include <iostream>
 #include <cmath>
 
@@ -9,8 +10,9 @@ MeasurementDB::MeasurementDB() {
 	this->_no_measurements = 0;
 }
 
-MeasurementDB* MeasurementDB::cloneToLog2Version(MeasurementDB* inputDB) {
+MeasurementDB* MeasurementDB::cloneToLogVersion(MeasurementDB* inputDB) {
 	MeasurementDB* newLogDB = new MeasurementDB();	
+	int base = Configurator::getInstance().base_for_lin_log;
 
 	// Keep the training data
 	auto itx = inputDB->_xvals.begin();
@@ -18,7 +20,8 @@ MeasurementDB* MeasurementDB::cloneToLog2Version(MeasurementDB* inputDB) {
 
 	for (;	itx != inputDB->_xvals.end(); ++itx, ++ity) {
 		newLogDB->_xvals.push_back((*itx));
-		newLogDB->_yvals.push_back(log2(*ity));
+		//newLogDB->_yvals.push_back(log2(*ity));
+		newLogDB->_yvals.push_back( (log(*ity) / log(base)) );
 		newLogDB->_no_trainingpoints++;
 	}
 
@@ -27,7 +30,7 @@ MeasurementDB* MeasurementDB::cloneToLog2Version(MeasurementDB* inputDB) {
 
 	for (auto itmx = inputDB->_xmeasure.begin(); itmx != inputDB->_xmeasure.end(); itmx++) {
 		newLogDB->_xmeasure.push_back((*itmx));
-		newLogDB->_ymeasure.push_back(log2(*itmy));
+		newLogDB->_yvals.push_back( (log(*itmy) / log(base)) );
 		newLogDB->_no_measurements++;
 		itmy++;
 	}
@@ -40,7 +43,7 @@ void MeasurementDB::addTrainingPoint(std::pair<double, double>& measurement) {
 	this->_yvals.push_back(measurement.second);
 	this->_no_trainingpoints++;
 
-	if (_xvals.size() != _no_trainingpoints) {
+	if ( (int)_xvals.size() != _no_trainingpoints) {
 		std::cerr << "ERROR: MeasurementDB is inconsistent.\n";
 		exit(-1);
 	}
@@ -53,7 +56,7 @@ void MeasurementDB::addMeasurementPoint(std::pair<double, double>& measurement)
 	this->_no_measurements++;
 
 	//cout << "Adding " << measurement.first << " and " << measurement.second << endl;
-	if (_xmeasure.size() != _no_measurements) {
+	if ((int)_xmeasure.size() != _no_measurements) {
 		std::cerr << "ERROR: MeasurementDB is inconsistent.\n";
 		exit(-1);
 	}

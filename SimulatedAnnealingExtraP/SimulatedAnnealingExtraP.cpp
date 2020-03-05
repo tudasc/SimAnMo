@@ -194,9 +194,6 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 template<class SolutionType>
 int annealingManager() {
-
-	//Configurator::getInstance().noLogModel();
-
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
 	MeasurementDBReader dbreader = MeasurementDBReader();
@@ -208,7 +205,7 @@ int annealingManager() {
 
 	unsigned int stepcount = 1;
 	double min_cost = std::numeric_limits<double>::max();
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < Configurator::getInstance().no_of_trials; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
 		stepcount = 1;
@@ -265,7 +262,7 @@ int annealingManager() {
 		stepcount = 1;
 
 		ExtraPSolution* sol_per_thread_log = new ExtraPSolution[no_threads];
-		MeasurementDB* inputDB_log = inputDB->cloneToLog2Version(inputDB);
+		MeasurementDB* inputDB_log = inputDB->cloneToLogVersion(inputDB);
 		//inputDB = inputDB_log;
 
 		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, 0.0005, stepcount, false);
@@ -309,10 +306,17 @@ void printHelp() {
 		<< " --inputfile PATH_AND_NAME_OF_INPUTFILE --outpath PATH_WHERE_TO_PLACE_OUTPUT " << endl
 		<< "\t\t" << " --texfile NAME_OF_TEX_AND_PDF_FILES" << endl
 		<< endl << endl;
-	cout << "--help / -h" << setw(35) << "Print the help" << endl;
-	cout << "--number_of_threads / --nt" << setw(35) << "How many threads anneal in parallel (default=1)" << endl;
-	cout << "--print_confidence / --pc" << setw(45) << "Print the confidence interval in the predictiion (default=false)" << endl
-		<< "--confidence_interval / --ci" << setw(45) << "Set size of confidence interval when printing it (default=0.0)" << endl;
+	cout << "--help / -h"  << setw(55) << "Print the help" << endl;
+	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=1)" << endl;
+	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing (default=1)" << endl;
+	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
+	cout << "--confidence_interval / --ci + FLOAT" << setfill(' ') << setw(55) << "Set size of confidence interval when printing it (default=0.0)" << endl;
+	// LIn-Log
+	cout << endl << "SECTION: Linear-logarithmic (lin-log) model configuration" << endl;
+	cout << "--create_lin_log / --ll"  << setfill(' ') << setw(55) << "Create a lin-log model if set (default=false)" << endl;
+	cout << "--base_lin_log / --bll + INT" << setfill(' ') << setw(55) << "Basis that is used for lin-log-model (default=2)" << endl;
+
+	exit(0);
 }
 
 int main(int argc, char** argv)
@@ -383,11 +387,21 @@ int main(int argc, char** argv)
 
 		if (input == "--number_of_threads" || input == "--nt") {
 			if (argc <= i) {
-				std::cerr << "Missing argument for parameter number if threads. Terminating." << std::endl;
+				std::cerr << "Missing argument for parameter number of threads. Terminating." << std::endl;
 				exit(-1);
 			}
 			no_threads = atoi(argv[i + 1]);
 			Configurator::getInstance().num_threads = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--number_of_trials" || input == "--tr") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of trials for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			no_threads = atoi(argv[i + 1]);
+			Configurator::getInstance().no_of_trials = atoi(argv[i + 1]);
 			i++;
 		}
 
@@ -405,7 +419,20 @@ int main(int argc, char** argv)
 			Configurator::getInstance().print_confidence = true;
 		}
 
-		
+		// Lin-log Model
+		if (input == "--create_lin_log" || input == "--ll") {
+			Configurator::getInstance().create_log_exp_model = true;
+		}
+
+		if (input == "--base_lin_log" || input == "--bll") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for base of lin-log model. Terminating." << std::endl;
+				exit(-1);
+			}
+			no_threads = atoi(argv[i + 1]);
+			Configurator::getInstance().base_for_lin_log = atoi(argv[i + 1]);
+			i++;
+		}
 	}
 
 	if(Configurator::getInstance().texfile=="")

@@ -64,7 +64,7 @@ LinearSolution LinearSolution::getNeighborSolution() {
 	std::uniform_int_distribution<int> dist0_1(0, 1);
 
 	// Decide which coefficient to change c_0 or c_1
-	int coeff = dist0_1(engine);
+	//int coeff = dist0_1(engine);
 
 	// Change c_2
 

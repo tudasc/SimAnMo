@@ -5,7 +5,6 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 	double constrsscost = 0.0;
 	double rsscosts = 0.0;
 	double nnrrsscost = 0.0;
-	double anrss = 0.0;
 	double constnnrrsscost = 0.0;
 	double averagelen = 0;
 

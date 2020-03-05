@@ -1,6 +1,9 @@
 #ifndef SOLUTIONCONFIGURATOR_H
 #define SOLUTIONCONFIGURATOR_H
 #include <cstring>
+#include <string>
+
+//using namespace std;
 
 class Configurator {
 public:
@@ -11,7 +14,6 @@ public:
 	}
 
 	static Configurator* _instance;
-	inline void noLogModel() { this->create_log_exp_model = false; }
 
 	// Configuration variables
 	// For Standard Solution
@@ -27,11 +29,15 @@ public:
 	std::string texfile;
 	std::string outpath;
 
+	int no_of_trials;
+
 	bool create_log_exp_model;
 
 	// Print Configuration
 	bool print_confidence;
 	double confidence_interval;
+
+	int base_for_lin_log;
 
 private:
 	Configurator() {
@@ -46,9 +52,13 @@ private:
 		min_log_range = 0.0;
 		max_log_range = 2.5;
 
-		create_log_exp_model = true;
+		no_of_trials = 1;
+
 		print_confidence = false;
 		confidence_interval = 0.0;
+
+		create_log_exp_model = false;
+		base_for_lin_log=2;
 	}
 
 	Configurator(const Configurator&);

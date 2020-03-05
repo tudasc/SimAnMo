@@ -52,7 +52,6 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 	std::uniform_real_distribution<double> distc23_log(min_c_3, max_c_3);
 
 	ExtraPSolution act_sol = *this;
-	int count = 0;
 
 	do
 	{
@@ -181,6 +180,8 @@ std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) co
 	std::string str_c3 = streamObj.str();
 	streamObj.str("");
 
+	std::string str_base = std::to_string(Configurator::getInstance().base_for_lin_log);
+
 	std::string func = "";
 	if (scale < std::abs(1e-5) && !powed)
 	{
@@ -190,7 +191,7 @@ std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) co
 	}
 
 	else if (powed) {
-		func += "(\\x, { 2^(" + str_c0 + " + " + str_c1 + " * ( "
+		func += "(\\x, { " + str_base + "^(" + str_c0 + " + " + str_c1 + " * ( "
 			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
 			+ "))});";
 	}
@@ -223,6 +224,8 @@ std::string ExtraPSolution::printModelFunctionLatexShow() const {
 	std::string str_c3 = streamObj.str();
 	streamObj.str("");
 
+	std::string str_base = std::to_string(Configurator::getInstance().base_for_lin_log);
+
 	std::string func = "";
 
 	func += str_c0 + " + " + str_c1 + " * "
@@ -231,5 +234,38 @@ std::string ExtraPSolution::printModelFunctionLatexShow() const {
 	if (abs(getAt(3) > 1e-3)) {
 		func += " * log2(x) ^ {" + str_c3	+ "}";
 	}
+	return func;
+}
+
+std::string ExtraPSolution::printModelFunctionLatexShow(bool set) const {
+	std::ostringstream streamObj;
+
+	streamObj << round(getAt(0) * 100) / 100; //getAt(0);
+	std::string str_c0 = streamObj.str();
+	streamObj.str("");
+
+	streamObj << getAt(1); //round(getAt(1) * 100) / 100; //getAt(1);
+	std::string str_c1 = streamObj.str();
+	streamObj.str("");
+
+	streamObj << round(getAt(2) * 100) / 100; //getAt(2);
+	std::string str_c2 = streamObj.str();
+	streamObj.str("");
+
+	streamObj << round(getAt(3) * 100) / 100; //getAt(3);
+	std::string str_c3 = streamObj.str();
+	streamObj.str("");
+
+	std::string str_base = std::to_string(Configurator::getInstance().base_for_lin_log);
+
+	std::string func = "";
+
+	func += str_base + "^{" + str_c0 + " + " + str_c1 + " * "
+		+ "x ^ {" + str_c2 + "}";
+
+	if (abs(getAt(3) > 1e-3)) {
+		func += " * log2(x) ^ {" + str_c3	+ "}";
+	}
+	func += "}";
 	return func;
 }

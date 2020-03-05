@@ -17,6 +17,7 @@
 #include "nnrRSSCostCalculator.h"
 
 #define MIN_C_2 1e-6
+#define MAX_C_2 1.99
 
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
@@ -29,12 +30,12 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 {
 	double min_c_2 = MIN_C_2; // 0.1
-	double max_c_2 = 2.1;
+	double max_c_2 = MAX_C_2;
 
 	double min_c_3 = 0.25;
 	double max_c_3 = Configurator::getInstance().std_exp_range;
 
-	int num_threads = Configurator::getInstance().num_threads;
+	int num_threads = omp_get_num_threads(); //Configurator::getInstance().num_threads;
 	int thread_id = omp_get_thread_num();
 
 #ifdef USE_NAG
@@ -47,10 +48,17 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 	if (_len > 0)
 		_coefficients = new double[_len];
 
+	double c_3_span = max_c_3 - min_c_3;
+	double c_3_thread_min = min_c_3 + (c_3_span/(double)num_threads) * (double)thread_id;
+	double c_3_thread_max = c_3_thread_min + c_3_span/(double)num_threads;
+
+	//cout << "Thread: " << thread_id << " from " << c_3_thread_min << " to " << c_3_thread_max << endl;
+
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_real_distribution<double> distc2(min_c_2, max_c_2);
-	std::uniform_real_distribution<double> distc3(min_c_3, max_c_3);
+	//std::uniform_real_distribution<double> distc3(min_c_3, max_c_3);
+	std::uniform_real_distribution<double> distc3(c_3_thread_min, c_3_thread_max);
 
 	double start_vals[5] = { 0, 0, distc2(seeder), distc3(seeder), 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];
@@ -145,7 +153,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			double change = perc * random_sol.getAt(2);
 			new_val = random_sol.getAt(2) + change;
 
-		} while (!((new_val > MIN_C_2) && (new_val <= 2.1)));
+		} while (!((new_val > MIN_C_2) && (new_val <= MAX_C_2)));
 		random_sol.updateAt(2, new_val);
 	}
 
@@ -161,64 +169,6 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 		} while (!(new_val > 0.25 && new_val<Configurator::getInstance().std_exp_range));
 		random_sol.updateAt(3, new_val);
 	}
-
-	return random_sol;
-
-	// Decide which coefficient to change c_2, c_3 or c_4
-	int coeff = dist2_3(engine);
-
-	/*
-	Er muss doch in Solution nicht in Random Sol nach coefficients suchen, oder?
-	*/
-
-	// Change c_2
-	
-	if (coeff == 2) {
-		do
-		{
-			double perc = distTrial(engine) / 100.0;
-			double change = perc * random_sol.getAt(2);
-			new_val = random_sol.getAt(2) + change;
-			//std::cout << "Val: " << change << std::endl;
-			//Sleep(500);
-
-			/*int fac;
-			if (dist0or1(engine) == 1)
-				fac = 1;
-			else
-				fac = -1;
-
-			double val = random_sol.getAt(2);
-			int log_of_val = int(log10(val));
-			double change = fac * pow(10, log_of_val - 1);
-
-			new_val = val + change;
-
-			
-
-			// Check if we break from 10^x to 10^(x-1) or 10^(x+1)
-			if (int(log10(val)) > int(log10(new_val))) {
-				change = change * 0.1;
-				new_val = val + change;
-			}
-			else {
-				// Everything okay
-			}*/
-		}
-
-		// Limit the search space to exclude unrealistic results
-		while (! ((new_val > 0.07) && (new_val < 0.13)));
-		random_sol.updateAt(2, new_val);
-	}
-
-	// Change c_3
-	else if (coeff == 3) {
-		double val = double(dist20(engine)) / 400.0;
-
-		if (random_sol.getAt(3) + val > 0.00)
-			random_sol.updateAt(3, random_sol.getAt(3) + val);
-	}
-
 
 	return random_sol;
 }

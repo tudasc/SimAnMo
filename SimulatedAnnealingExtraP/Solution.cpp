@@ -29,8 +29,8 @@ Solution::Solution(MeasurementDB* mdb)
 	double min_c_4 = Configurator::getInstance().min_pol_range;
 	double max_c_4 = Configurator::getInstance().max_pol_range;
 
-	int num_threads = Configurator::getInstance().num_threads;
-	int thread_id = omp_get_thread_num();
+	//int num_threads = Configurator::getInstance().num_threads;
+	//int thread_id = omp_get_thread_num();
 
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb);	
