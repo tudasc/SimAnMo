@@ -23,6 +23,13 @@ public:
 	double min_pol_range;
 	double max_pol_range;
 
+	// exp-pol models
+	double min_exp_coeff_range;
+	double max_exp_coeff_range;
+
+	double min_exp_exp_range;
+	double max_exp_exp_range;
+
 	double min_log_range;
 	double max_log_range;
 	std::string inputfile;
@@ -51,6 +58,13 @@ private:
 
 		min_log_range = 0.0;
 		max_log_range = 2.5;
+
+		// exp-pol models
+		min_exp_coeff_range = 0.1;
+		max_exp_coeff_range = 1.5;
+
+		min_exp_exp_range = 0.1;
+		max_exp_exp_range = 1.5;
 
 		no_of_trials = 1;
 

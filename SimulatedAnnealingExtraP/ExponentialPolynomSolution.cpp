@@ -16,9 +16,6 @@
 #include <time.h>
 #include "nnrRSSCostCalculator.h"
 
-#define MIN_C_2 1e-6
-#define MAX_C_2 1.99
-
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
 	if (_len > 0)
@@ -29,11 +26,11 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 {
-	double min_c_2 = MIN_C_2; // 0.1
-	double max_c_2 = MAX_C_2;
+	double min_c_2 = Configurator::getInstance().min_exp_coeff_range;
+	double max_c_2 = Configurator::getInstance().max_exp_coeff_range;
 
-	double min_c_3 = 0.25;
-	double max_c_3 = Configurator::getInstance().std_exp_range;
+	double min_c_3 = Configurator::getInstance().min_exp_exp_range;
+	double max_c_3 = Configurator::getInstance().max_exp_exp_range;
 
 	int num_threads = omp_get_num_threads(); //Configurator::getInstance().num_threads;
 	int thread_id = omp_get_thread_num();
@@ -133,7 +130,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3(2, 3);
-	std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
+	//std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 	std::uniform_int_distribution<int> dist0or1(0, 1);
 	std::uniform_real_distribution<double> distTrial(-1, 1);
@@ -153,7 +150,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			double change = perc * random_sol.getAt(2);
 			new_val = random_sol.getAt(2) + change;
 
-		} while (!((new_val > MIN_C_2) && (new_val <= MAX_C_2)));
+		} while (!((new_val > Configurator::getInstance().min_exp_coeff_range) && (new_val <= Configurator::getInstance().max_exp_coeff_range)));
 		random_sol.updateAt(2, new_val);
 	}
 
@@ -166,7 +163,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			double change = perc * random_sol.getAt(3);
 			new_val = random_sol.getAt(3) + change;
 
-		} while (!(new_val > 0.25 && new_val<Configurator::getInstance().std_exp_range));
+		} while (!(new_val > Configurator::getInstance().min_exp_exp_range && new_val <= Configurator::getInstance().max_exp_exp_range));
 		random_sol.updateAt(3, new_val);
 	}
 
