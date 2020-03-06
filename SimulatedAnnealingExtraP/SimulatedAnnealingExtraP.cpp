@@ -66,7 +66,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
  	Configurator::getInstance().num_threads = no_threads;
     target_temp = temp_init * target_temp;
-#pragma omp parallel
+#pragma omp parallel num_threads( no_threads )
 	{
 		int tid = omp_get_thread_num();
 		double T = temp_init;        
@@ -307,15 +307,20 @@ void printHelp() {
 		<< "\t\t" << " --texfile NAME_OF_TEX_AND_PDF_FILES" << endl
 		<< endl << endl;
 	cout << "--help / -h"  << setw(55) << "Print the help" << endl;
-	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=1)" << endl;
+	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=OMP-runtime-setting)" << endl;
 	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing (default=1)" << endl;
 	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
 	cout << "--confidence_interval / --ci + FLOAT" << setfill(' ') << setw(55) << "Set size of confidence interval when printing it (default=0.0)" << endl;
-	// LIn-Log
+	// Lin-Log
 	cout << endl << "SECTION: Linear-logarithmic (lin-log) model configuration" << endl;
 	cout << "--create_lin_log / --ll"  << setfill(' ') << setw(55) << "Create a lin-log model if set (default=false)" << endl;
 	cout << "--base_lin_log / --bll + INT" << setfill(' ') << setw(55) << "Basis that is used for lin-log-model (default=2)" << endl;
-
+	// Exp-Pol
+	cout << endl << "SECTION: Exponential-polynomial (exp-pol) model configuration" << endl;
+	cout << "--exp_pol-min_coeff / --epmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of exp-pol models (default=0.1)" << endl;
+	cout << "--exp_pol-max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol-min_exp/ --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol-max_exp/ --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=1.5)" << endl;
 	exit(0);
 }
 
@@ -391,6 +396,7 @@ int main(int argc, char** argv)
 				exit(-1);
 			}
 			no_threads = atoi(argv[i + 1]);
+			cout << "Anneal with " << no_threads << " threads." << endl;
 			Configurator::getInstance().num_threads = atoi(argv[i + 1]);
 			i++;
 		}
@@ -400,7 +406,6 @@ int main(int argc, char** argv)
 				std::cerr << "Missing argument for parameter number of trials for annealing. Terminating." << std::endl;
 				exit(-1);
 			}
-			no_threads = atoi(argv[i + 1]);
 			Configurator::getInstance().no_of_trials = atoi(argv[i + 1]);
 			i++;
 		}

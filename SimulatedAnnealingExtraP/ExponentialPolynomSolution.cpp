@@ -32,7 +32,25 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 	double min_c_3 = Configurator::getInstance().min_exp_exp_range;
 	double max_c_3 = Configurator::getInstance().max_exp_exp_range;
 
-	int num_threads = omp_get_num_threads(); //Configurator::getInstance().num_threads;
+	/*int omp_num_threads = 3;
+	int conf_num_threads = Configurator::getInstance().num_threads;
+
+	omp_set_num_threads (5);
+#pragma omp parallel num_threads( 5 )
+	{
+#pragma omp single
+		{
+			omp_num_threads = omp_get_num_threads();
+		}
+	}
+
+	if(omp_num_threads != Configurator::getInstance().num_threads) {
+		cerr << "Severe configuration error since number of threads is set to " << Configurator::getInstance().num_threads
+				<< " while OMP-runtime is configured for " << omp_num_threads << endl;
+		exit(2000);
+	}*/
+
+	int num_threads = Configurator::getInstance().num_threads;
 	int thread_id = omp_get_thread_num();
 
 #ifdef USE_NAG

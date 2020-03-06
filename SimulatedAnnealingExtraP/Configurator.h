@@ -61,7 +61,7 @@ private:
 
 		// exp-pol models
 		min_exp_coeff_range = 0.1;
-		max_exp_coeff_range = 1.5;
+		max_exp_coeff_range = 1.99;
 
 		min_exp_exp_range = 0.1;
 		max_exp_exp_range = 1.5;
