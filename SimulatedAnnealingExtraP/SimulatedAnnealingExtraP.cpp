@@ -60,12 +60,16 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
-
+	int steps = 0;
 	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
 	double temp_init = tempin.estimateInitialCost(250, 32);	
 
  	Configurator::getInstance().num_threads = no_threads;
     target_temp = temp_init * target_temp;
+
+	const double cooling_rate = 0.999;
+	const int step_max = 15;
+
 #pragma omp parallel num_threads( no_threads )
 	{
 		int tid = omp_get_thread_num();
@@ -99,10 +103,32 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
 
+		double progress = 0.0;
+		const int barWidth = 10;
+		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));
+		
+
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;		
-		while (T > target_temp) {            
-			for (int i = 0; i < 50; i++) {
+		while (T > target_temp) {    
+
+			if (tid == 0) {
+				std::cout << "[";
+				int pos = barWidth * progress;
+				for (int i = 0; i < barWidth; ++i) {
+					//if (i < pos) std::cout << "=";
+					//else if (i == pos) std::cout << ">";
+					//else std::cout << " ";
+					//std::cout << " ";
+				}
+				std::cout << "] " << int(progress * 100.0) << " %\r";
+				std::cout.flush();
+			}
+
+			progress += progressstepwidth; // for demonstration only
+			steps++;
+
+			for (int i = 0; i < step_max; i++) {
 
 				/*if (without_glob_improve == 15000) {
 					act_sol = abs_min_sol_thread;
@@ -110,7 +136,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				}*/
 
 				if (without_glob_improve2 == 50000) {
-					//cout << "Thread " << tid << " ends." << endl;
+					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
 				}
@@ -165,14 +191,14 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #pragma omp atomic
 				stepcount++;
 			}
-			T = T * 0.999;
+			T = T * cooling_rate;
 			//cout << "Target: "<< target_temp << " / T: " << T << endl;
 		}
 
 		sol_per_thread[tid] = abs_min_sol_thread;
 	} // End OMP parallel
 
-
+	cout << steps << " steps." << endl;
 
 	// Comparison with linear regression model
 #ifdef USE_NAG
@@ -208,8 +234,8 @@ int annealingManager() {
 	for (int i = 0; i < Configurator::getInstance().no_of_trials; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-		stepcount = 1;
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-8, stepcount, true);
+		stepcount = 10;
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-10, stepcount, true);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
@@ -294,8 +320,11 @@ int annealingManager() {
 	}
 
 	// LaTeX Config: Comment out to disable
-	LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
-	latprint.printSolution("", &best_abs_min_sol, inputDB, best_calcinf);
+	if (Configurator::getInstance().do_latex_output) {
+		LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
+		latprint.printSolution("", &best_abs_min_sol, inputDB, best_calcinf);
+	}
+
 
 	delete inputDB;
 	return 0;
@@ -311,16 +340,22 @@ void printHelp() {
 	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing (default=1)" << endl;
 	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
 	cout << "--confidence_interval / --ci + FLOAT" << setfill(' ') << setw(55) << "Set size of confidence interval when printing it (default=0.0)" << endl;
+	// Printing 
+	cout << endl << "SECTION: LaTeX Configuration" << endl;
+	cout << "--genlatex / -gl" << setfill(' ') << setw(55) << "Activate the LaTeX report generation (default=false)" << endl;
+	cout << "--openpdf / -op" << setfill(' ') << setw(55) << "Generated pdf file is automatically opened with pdfxchange at --pathtopdfxchange (default=false)" << endl;
+	cout << "--pathtopdfxchange" << setfill(' ') << setw(55) << "If --openpdf is set, pdf file is automatically opened with pdfxchange at this path" << endl;
+
 	// Lin-Log
 	cout << endl << "SECTION: Linear-logarithmic (lin-log) model configuration" << endl;
 	cout << "--create_lin_log / --ll"  << setfill(' ') << setw(55) << "Create a lin-log model if set (default=false)" << endl;
 	cout << "--base_lin_log / --bll + INT" << setfill(' ') << setw(55) << "Basis that is used for lin-log-model (default=2)" << endl;
 	// Exp-Pol
 	cout << endl << "SECTION: Exponential-polynomial (exp-pol) model configuration" << endl;
-	cout << "--exp_pol-min_coeff / --epmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of exp-pol models (default=0.1)" << endl;
-	cout << "--exp_pol-max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=1.5)" << endl;
-	cout << "--exp_pol-min_exp/ --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=1.5)" << endl;
-	cout << "--exp_pol-max_exp/ --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol_min_coeff / --epmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of exp-pol models (default=0.1)" << endl;
+	cout << "--exp_pol_max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol_min_exp/ --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol_max_exp/ --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=1.5)" << endl;
 	exit(0);
 }
 
@@ -411,6 +446,23 @@ int main(int argc, char** argv)
 		}
 
 		// Printing Configuration
+		if (input == "--genlatex" || input == "-gl") {
+			Configurator::getInstance().do_latex_output = true;
+		}
+
+		if (input == "--openpdf" || input == "-op") {
+			Configurator::getInstance().open_latex_output = true;
+		}
+
+		if (input == "--pathtopdfxchange") {
+			if (argc <= i) {
+				std::cerr << "Missing path in argument pathtopdfxchange. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().path_pdf_xchange = std::string(argv[i + 1]);
+			i++;
+		}
+
 		if (input == "--confidence_interval" || input == "--ci") {
 			if (argc <= i) {
 				std::cerr << "Missing argument for parameter epol. Terminating." << std::endl;
@@ -422,6 +474,43 @@ int main(int argc, char** argv)
 
 		if (input == "--print_confidence" || input == "--pc") {
 			Configurator::getInstance().print_confidence = true;
+		}
+
+		// Exp-Pol model
+		if (input == "--exp_pol_min_coeff" || input == "--epmic") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter exp_pol-min_coeff. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().min_exp_coeff_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--exp_pol_max_coeff" || input == "--epmac") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter exp_pol-max_coeff. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().max_exp_coeff_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--exp_pol-min_exp" || input == "--epmie") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter exp_pol-min_exp. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().min_exp_exp_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--exp_pol-max_exp" || input == "--epmae") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter exp_pol-max_exp. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().max_exp_exp_range = atof(argv[i + 1]);
+			i++;
 		}
 
 		// Lin-log Model

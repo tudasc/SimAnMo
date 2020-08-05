@@ -215,7 +215,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 	myfile.close();
 
 	// LaTeX Config: Adapt commands 
-	std::string close_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /close \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";	
+	std::string close_command = "cd " + Configurator::getInstance().path_pdf_xchange +
+		" && \"PDFXCview.exe\" /close \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";	
 #ifdef _WIN32
 	std::cout << close_command << std::endl;
 	system(close_command.c_str());
@@ -224,7 +225,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 	std::string create_command = "cd " + Configurator::getInstance().outpath + " && pdflatex " + Configurator::getInstance().texfile + ".tex"; //   -interaction=batchmode
 	cout << create_command << endl;
 	system(create_command.c_str());
-	std::string open_command = "cd C:\\Program Files\\Tracker Software\\PDF Viewer && \"PDFXCview.exe\" /A \"page=1&zoom=125\" \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";
+	std::string open_command = "cd " + Configurator::getInstance().path_pdf_xchange + 
+		" && \"PDFXCview.exe\" /A \"page=1&zoom=125\" \"" + Configurator::getInstance().outpath + slash_str + Configurator::getInstance().texfile + ".pdf\"";
 	
 	std::string clean_command = "cd " + Configurator::getInstance().outpath + " && " + rm_str + " " + Configurator::getInstance().texfile + ".log " + Configurator::getInstance().texfile + ".aux";
 	system(clean_command.c_str());	

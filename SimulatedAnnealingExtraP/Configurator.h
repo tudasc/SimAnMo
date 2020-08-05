@@ -41,10 +41,16 @@ public:
 	bool create_log_exp_model;
 
 	// Print Configuration
+	bool do_latex_output;
+	std::string path_pdf_xchange;
+	bool open_latex_output;
+
 	bool print_confidence;
 	double confidence_interval;
 
 	int base_for_lin_log;
+
+
 
 private:
 	Configurator() {
@@ -67,6 +73,11 @@ private:
 		max_exp_exp_range = 1.5;
 
 		no_of_trials = 1;
+
+		// Print Configuration
+		do_latex_output = false;
+		open_latex_output = false;
+		path_pdf_xchange = "C:\\Program Files\\Tracker Software\\PDF Viewer";
 
 		print_confidence = false;
 		confidence_interval = 0.0;
