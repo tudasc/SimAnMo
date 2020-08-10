@@ -66,11 +66,11 @@ private:
 		max_log_range = 2.5;
 
 		// exp-pol models
-		min_exp_coeff_range = 0.1;
+		min_exp_coeff_range = 0.05;//0.05;
 		max_exp_coeff_range = 1.99;
 
 		min_exp_exp_range = 0.1;
-		max_exp_exp_range = 1.99;
+		max_exp_exp_range = 2.01;
 
 		no_of_trials = 1;
 
