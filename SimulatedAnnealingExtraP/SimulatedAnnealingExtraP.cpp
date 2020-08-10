@@ -62,13 +62,13 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(250, 32);	
+	double temp_init = tempin.estimateInitialCost(350, 32);	
 
  	Configurator::getInstance().num_threads = no_threads;
     target_temp = temp_init * target_temp;
 
 	const double cooling_rate = 0.999;
-	const int step_max = 15;
+	const int step_max = 100;
 
 #pragma omp parallel num_threads( no_threads )
 	{
@@ -130,12 +130,12 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				/*if (without_glob_improve == 15000) {
+				if (without_glob_improve == 25000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
-				}*/
+				}
 
-				if (without_glob_improve2 == 50000) {
+				if (without_glob_improve2 == 200000) {
 					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
@@ -234,7 +234,7 @@ int annealingManager() {
 	for (int i = 0; i < Configurator::getInstance().no_of_trials; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-		stepcount = 10;
+		stepcount = 25;
 		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-10, stepcount, true);
 
 		// Prepare the report generation	
@@ -522,8 +522,7 @@ int main(int argc, char** argv)
 			if (argc <= i) {
 				std::cerr << "Missing argument for base of lin-log model. Terminating." << std::endl;
 				exit(-1);
-			}
-			no_threads = atoi(argv[i + 1]);
+			}			
 			Configurator::getInstance().base_for_lin_log = atoi(argv[i + 1]);
 			i++;
 		}
