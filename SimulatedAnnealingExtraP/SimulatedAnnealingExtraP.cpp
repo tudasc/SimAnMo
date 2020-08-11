@@ -130,16 +130,16 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				if (without_glob_improve == 250000) {
+				if (without_glob_improve == 25000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
 				}
 
-				/*if (without_glob_improve2 == 1000000) {
+				if (without_glob_improve2 == 1000000) {
 					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
-				}*/
+				}
 
 				// Generate new solution candidate
 				SolutionType act_sol_now = solmod.randomModifySolution(&act_sol);

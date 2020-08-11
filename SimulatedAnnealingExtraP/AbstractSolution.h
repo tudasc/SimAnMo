@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 #include "MeasurementDB.h"
+#include "Configurator.h"
 #include <string>
 
 using namespace std;
@@ -89,16 +90,17 @@ protected:
 
 	void setRandomID() {
 		// Set a random id
-		std::random_device seeder;
+		/*std::random_device seeder;
 		std::mt19937 engine(seeder());
 		std::uniform_int_distribution<int> dist(1, 999999);
-		this->id = dist(engine);
+		this->id = dist(engine);*/
+		this->id = Configurator::getInstance().glob_id++;
 	}
 
 	double * _coefficients;
 	double _costs;
 	const int _len = -1;
-	int id;
+	unsigned long long id;
 
 };
 

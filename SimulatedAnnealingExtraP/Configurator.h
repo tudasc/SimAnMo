@@ -15,6 +15,10 @@ public:
 
 	static Configurator* _instance;
 
+	/*unsigned long long getID() {
+		return  this->glob_id++;
+	}*/
+
 	// Configuration variables
 	// For Standard Solution
 	double std_exp_range;
@@ -50,6 +54,7 @@ public:
 
 	int base_for_lin_log;
 
+	unsigned long long glob_id;
 
 
 private:
@@ -69,7 +74,7 @@ private:
 		min_exp_coeff_range = 0.05;//0.05;
 		max_exp_coeff_range = 1.99;
 
-		min_exp_exp_range = 0.1;
+		min_exp_exp_range = 0.3;
 		max_exp_exp_range = 2.01;
 
 		no_of_trials = 1;
@@ -84,6 +89,8 @@ private:
 
 		create_log_exp_model = false;
 		base_for_lin_log=2;
+
+		glob_id = 1;
 	}
 
 	Configurator(const Configurator&);
