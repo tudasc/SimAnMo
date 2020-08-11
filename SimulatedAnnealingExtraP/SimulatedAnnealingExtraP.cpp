@@ -238,7 +238,11 @@ int annealingManager() {
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
 		stepcount = 1;
 
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true, 
+		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
+			" / " << Configurator::getInstance().ann_cooling_rate << endl;
+
+		int pause = 0; cin >> pause;
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
 			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
@@ -311,10 +315,11 @@ int annealingManager() {
 				calcinf_log.thread_with_solution = i;
 			}
 		}
-		std::cout << "Found minimal solution cost: " << abs_min_sol_log.get_costs()
+		std::cout << "Found minimal solution cost for linear: " << abs_min_sol_log.get_costs()
 			<< " in " << stepcount << " steps ("
 			//<< tduration << " s)"
 			<< std::endl;
+
 		abs_min_sol_log.printModelFunction();
 
 		// Replace costs by costs for the non-logarithmized data
@@ -405,7 +410,7 @@ int main(int argc, char** argv)
 				std::cerr << "Missing argument for parameter target temperature for annealing. Terminating." << std::endl;
 				exit(-1);
 			}
-			Configurator::getInstance().no_of_trials = atof(argv[i + 1]);
+			Configurator::getInstance().ann_target_temp = atof(argv[i + 1]);
 			i++;
 		}
 
