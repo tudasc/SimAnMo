@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/synth8.txt" --outpath "C:/temp" --texfile "Aonofull-2020-02-27v3" --number_of_threads 8 --genlatex</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/synth8.txt" --outpath "C:/temp" --texfile "Aonofull-2020-02-27v3" --number_of_threads 8  --ann_steps 300</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

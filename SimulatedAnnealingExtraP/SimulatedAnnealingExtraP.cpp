@@ -46,8 +46,9 @@ int no_threads = 1;
 
 
 template<class SolutionType, class CostCalculatorType>
-double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf, double target_temp,
-	unsigned int& stepcount = 1, bool do_quality_log = false) {
+double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
+	unsigned int& stepcount = 1, bool do_quality_log = false,
+	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
@@ -62,13 +63,14 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(350, 32);	
+	double temp_init = tempin.estimateInitialCost(150, 32);	
 
  	Configurator::getInstance().num_threads = no_threads;
+
     target_temp = temp_init * target_temp;
 
-	const double cooling_rate = 0.999;
-	const int step_max = 125;
+	const double cooling_rate = _cooling_rate;
+	const int step_max = steps_per_it;
 
 #pragma omp parallel num_threads( no_threads )
 	{
@@ -234,8 +236,10 @@ int annealingManager() {
 	for (int i = 0; i < Configurator::getInstance().no_of_trials; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-		stepcount = 25;
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-10, stepcount, true);
+		stepcount = 1;
+
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true, 
+			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
@@ -291,7 +295,9 @@ int annealingManager() {
 		MeasurementDB* inputDB_log = inputDB->cloneToLogVersion(inputDB);
 		//inputDB = inputDB_log;
 
-		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, 0.0005, stepcount, false);
+		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false,
+			10, 1e-8, 0.99);
+
 		Configurator::getInstance().max_log_range = max_log_range_back;
 		Configurator::getInstance().max_pol_range = max_pol_range_back;
 		Configurator::getInstance().min_pol_range = min_pol_range_back;
@@ -367,6 +373,60 @@ int main(int argc, char** argv)
 	for (int i = 1; i < argc; i++) {
 		std::string input = std::string(argv[i]);
 
+		if (input == "--number_of_trials" || input == "--tr") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of trials for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().no_of_trials = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps int annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_cooling_rate") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of cooling rate for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_cooling_rate = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_target_temp") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter target temperature for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().no_of_trials = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps_wo_mod") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps without modification for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps_wo_mod = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps_backtrack") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps before backtrack for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps_backtrack = atoi(argv[i + 1]);
+			i++;
+		}
+		
 		if (input == "--inputfile") {
 			if (argc <= i) {
 				std::cerr << "Missing inputfile in argument inputfile. Terminating." << std::endl;

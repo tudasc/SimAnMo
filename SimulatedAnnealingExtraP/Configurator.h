@@ -24,6 +24,13 @@ public:
 	double std_exp_range;
 	int num_threads;
 
+	// Configuration for annealing itself
+	int ann_steps;
+	double ann_cooling_rate;
+	double ann_target_temp;
+	int ann_steps_wo_mod;
+	int ann_steps_backtrack;
+
 	double min_pol_range;
 	double max_pol_range;
 
@@ -59,6 +66,13 @@ public:
 
 private:
 	Configurator() {
+		// Configuration for annealing itself
+		ann_steps = 15;
+		ann_cooling_rate = 0.99;
+		ann_target_temp = 1e-9;
+		ann_steps_wo_mod = 200000;
+		ann_steps_backtrack = 200000;
+
 		texfile = "";
 		outpath = "";
 		std_exp_range = 1.8;
