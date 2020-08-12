@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/synth8.txt" --outpath "C:/temp" --texfile "Aonofull-2020-02-27v3" --number_of_threads 11  --ann_steps 300 --ann_cooling_rate 0.999 --ann_target_temp 1e-11 -gl --epmie 1.8</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/EnumTheorie.txt" --outpath "C:/temp" --texfile "EnumTheorieLinBig" --number_of_threads 11  --ann_steps 5 --ann_cooling_rate 0.999 --ann_target_temp 1e-9 -gl --ann_steps_wo_mod 2000000  --epmie 1.5  --epmae 3.5 --ll --trails 0</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

@@ -34,6 +34,9 @@ public:
 	double min_pol_range;
 	double max_pol_range;
 
+	// exp models
+	double max_exp_range;
+
 	// exp-pol models
 	double min_exp_coeff_range;
 	double max_exp_coeff_range;
@@ -75,20 +78,25 @@ private:
 
 		texfile = "";
 		outpath = "";
+
 		std_exp_range = 1.8;
+		
 		num_threads = 1;
 
 		min_pol_range = 0;
-		max_pol_range = 8;
+		max_pol_range = 5;
 
 		min_log_range = 0.0;
 		max_log_range = 2.5;
 
+		// exp models
+		max_exp_range = 3.8;
+
 		// exp-pol models
-		min_exp_coeff_range = 0.05;//0.05;
+		min_exp_coeff_range = 1e-3;//0.05;
 		max_exp_coeff_range = 1.99;
 
-		min_exp_exp_range = 0.3;
+		min_exp_exp_range = 0.8;
 		max_exp_exp_range = 2.01;
 
 		no_of_trials = 1;

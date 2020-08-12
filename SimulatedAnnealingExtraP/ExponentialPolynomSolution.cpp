@@ -148,7 +148,6 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3(2, 3);
-	//std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 	std::uniform_int_distribution<int> dist0or1(0, 1);
 	std::uniform_real_distribution<double> distTrial(-1, 1);
@@ -164,7 +163,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 		// Change c_2
 		do
 		{
-			double perc = distTrial(engine) / 5000.0;
+			double perc = distTrial(engine) / 1000.0;
 			double change = perc * random_sol.getAt(2);
 			new_val = random_sol.getAt(2) + change;
 
@@ -177,7 +176,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 		// Change c_3
 		do
 		{
-			double perc = distTrial(engine) / 5000.0;
+			double perc = distTrial(engine) / 1000.0;
 			double change = perc * random_sol.getAt(3);
 			new_val = random_sol.getAt(3) + change;
 

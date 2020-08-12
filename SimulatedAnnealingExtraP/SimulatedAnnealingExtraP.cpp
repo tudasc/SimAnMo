@@ -241,9 +241,8 @@ int annealingManager() {
 		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
 			" / " << Configurator::getInstance().ann_cooling_rate << endl;
 
-		int pause = 0; cin >> pause;
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
-			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
+		//doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
+		//	Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
