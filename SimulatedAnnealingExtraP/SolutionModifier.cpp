@@ -24,12 +24,25 @@ SolutionModifier<SolutionType, CostCalulatorType>::SolutionModifier(MeasurementD
 template<class SolutionType, class CostCalulatorType>
 SolutionType SolutionModifier<SolutionType, CostCalulatorType>::randomModifySolution(SolutionType * sol)
 {
-	SolutionType newsol;
+
+	SolutionType solBack = *sol;
+	SolutionType newsol = *sol;
+	int count = 0;
 	do
 	{
-		newsol = sol->getNeighborSolution();
+		// Backtrack
+		if (count > 1000) {
+			newsol = solBack;
+			count = 0;
+		}
+
+		newsol = newsol.getNeighborSolution();
 		param_est->estimateParameters(&newsol);
 		cost_calc.calculateCost(&newsol);
+		count++;
+
+
+
 	} while (std::isnan(newsol.get_costs()));
 
 	return newsol;

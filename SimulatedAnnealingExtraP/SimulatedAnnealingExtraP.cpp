@@ -63,11 +63,12 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(150, 32);	
+	double temp_init = tempin.estimateInitialCost(550, 32);	
+	//target_temp = temp_init * target_temp;
 
  	Configurator::getInstance().num_threads = no_threads;
 
-    target_temp = temp_init * target_temp;
+    
 
 	const double cooling_rate = _cooling_rate;
 	const int step_max = steps_per_it;
@@ -104,11 +105,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
+		cout << "Starting temp is: " << target_temp << endl;
 
 		double progress = 0.0;
 		const int barWidth = 10;
-		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));
-		
+		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));		
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;		
@@ -132,10 +133,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				if (without_glob_improve == 25000) {
+				/*if (without_glob_improve == 150000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
-				}
+					cout << "Backtracked";
+				}*/
 
 				if (without_glob_improve2 == 1000000) {
 					cout << "Thread " << tid << " ends." << endl;
@@ -241,8 +243,8 @@ int annealingManager() {
 		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
 			" / " << Configurator::getInstance().ann_cooling_rate << endl;
 
-		//doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
-		//	Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
+		doAnnealing<SolutionType, /*nnr*/RSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
+			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
@@ -250,6 +252,10 @@ int annealingManager() {
 		SolutionType abs_min_sol;
 		for (int i = 0; i < no_threads; i++) {
 			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
+
+			cout << "Found minimal cost in thread " << i << " is " << sol_per_thread[i].get_costs() << " for" << endl;
+			sol_per_thread[i].printModelFunction();
+
 			if (min_cost > sol_per_thread[i].get_costs()) {
 				min_cost = sol_per_thread[i].get_costs();
 				abs_min_sol = sol_per_thread[i];
@@ -568,7 +574,7 @@ int main(int argc, char** argv)
 			i++;
 		}
 
-		if (input == "--exp_pol-max_exp" || input == "--epmae") {
+		if (input == "--exp_pol_max_exp" || input == "--epmae") {
 			if (argc <= i) {
 				std::cerr << "Missing argument for parameter exp_pol-max_exp. Terminating." << std::endl;
 				exit(-1);
@@ -604,8 +610,8 @@ int main(int argc, char** argv)
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
 	//annealingManager<Solution>();
-	//annealingManager<ExponentialSolution>();
-	annealingManager<ExponentialPolynomSolution>();
+	annealingManager<ExponentialSolution>();
+	//annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
 

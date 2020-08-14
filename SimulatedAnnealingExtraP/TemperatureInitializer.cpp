@@ -12,6 +12,8 @@
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
 
+#include "TopRankQueue.h"
+
 template<class SolutionType, class CostCalcType>
 double TemperatureInitializer<SolutionType, CostCalcType>::estimateInitialCost(int sample_size, int neighbor_size)
 {
@@ -19,6 +21,8 @@ double TemperatureInitializer<SolutionType, CostCalcType>::estimateInitialCost(i
 	std::vector<std::vector<SolutionType>> solutions;
 	solutions.reserve(sample_size);
 	solutions.resize(sample_size);
+
+	DarmstadtSC::TopRankQueue<SolutionType> queuei = DarmstadtSC::TopRankQueue<SolutionType>(100);
 
 	// Generate sample_size random solutions
 	for (int i = 0; i < sample_size; i++)
@@ -31,8 +35,12 @@ double TemperatureInitializer<SolutionType, CostCalcType>::estimateInitialCost(i
 			SolutionType sol_copy = sol;
 			sol_copy = solmod.randomModifySolution(&sol_copy);
 			solutions[i].push_back(sol_copy);
+
+			queuei.insert(sol_copy);
 		}
 	}
+	queuei.printQueue();
+	//exit(-2);
 	
 	double min = std::numeric_limits<double>::max();
 	double max = 0.0;

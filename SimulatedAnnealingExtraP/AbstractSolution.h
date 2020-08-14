@@ -94,7 +94,11 @@ protected:
 		std::mt19937 engine(seeder());
 		std::uniform_int_distribution<int> dist(1, 999999);
 		this->id = dist(engine);*/
-		this->id = 1;// Configurator::getInstance().glob_id++;
+		this->id = Configurator::getInstance().glob_id++;
+	}
+
+	unsigned long long getRandomID() {
+		return this->id;
 	}
 
 	double * _coefficients;

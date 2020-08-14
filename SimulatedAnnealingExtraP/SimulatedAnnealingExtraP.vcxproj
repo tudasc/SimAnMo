@@ -193,6 +193,7 @@
     <ClInclude Include="SolutionModifier.h" />
     <ClInclude Include="StartSolutionFinder.h" />
     <ClInclude Include="TemperatureInitializer.h" />
+    <ClInclude Include="TopRankQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlglibLinearRegressionFinder.cpp" />
