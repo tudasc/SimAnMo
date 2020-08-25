@@ -300,11 +300,12 @@ std::string ExponentialPolynomSolution::printModelFunctionLatex(double scale, bo
 	streamObj.str("");
 
 	std::string func = "";
-	if (scale < std::abs(1e-5))
+	if (std::abs(scale) < 1e-5)
 	{
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ ("
 			+ str_c2 + " * \\x ^ (" + str_c3 + ")) " + "})";
 	}
+
 	else {
 		std::string act_func = str_c0 + " + " + str_c1 + " * 2 ^ ("
 			+ str_c2 + " * \\x ^ (" + str_c3 + "))";

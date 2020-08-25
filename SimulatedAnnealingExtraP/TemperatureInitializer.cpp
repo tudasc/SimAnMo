@@ -36,10 +36,10 @@ double TemperatureInitializer<SolutionType, CostCalcType>::estimateInitialCost(i
 			sol_copy = solmod.randomModifySolution(&sol_copy);
 			solutions[i].push_back(sol_copy);
 
-			queuei.insert(sol_copy);
+			//queuei.insert(sol_copy);
 		}
 	}
-	queuei.printQueue();
+	//queuei.printQueue();
 	//exit(-2);
 	
 	double min = std::numeric_limits<double>::max();

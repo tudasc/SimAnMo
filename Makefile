@@ -20,7 +20,7 @@ LIBS=-lstdc++fs
 
 #Flags, Libraries and Includes
 CXXFLAGS := -std=c++17 -O3 -g -Wall -c -fmessage-length=0 -fopenmp -MMD -MP
-DEFINES := -DNUSE_NAG
+#DEFINES := -DUSE_NAG
 LIB := -fopenmp -lm -g
 LDFLAGS := -fopenmp -g
 INC := -I$(INCDIR) -I/usr/local/include

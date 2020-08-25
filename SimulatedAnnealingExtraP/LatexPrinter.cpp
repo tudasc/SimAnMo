@@ -200,14 +200,16 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
-	//printCostDevelopment(myfile, stepsize);
+	if(Configurator::getInstance().print_costs)
+		printCostDevelopment(myfile, stepsize);
 
 	myfile << "\\end{axis}" << endl;
 	myfile << "\\end{tikzpicture}" << endl
 		<< "\\end{figure}" << endl;
 
 //////////////////// Print more details
-	//printCostDetails(myfile, calcinf, stepsize);
+	if (Configurator::getInstance().print_costs)
+		printCostDetails(myfile, calcinf, stepsize);
 
 	myfile	<< "\\end{document}" << endl;
 
@@ -235,7 +237,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 #ifdef _WIN32
 	std::cout << clean_command << std::endl;
 	std::cout << open_command << std::endl;	
-	system(open_command.c_str());
+	if(Configurator::getInstance().open_latex_output)
+		system(open_command.c_str());
 #endif
 	system("exit");
 
@@ -452,13 +455,13 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 
 			myfile << "\\addplot fill between[" << endl
 				<< "of = funcplus and funcminus," << endl
-				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "every even segment/.style = { gray,opacity = .2 }," << endl
 				<< "soft clip = { clippath }," << endl
 				<< "];" << endl;
 
 			myfile << "\\addplot fill between[" << endl
-				<< "of = funcplus and func," << endl
-				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "of = funcplus and funcminus," << endl
+				<< "every even segment/.style = { gray,opacity = .2 }," << endl
 				<< "soft clip = { domain = " << xstart << ":" << xdimension << "}," << endl
 				<< "]; " << endl;
 		}

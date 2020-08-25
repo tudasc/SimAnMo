@@ -64,6 +64,8 @@ public:
 
 	int base_for_lin_log;
 
+	bool print_costs;
+
 	unsigned long long glob_id;
 
 
@@ -79,25 +81,26 @@ private:
 		texfile = "";
 		outpath = "";
 
-		std_exp_range = 1.8;
+		//std_exp_range = 1.8;
 		
 		num_threads = 1;
 
+		// pol-log models
 		min_pol_range = 0;
-		max_pol_range = 5;
+		max_pol_range = 6;
 
 		min_log_range = 0.0;
-		max_log_range = 2.5;
+		max_log_range = 4.00;
 
 		// exp models
 		max_exp_range = 3.8;
 
 		// exp-pol models
-		min_exp_coeff_range = 1e-3;//0.05;
-		max_exp_coeff_range = 1.99;
+		min_exp_coeff_range = 1e-3;
+		max_exp_coeff_range = 2;
 
-		min_exp_exp_range = 0.8;
-		max_exp_exp_range = 2.01;
+		min_exp_exp_range = 0.5;
+		max_exp_exp_range = 3.0;
 
 		no_of_trials = 1;
 
@@ -111,6 +114,8 @@ private:
 
 		create_log_exp_model = false;
 		base_for_lin_log=2;
+		print_costs = false;
+
 
 		glob_id = 1;
 	}
