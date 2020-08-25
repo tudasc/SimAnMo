@@ -10,7 +10,7 @@ MeasurementDB * MeasurementDBReader::readInputFile(string file)
 	std::string line;
 
 	if (infile.fail()) {
-		std::cout << file << " does not exist. Terminating." << std::endl;
+		std::cout << "Input file: " << file << " does not exist. Terminating." << std::endl;
 		exit(-2);
 	}
 

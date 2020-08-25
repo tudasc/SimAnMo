@@ -357,7 +357,7 @@ void printHelp() {
 	cout << "--outfile / -o + PATH_TO_OUT_FILE" << setw(55) << "The path to the output files (default=folder of executable)" << endl;
 	cout << "--texfile / -t + NAME_OF_FILES" << setw(55) << "MANDATORY. The name of output tex and pdf files" << endl;
 
-	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=OMP-runtime-setting)" << endl;
+	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=1)" << endl;
 	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing process (default=1)" << endl;	
 
 	cout << "--ann_target_temp / --att + FLOAT" << setw(55) << "Target temperature for annealing (default=1e-9)" << endl;

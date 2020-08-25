@@ -1,5 +1,5 @@
 MAKE=make
-TARGET=extrapanneal
+TARGET=SiMaNo
 CXX=g++ 
 CC=g++ 
 
@@ -95,12 +95,12 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 
 
-SRCDIR := SimulatedAnnealingExtraP
-CPP_FILES := $(wildcard SimulatedAnnealingExtraP/*.cpp SimulatedAnnealingExtraP/alglib/*.cpp)
-OBJ_FILES := $(patsubst %.cpp,%.o,$(CPP_FILES))
+#SRCDIR := SimulatedAnnealingExtraP
+#CPP_FILES := $(wildcard SimulatedAnnealingExtraP/*.cpp SimulatedAnnealingExtraP/alglib/*.cpp)
+#OBJ_FILES := $(patsubst %.cpp,%.o,$(CPP_FILES))
 
-LANG=-std=c++17
-CXXFLAGS= -O3 -g -Wall -c -fmessage-length=0 -fopenmp -MMD -MP
-DEFINES= -DNUSE_NAG
-LDFLAGS=-fopenmp -g
-LIBS=-lstdc++fs
+#LANG=-std=c++17
+#CXXFLAGS= -O3 -g -Wall -c -fmessage-length=0 -fopenmp -MMD -MP
+#DEFINES= -DNUSE_NAG
+#LDFLAGS=-fopenmp -g
+#LIBS=-lstdc++fs
