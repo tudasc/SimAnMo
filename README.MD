@@ -12,38 +12,45 @@ The model generation process is based on an SMP-parallelized simulated annealing
     (	p_l	;	val_l	)
 
 The first value p_i in the brackets is the value of the input parameter p for the respective mesaurement. val_i gives the runtime in our case.
-You can also add additional *k* measurements for evaluation. Then, you have to add them in the following way after the *l* training point:
+You can also add additional *k* measurements for evaluation. Then, you have to add them in the following way after the *l* training point with *ADDPOINTS* as mandatory indicator for the software:
 
     #ADDPOINTS
     (	p_(l+1)	;	val_(l+1)	)
     ....
     (	p_(l+k)	;	val_(l+k)	)
 
+Comments can be added by using a *#*, e.g.,
+
+    (	p_1	;	val_1	)
+    #(	p_2	;	val_2	)
+    (	p_3	;	val_3	)
+
+which will ignore the second point for the model generation.
 Example files are given in the *inputs* directory.
 
 ## Compilation
-#### Prerequistes
-* Microsoft Visual Studio 2017 (or higher) or gcc/g++ > 6.0 (-std=c++-17 supported)
+### Prerequistes
+* Microsoft Visual Studio 2017 (or higher) or gcc/g++ 6.0 (or higher, -std=c++-17 must be supported)
 * [Eigen Library](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 * Optional: [NAG Library](https://www.nag.com/content/nag-library)
-*
+
 ### Windows
-SiMaNo has successfully been tested with Visual Studio 2017/2019, Eigen 3.7 and NAG C-library 24/25/26.
+SiMaNo has successfully been tested with Visual Studio 2017/2019, Eigen 3.3 and NAG C-library 24/25/26.
 
-Open the Visual Studio and Build the Release (x64) configuration. Debug (x64) is also supported. The path to Eigen must be integrated into Windows' $(INCLUDE) system variable or has to be added to the addional include directorys setting in the VS project properties.
+Open the Visual Studio and build the Release (x64) configuration. Debug (x64) is also supported. The path to Eigen must be integrated into Windows' %INCLUDE% system variable or has to be added to the addional include directories in the VS project settings.
 
-The Release binaries are generated in the main project directory in the subfolder *bin*. Debug configuration is built in the directory set in the VS project properties.
+The Release (x64) binaries are generated in the main project directory in the subfolder *bin*. Debug configuration is built in the directory set in the VS project properties.
 
 If you prefer to employ the NAG library instead of Eigen you have to:
-* Add the path to the NAG headers to $(INCLUDE) or in the VS project settings
-* Add the path to the NAG libraries to $(LIB) or in the VS project settings
+* Add the path to the NAG headers to %INCLUDE% or in the VS project settings
+* Add the path to the NAG libraries to %LIB% or in the VS project settings
 * Add *nagc_nag_MT.lib* and *legacy_stdio_definitions.lib* as additional dependencies to the linker in the VS project settings
-* Define the preprocessor macro `USE_NAG`in the VS project settings
+* Define the preprocessor macro `USE_NAG` in the VS project settings
 
 ### Linux
 SiMaNo has successfully been tested with GCC  8.3, 8.4, 9.0 and 10.1 with Eigen 3.3.
 
-Make sure that the Eigen-headers are included in $CPATH environment variable or addpend the pass to the `INC` variable in the `Makefile`. Then type `make` while being in the Makefile directory. he binary is generated in the main project directory in the subfolder *bin*.
+Make sure that the Eigen-headers are included in $CPATH environment variable or addpend the path to the `INC` variable in the `Makefile`. Then type `make` while being in the Makefile directory. The binary is generated in the main project directory in the subfolder *bin*.
 
 
 ## Usage
@@ -73,11 +80,12 @@ There are many command line parameter which influence the behavior. These are:
 * `--genlatex / --gl` Activate the LaTeX report generation (default=false)
 * `--openpdf / --op` Generated pdf file is automatically opened with pdfxchange at --pathtopdfxchange (default=false)
 * `--pathtopdfxchange` If --openpdf is set, pdf file is automatically opened with pdfxchange at this path
+* `--logy` The y-axis in the prediction graph is scaled logarithmically
 * `--print_confidence / --pc` Print the confidence interval in the predictiion (default=false)
 * `--confidence_interval / --ci + FLOAT` Set size of confidence interval when printing it (default=0.0)
 * `--print_cost_details / --pcd` Print details of cost development during annealing (default=false)
 
-#### Per Model Type parameter
+#### Parameter Depending on Model Type Employed
 ##### Polynomial-logarithmic (pol-log) Model Configuration [Extra-P Standard Model]
 *`--max_log_range / --melog + FLOAT` Maximum exponent for lorarithms (default=4.00)
 *`--max_pol_range / --mepol + FLOAT` Maximum exponent for polynoms (default=6.00)
@@ -109,7 +117,7 @@ SiMaNo supports two different metrics in its current version *RSS* and the relat
 
 
 ## Reproducing Paper Results
-To reproduce the result presented in [BUR20], execute the respective script (*bat* for Windows, *sh* for Linux) in the *script* folder. It will generate the pdf-files in *outputs* directory. This scripts can also be employed for a general test of functionality.
+To reproduce the results presented in [BUR20], execute the respective script (*bat* for Windows, *sh* for Linux) in the *script* folder. It will generate the pdf-files in *outputs* directory (it overwrites the example files shipped with the code). These scripts can also be employed for a general test of functionality.
 
 ## References
 <table style="border:0px">

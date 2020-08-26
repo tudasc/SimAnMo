@@ -58,6 +58,7 @@ public:
 	bool do_latex_output;
 	std::string path_pdf_xchange;
 	bool open_latex_output;
+	bool ymode_log;
 
 	bool print_confidence;
 	double confidence_interval;
@@ -108,6 +109,8 @@ private:
 		do_latex_output = false;
 		open_latex_output = false;
 		path_pdf_xchange = "C:\\Program Files\\Tracker Software\\PDF Viewer";
+
+		ymode_log = false;
 
 		print_confidence = false;
 		confidence_interval = 0.0;

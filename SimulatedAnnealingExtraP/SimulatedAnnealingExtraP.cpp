@@ -62,8 +62,8 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
-	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(550, 32);	
+	//TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
+	double temp_init = 1.0;// tempin.estimateInitialCost(550, 32);
 	//target_temp = temp_init * target_temp;
 
  	Configurator::getInstance().num_threads = no_threads;
@@ -76,7 +76,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #pragma omp parallel num_threads( no_threads )
 	{
 		int tid = omp_get_thread_num();
-		double T = temp_init;        
+		double T =  temp_init;
 		SolutionType act_sol = SolutionType();
 		SolutionType abs_min_sol_thread = SolutionType();
 		SolutionModifier<SolutionType, CostCalculatorType> solmod = SolutionModifier<SolutionType, CostCalculatorType>(inputDB);
@@ -375,6 +375,7 @@ void printHelp() {
 	cout << "--genlatex / --gl" << setfill(' ') << setw(55) << "Activate the LaTeX report generation (default=false)" << endl;
 	cout << "--openpdf / --op" << setfill(' ') << setw(55) << "Generated pdf file is automatically opened with pdfxchange at --pathtopdfxchange (default=false)" << endl;
 	cout << "--pathtopdfxchange" << setfill(' ') << setw(55) << "If --openpdf is set, pdf file is automatically opened with pdfxchange at this path" << endl;
+	cout << "--logy" << setfill(' ') << setw(55) << "The y-axis in the prediction graph is scaled logarithmically" << endl;
 	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
 	cout << "--print_cost_details / --pcd" << setw(55) << "Print details of cost development during annealing (default=false)" << endl;
 
@@ -533,6 +534,11 @@ int main(int argc, char** argv)
 			i++;
 		}
 
+		if (input == "--logy" || input == "--logy") {
+			Configurator::getInstance().ymode_log = true;
+			cout << "Printing logged" << endl;
+		}
+
 		if (input == "--confidence_interval" || input == "--ci") {
 			if (argc <= i) {
 				std::cerr << "Missing argument for parameter epol. Terminating." << std::endl;
@@ -648,15 +654,5 @@ int main(int argc, char** argv)
 	annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
-
-	//MeasurementDB* inputDB = dbreader.giveExampleMeasurementDB05();
-	//MeasurementDB* inputDB = dbreader.readInputFile("C:\\temp\\ldsievem3.txt");
-	//MeasurementDB* inputDB = dbreader.readInputFile("C:\\temp\\hashsieve.txt");	
-
-	// Comparison to real solution, if available
-	/*double refvals[5] = { 0.25, 0.0003,2.25,0.5,0 };
-	Solution ref_sol = Solution(refvals);*/
-
-    return 0;
 }
 
