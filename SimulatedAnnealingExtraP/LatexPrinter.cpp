@@ -42,7 +42,7 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "\\usetikzlibrary{calc}" << endl
 		<< "\\usepgfplotslibrary{fillbetween}" << endl;
 
-	printColorDefinitions(8, myfile);
+	printColorDefinitions(Configurator::getInstance().num_threads, myfile);
 
 
 	myfile << "\\begin{document}" << endl
@@ -200,14 +200,16 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
-	//printCostDevelopment(myfile, stepsize);
+	if(Configurator::getInstance().print_costs)
+		printCostDevelopment(myfile, stepsize);
 
 	myfile << "\\end{axis}" << endl;
 	myfile << "\\end{tikzpicture}" << endl
 		<< "\\end{figure}" << endl;
 
 //////////////////// Print more details
-	//printCostDetails(myfile, calcinf, stepsize);
+	if (Configurator::getInstance().print_costs)
+		printCostDetails(myfile, calcinf, stepsize);
 
 	myfile	<< "\\end{document}" << endl;
 
@@ -235,7 +237,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 #ifdef _WIN32
 	std::cout << clean_command << std::endl;
 	std::cout << open_command << std::endl;	
-	system(open_command.c_str());
+	if(Configurator::getInstance().open_latex_output)
+		system(open_command.c_str());
 #endif
 	system("exit");
 
@@ -255,7 +258,14 @@ void LatexPrinter<SolType>::printColorDefinitions(int number, ofstream & stream)
 	colors.push_back("\\definecolor{color7}{RGB}{90,90,255}");
 	colors.push_back("\\definecolor{color8}{RGB}{90,255,90}");
 
-	for (int i = 0; i < number; i++) {
+	for (int i = 8; i < Configurator::getInstance().num_threads; i++) {
+		colors.push_back("\\definecolor{color" + std::to_string(i+1) +
+			"}{RGB}{" + std::to_string(rand() % 255) + ","
+			+ std::to_string(rand() % 255) + ","
+			+ std::to_string(rand() % 255) + "}");
+	}
+
+	for (int i = 0; i < Configurator::getInstance().num_threads; i++) {
 		stream << colors[i].c_str() << std::endl;
 	}	
 
@@ -376,9 +386,11 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		<< "\\begin{axis}[" << endl
 		<< "width=\\figurewidth," << endl
 		<< "height=\\figureheight," << endl
-		<< "scale only axis," << endl
-		//<< "ymax=" << ydimension * 1.05 << ","
-		<< "xlabel={rank of lattice $n$}," << endl
+		<< "scale only axis," << endl;
+	if (Configurator::getInstance().ymode_log == true) {
+		myfile << "ymode=log," << endl;
+	}		
+	myfile << "xlabel={rank of lattice $n$}," << endl
 		<< "ylabel={runtime in s}," << endl
 		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
@@ -452,13 +464,13 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 
 			myfile << "\\addplot fill between[" << endl
 				<< "of = funcplus and funcminus," << endl
-				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "every even segment/.style = { gray,opacity = .2 }," << endl
 				<< "soft clip = { clippath }," << endl
 				<< "];" << endl;
 
 			myfile << "\\addplot fill between[" << endl
-				<< "of = funcplus and func," << endl
-				<< "every even segment/.style = { gray,opacity = .5 }," << endl
+				<< "of = funcplus and funcminus," << endl
+				<< "every even segment/.style = { gray,opacity = .2 }," << endl
 				<< "soft clip = { domain = " << xstart << ":" << xdimension << "}," << endl
 				<< "]; " << endl;
 		}
@@ -537,7 +549,7 @@ void LatexPrinter<SolType>::printCostDetails(ofstream & myfile, CalcuationInfo<S
 		const SolType & sol = calcinf.sol_per_thread[tid];
 		myfile << "\\subsection{Thread " << tid << "}" << endl
 			<< "\\begin{itemize}" << endl
-			<< "\\item Cost (RSS):" << calcinf.sol_per_thread[tid].get_costs() << endl
+			<< "\\item Cost ( " << sol._cost_calc_type << " ):" << calcinf.sol_per_thread[tid].get_costs() << endl
 			<< "\\item Thread " << tid << " found solution:"
 			<< "{\\large" << endl;
 

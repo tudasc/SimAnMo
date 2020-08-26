@@ -16,6 +16,8 @@
 #include <time.h>
 #include "nnrRSSCostCalculator.h"
 
+#include <iomanip>
+
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
 	if (_len > 0)
@@ -86,13 +88,19 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 	int count = 0;
 	do
 	{
+		// Backtrack
+		if (count == 5000) {
+			act_sol.updateAt(3, distc3(seeder));
+		}
+
 		act_sol.updateAt(2, distc2(seeder));
-		act_sol.updateAt(3, distc3(seeder));
+		//act_sol.updateAt(3, distc3(seeder));
 
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
 		count++;
-	} while ((act_sol.get_costs() > this->get_costs()) || std::isnan(act_sol.get_costs()));
+
+	} while (/*(act_sol.get_costs() > this->get_costs()) || */std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }
@@ -143,43 +151,88 @@ ExponentialPolynomSolution & ExponentialPolynomSolution::operator= (const Expone
 }
 
 ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
+
 	ExponentialPolynomSolution random_sol = ExponentialPolynomSolution(this->get_coefficients());
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
-	std::uniform_int_distribution<int> dist2_3(2, 3);
-	//std::uniform_real_distribution<double> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
-	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
+	//std::mt19937 engine(getRandomID());
+
+	//std::uniform_int_distribution<int> dist2_3(2, 3);
+	//std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
+
 	std::uniform_int_distribution<int> dist0or1(0, 1);
-	std::uniform_real_distribution<double> distTrial(-1, 1);
+	std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
 	double new_val = -1000;
+
+	int count = 0;
 
 	// Do changes to both constants at once
 
 	// What to change
 	int choice = dist0or1(engine);
+	double old_c2 = random_sol.getAt(2);
+	double old_c3 = random_sol.getAt(3);
 
-	if (choice == 0)
+	//if (choice == 0)
 	{
 		// Change c_2
 		do
 		{
-			double perc = distTrial(engine) / 5000.0;
+			// Backtrack
+			count++;
+			if (count == 1000) {
+				count = 0;
+				random_sol.updateAt(2, old_c2);
+			}
+
+			double sign = 1.0;
+			if (dist0or1(engine) == 1) {
+				sign = -1.0;
+			}
+			double perc = sign * distTrial(engine);
+			// Make sure, that it is not too small
+			//perc += (perc / perc) * 0.001;
+
+
 			double change = perc * random_sol.getAt(2);
 			new_val = random_sol.getAt(2) + change;
+
+			if (abs(perc) < 1e-3) {
+				//cerr << "Very small: " << perc << endl;
+			}
+
+			//cout << "Perc: " << perc << endl;
 
 		} while (!((new_val > Configurator::getInstance().min_exp_coeff_range) && (new_val <= Configurator::getInstance().max_exp_coeff_range)));
 		random_sol.updateAt(2, new_val);
 	}
 
-	else
+	//else
 	{
 		// Change c_3
 		do
 		{
-			double perc = distTrial(engine) / 5000.0;
+			// Backtrack
+			count++;
+			if (count == 1000) {
+				count = 0;
+				random_sol.updateAt(3, old_c3);
+			}
+
+			double sign = 1.0;
+			if (dist0or1(engine) == 1) {
+				sign = -1.0;
+			}
+
+			double perc = sign * distTrial(engine);
+
+			// Make sure, that it is not too small
+			//perc += (perc / perc) * 0.001;
 			double change = perc * random_sol.getAt(3);
 			new_val = random_sol.getAt(3) + change;
+
+			//cout << "Perc: " << perc << endl;
 
 		} while (!(new_val > Configurator::getInstance().min_exp_exp_range && new_val <= Configurator::getInstance().max_exp_exp_range));
 		random_sol.updateAt(3, new_val);
@@ -223,7 +276,7 @@ double ExponentialPolynomSolution::evaluateConstantTermAt(double p)
 void ExponentialPolynomSolution::printModelFunction() {
 	double * c = _coefficients;
 
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
+	std::cout << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p^" << c[3] << " )" << std::endl;
 }
 
@@ -247,11 +300,12 @@ std::string ExponentialPolynomSolution::printModelFunctionLatex(double scale, bo
 	streamObj.str("");
 
 	std::string func = "";
-	if (scale < std::abs(1e-5))
+	if (std::abs(scale) < 1e-5)
 	{
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * 2 ^ ("
 			+ str_c2 + " * \\x ^ (" + str_c3 + ")) " + "})";
 	}
+
 	else {
 		std::string act_func = str_c0 + " + " + str_c1 + " * 2 ^ ("
 			+ str_c2 + " * \\x ^ (" + str_c3 + "))";

@@ -23,14 +23,8 @@ ExponentialSolution::ExponentialSolution()
 
 ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 {
-	double min_c_3 = 10e-2;
-	double max_c_3 = 4;
-
 	double min_c_4 = 0.2;
-	double max_c_4 = 1.0;
-
-	double min_c_5 = 0;
-	double max_c_5 = Configurator::getInstance().max_pol_range;
+	double max_c_4 = Configurator::getInstance().max_exp_range;
 
 	int num_threads = Configurator::getInstance().num_threads;
 	int thread_id = omp_get_thread_num();
@@ -51,7 +45,6 @@ ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 
 	double start_vals[5] = { 0, 0, 1, 0, 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];
-
 
 	paramest.estimateParameters(this);
 	costcalc.calculateCost(this);
@@ -117,7 +110,6 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
-	//std::uniform_int_distribution<int> dist20(-Configurator::getInstance().std_exp_range, Configurator::getInstance().std_exp_range);
 	std::uniform_real_distribution<double> dist20(-1.0, 1.0);
 
 	// Change c_3
@@ -126,7 +118,7 @@ ExponentialSolution ExponentialSolution::getNeighborSolution() {
 		double perc = double(dist20(engine)) / 500.0;
 		double val = random_sol.getAt(2) * perc;
 		ne_wval = random_sol.getAt(2) + val;
-	} while (!((ne_wval > 0.00) && (ne_wval < 2.1)));
+	} while (!((ne_wval > 0.00) && (ne_wval < 7.1)));
 	random_sol.updateAt(2, ne_wval);
 	return random_sol;
 }

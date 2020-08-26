@@ -46,8 +46,9 @@ int no_threads = 1;
 
 
 template<class SolutionType, class CostCalculatorType>
-double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf, double target_temp,
-	unsigned int& stepcount = 1, bool do_quality_log = false) {
+double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
+	unsigned int& stepcount = 1, bool do_quality_log = false,
+	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
@@ -61,19 +62,21 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
-	TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = tempin.estimateInitialCost(350, 32);	
+	//TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
+	double temp_init = 1.0;// tempin.estimateInitialCost(550, 32);
+	//target_temp = temp_init * target_temp;
 
  	Configurator::getInstance().num_threads = no_threads;
-    target_temp = temp_init * target_temp;
 
-	const double cooling_rate = 0.999;
-	const int step_max = 100;
+    
+
+	const double cooling_rate = _cooling_rate;
+	const int step_max = steps_per_it;
 
 #pragma omp parallel num_threads( no_threads )
 	{
 		int tid = omp_get_thread_num();
-		double T = temp_init;        
+		double T =  temp_init;
 		SolutionType act_sol = SolutionType();
 		SolutionType abs_min_sol_thread = SolutionType();
 		SolutionModifier<SolutionType, CostCalculatorType> solmod = SolutionModifier<SolutionType, CostCalculatorType>(inputDB);
@@ -102,11 +105,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
+		cout << "Starting temp is: " << target_temp << endl;
 
 		double progress = 0.0;
 		const int barWidth = 10;
-		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));
-		
+		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));		
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;		
@@ -130,12 +133,13 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				if (without_glob_improve == 25000) {
+				/*if (without_glob_improve == 150000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
-				}
+					cout << "Backtracked";
+				}*/
 
-				if (without_glob_improve2 == 200000) {
+				if (without_glob_improve2 == 1000000) {
 					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
@@ -234,8 +238,13 @@ int annealingManager() {
 	for (int i = 0; i < Configurator::getInstance().no_of_trials; i++)
 	{
 		CalcuationInfo<SolutionType> calcinf = CalcuationInfo<SolutionType>();
-		stepcount = 25;
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, 1e-10, stepcount, true);
+		stepcount = 1;
+
+		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
+			" / " << Configurator::getInstance().ann_cooling_rate << endl;
+
+		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
+			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
@@ -243,6 +252,10 @@ int annealingManager() {
 		SolutionType abs_min_sol;
 		for (int i = 0; i < no_threads; i++) {
 			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
+
+			cout << "Found minimal cost in thread " << i << " is " << sol_per_thread[i].get_costs() << " for" << endl;
+			sol_per_thread[i].printModelFunction();
+
 			if (min_cost > sol_per_thread[i].get_costs()) {
 				min_cost = sol_per_thread[i].get_costs();
 				abs_min_sol = sol_per_thread[i];
@@ -291,7 +304,9 @@ int annealingManager() {
 		MeasurementDB* inputDB_log = inputDB->cloneToLogVersion(inputDB);
 		//inputDB = inputDB_log;
 
-		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, 0.0005, stepcount, false);
+		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false,
+			10, 1e-8, 0.99);
+
 		Configurator::getInstance().max_log_range = max_log_range_back;
 		Configurator::getInstance().max_pol_range = max_pol_range_back;
 		Configurator::getInstance().min_pol_range = min_pol_range_back;
@@ -305,10 +320,11 @@ int annealingManager() {
 				calcinf_log.thread_with_solution = i;
 			}
 		}
-		std::cout << "Found minimal solution cost: " << abs_min_sol_log.get_costs()
+		std::cout << "Found minimal solution cost for linear: " << abs_min_sol_log.get_costs()
 			<< " in " << stepcount << " steps ("
 			//<< tduration << " s)"
 			<< std::endl;
+
 		abs_min_sol_log.printModelFunction();
 
 		// Replace costs by costs for the non-logarithmized data
@@ -336,26 +352,53 @@ void printHelp() {
 		<< "\t\t" << " --texfile NAME_OF_TEX_AND_PDF_FILES" << endl
 		<< endl << endl;
 	cout << "--help / -h"  << setw(55) << "Print the help" << endl;
-	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=OMP-runtime-setting)" << endl;
-	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing (default=1)" << endl;
-	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
+	cout << "" << endl;
+	cout << "--inputfile / -i + PATH_TO_INPUT_FILE/FILNAME" << setw(55) << "MANDATORY. The path and name to/of the input file" << endl;
+	cout << "--outfile / -o + PATH_TO_OUT_FILE" << setw(55) << "The path to the output files (default=folder of executable)" << endl;
+	cout << "--texfile / -t + NAME_OF_FILES" << setw(55) << "MANDATORY. The name of output tex and pdf files" << endl;
+
+	cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=1)" << endl;
+	cout << "--number_of_trials / --tr + INT" << setw(55) << "How many repetitions of annealing process (default=1)" << endl;	
+
+	cout << "--ann_target_temp / --att + FLOAT" << setw(55) << "Target temperature for annealing (default=1e-9)" << endl;
+	cout << "--ann_cooling_rate / --acr + FLOAT" << setw(55) << "Temperature degredation per iteration (default=0.99)" << endl;
+	cout << "--ann_steps / --as + INT" << setw(55) << "How many steps are performed per temperature (default=15)" << endl;
+	
+	cout << "--ann_steps_wo_mod / --awm + INT" << setw(55) << "Heuristic: Stop if no improvement after this number of steps (default=200000)" << endl;
+	cout << "--ann_steps_backtrack / --abt + INT" << setw(55) << "Heuristic: Backtrack per thread after this number of steps (default=20000)" << endl;
+	
+
 	cout << "--confidence_interval / --ci + FLOAT" << setfill(' ') << setw(55) << "Set size of confidence interval when printing it (default=0.0)" << endl;
+	
 	// Printing 
 	cout << endl << "SECTION: LaTeX Configuration" << endl;
-	cout << "--genlatex / -gl" << setfill(' ') << setw(55) << "Activate the LaTeX report generation (default=false)" << endl;
-	cout << "--openpdf / -op" << setfill(' ') << setw(55) << "Generated pdf file is automatically opened with pdfxchange at --pathtopdfxchange (default=false)" << endl;
+	cout << "--genlatex / --gl" << setfill(' ') << setw(55) << "Activate the LaTeX report generation (default=false)" << endl;
+	cout << "--openpdf / --op" << setfill(' ') << setw(55) << "Generated pdf file is automatically opened with pdfxchange at --pathtopdfxchange (default=false)" << endl;
 	cout << "--pathtopdfxchange" << setfill(' ') << setw(55) << "If --openpdf is set, pdf file is automatically opened with pdfxchange at this path" << endl;
+	cout << "--logy" << setfill(' ') << setw(55) << "The y-axis in the prediction graph is scaled logarithmically" << endl;
+	cout << "--print_confidence / --pc" << setw(55) << "Print the confidence interval in the predictiion (default=false)" << endl;
+	cout << "--print_cost_details / --pcd" << setw(55) << "Print details of cost development during annealing (default=false)" << endl;
+
+	// Pol-Log
+	cout << endl << "SECTION: Polynomial-logarithmic (pol-log) model configuration" << endl;
+	cout << "--max_log_range / --melog + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for lorarithms (default=4.00)" << endl;
+	cout << "--max_pol_range / --mepol + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for polynoms (default=6.00)" << endl;
 
 	// Lin-Log
 	cout << endl << "SECTION: Linear-logarithmic (lin-log) model configuration" << endl;
 	cout << "--create_lin_log / --ll"  << setfill(' ') << setw(55) << "Create a lin-log model if set (default=false)" << endl;
 	cout << "--base_lin_log / --bll + INT" << setfill(' ') << setw(55) << "Basis that is used for lin-log-model (default=2)" << endl;
+
+	// Lin-Log
+	cout << endl << "SECTION: Extended Extra-P model configuration" << endl;
+	cout << "--max_exp_range / --meexp + INT" << setfill(' ') << setw(55) << "Maximum coefficient in exponent (default=4.00)" << endl;
+
 	// Exp-Pol
 	cout << endl << "SECTION: Exponential-polynomial (exp-pol) model configuration" << endl;
-	cout << "--exp_pol_min_coeff / --epmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of exp-pol models (default=0.1)" << endl;
-	cout << "--exp_pol_max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=1.5)" << endl;
-	cout << "--exp_pol_min_exp/ --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=1.5)" << endl;
-	cout << "--exp_pol_max_exp/ --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=1.5)" << endl;
+	cout << "--exp_pol_min_coeff / --epmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of exp-pol models (default=0.01)" << endl;
+	cout << "--exp_pol_max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=2.0)" << endl;
+	cout << "--exp_pol_min_exp / --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=0.5)" << endl;
+	cout << "--exp_pol_max_exp / --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=3.0)" << endl;
 	exit(0);
 }
 
@@ -367,7 +410,61 @@ int main(int argc, char** argv)
 	for (int i = 1; i < argc; i++) {
 		std::string input = std::string(argv[i]);
 
-		if (input == "--inputfile") {
+		if (input == "--number_of_trials" || input == "--tr") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of trials for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().no_of_trials = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps" || input == "--as") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps int annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_cooling_rate" || input == "--acr") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of cooling rate for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_cooling_rate = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_target_temp" || input == "--att") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter target temperature for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_target_temp = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps_wo_mod" || input == "--awm") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps without modification for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps_wo_mod = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--ann_steps_backtrack" || input == "--abt") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter number of steps before backtrack for annealing. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().ann_steps_backtrack = atoi(argv[i + 1]);
+			i++;
+		}
+		
+		if (input == "-i" || input == "--inputfile") {
 			if (argc <= i) {
 				std::cerr << "Missing inputfile in argument inputfile. Terminating." << std::endl;
 				exit(-1);
@@ -397,33 +494,7 @@ int main(int argc, char** argv)
 		if (input == "--help" || input == "-h") {
 			printHelp();
 		}
-
-		if (input == "--elog") {
-			if (argc <= i) {
-				std::cerr << "Missing argument for parameter elog. Terminating." << std::endl;
-				exit(-1);
-			}
-			Configurator::getInstance().max_log_range = atof(argv[i + 1]);
-			i++;
-		}
-
-		if (input == "--epol") {
-			if (argc <= i) {
-				std::cerr << "Missing argument for parameter epol. Terminating." << std::endl;
-				exit(-1);
-			}
-			Configurator::getInstance().max_pol_range = atof(argv[i + 1]);
-			i++;
-		}
-
-		if (input == "--max_log_range" || input == "--logpol") {
-			if (argc <= i) {
-				std::cerr << "Missing argument for parameter max_log_range. Terminating." << std::endl;
-				exit(-1);
-			}
-			Configurator::getInstance().max_log_range = atof(argv[i + 1]);
-			i++;
-		}		
+		
 
 		if (input == "--number_of_threads" || input == "--nt") {
 			if (argc <= i) {
@@ -446,11 +517,11 @@ int main(int argc, char** argv)
 		}
 
 		// Printing Configuration
-		if (input == "--genlatex" || input == "-gl") {
+		if (input == "--genlatex" || input == "--gl") {
 			Configurator::getInstance().do_latex_output = true;
 		}
 
-		if (input == "--openpdf" || input == "-op") {
+		if (input == "--openpdf" || input == "--op") {
 			Configurator::getInstance().open_latex_output = true;
 		}
 
@@ -461,6 +532,11 @@ int main(int argc, char** argv)
 			}
 			Configurator::getInstance().path_pdf_xchange = std::string(argv[i + 1]);
 			i++;
+		}
+
+		if (input == "--logy" || input == "--logy") {
+			Configurator::getInstance().ymode_log = true;
+			cout << "Printing logged" << endl;
 		}
 
 		if (input == "--confidence_interval" || input == "--ci") {
@@ -474,6 +550,40 @@ int main(int argc, char** argv)
 
 		if (input == "--print_confidence" || input == "--pc") {
 			Configurator::getInstance().print_confidence = true;
+		}
+
+		if (input == "--print_cost_details" || input == "--pcd") {
+			Configurator::getInstance().print_costs = true;
+		}
+
+
+		// Pol-Log model
+		if (input == "--max_log_range" || input == "--melog") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter max_log_range. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().max_log_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--max_pol_range" || input == "--mepol") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter max_pol_range. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().max_pol_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		// Extended model
+		if (input == "--max_exp_range" || input == "--meexp") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter max_exp_range. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().max_exp_range = atof(argv[i + 1]);
+			i++;
 		}
 
 		// Exp-Pol model
@@ -495,7 +605,7 @@ int main(int argc, char** argv)
 			i++;
 		}
 
-		if (input == "--exp_pol-min_exp" || input == "--epmie") {
+		if (input == "--exp_pol_min_exp" || input == "--epmie") {
 			if (argc <= i) {
 				std::cerr << "Missing argument for parameter exp_pol-min_exp. Terminating." << std::endl;
 				exit(-1);
@@ -504,7 +614,7 @@ int main(int argc, char** argv)
 			i++;
 		}
 
-		if (input == "--exp_pol-max_exp" || input == "--epmae") {
+		if (input == "--exp_pol_max_exp" || input == "--epmae") {
 			if (argc <= i) {
 				std::cerr << "Missing argument for parameter exp_pol-max_exp. Terminating." << std::endl;
 				exit(-1);
@@ -544,15 +654,5 @@ int main(int argc, char** argv)
 	annealingManager<ExponentialPolynomSolution>();
 	//annealingManager<ExtraPSolution>();
 	return 0;
-
-	//MeasurementDB* inputDB = dbreader.giveExampleMeasurementDB05();
-	//MeasurementDB* inputDB = dbreader.readInputFile("C:\\temp\\ldsievem3.txt");
-	//MeasurementDB* inputDB = dbreader.readInputFile("C:\\temp\\hashsieve.txt");	
-
-	// Comparison to real solution, if available
-	/*double refvals[5] = { 0.25, 0.0003,2.25,0.5,0 };
-	Solution ref_sol = Solution(refvals);*/
-
-    return 0;
 }
 

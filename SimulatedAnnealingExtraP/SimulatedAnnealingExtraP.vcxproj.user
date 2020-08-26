@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--exp_pol_min_coeff 0.003 --exp_pol_max_coeff 0.005 --inputfile "../inputs/g6kDiffSeeds.txt" --outpath "C:/temp" --texfile "Aonofull-2020-02-27v3" --number_of_threads 1 --exp_pol_min_coeff 0.003 --exp_pol_min_coeff 0.005 -gl</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/subsieve.txt" --texfile "subsieve" --ci 0.1 --pc --gl --ll --outpath "../outputs" --nt 1 --pcd --epmae 2.00 --epmic 0.005 --ann_steps_wo_mod 8000000 --ann_steps 120 --ann_cooling_rate 0.999 --ann_target_temp 1e-13</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/g6kdim80-130.txt" --outpath "C:/temp" --texfile "Aonofull-2020-02-27v3" --number_of_threads 8 -gl  --ll --epmic 0.005</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/subsieve.txt" --gl --texfile "subsieve12" --outpath "../outputs" --nt 24 --pcd --epmae 2.20 --epmic 0.01 --ann_steps_wo_mod 8000000 --ann_steps 1 --ann_cooling_rate 0.999 --ann_target_temp 1e-13</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
