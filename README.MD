@@ -1,7 +1,7 @@
-# SiMaNo: Simulated Annealing Modeler
+# SimAnMo: Simulated Annealing Modeler
 
 ## Introduction
-SiMaNo (SIMulated Anealing Modeler) is a C++-software to generate runtime performance models for programs. It is based on principles of [Extra-P](https://www.scalasca.org/software/extra-p/download.html) and was presented in [BUR18]. Besides models for programs with polynomial runtime behavior, meaning that the runtime increases polynomially with the size of an input parameter *p*, SiMaNo is also able to model exponential runtime behavior where the runtime grows exponentially in *p*. The models are exported as LaTeX documents.
+SimAnMo (SIMulated Anealing Modeler) is a C++-software to generate runtime performance models for programs. It is based on principles of [Extra-P](https://www.scalasca.org/software/extra-p/download.html) and was presented in [BUR18]. Besides models for programs with polynomial runtime behavior, meaning that the runtime increases polynomially with the size of an input parameter *p*, SiMaNo is also able to model exponential runtime behavior where the runtime grows exponentially in *p*. The models are exported as LaTeX documents.
 
 The model generation process is based on an SMP-parallelized simulated annealing procedure. Training data is required in files of the following format:
 
@@ -105,7 +105,7 @@ There are many command line parameter which influence the behavior. These are:
 
 ### Different Models and Metrics
 #### Changing the Models
-SiMaNo supports the four types presented in the parameter section. If you want to create a model of that shape for your training data you have to edit the *SimulatedAnnealingExtraP.cpp*. There, go to the end of the `main`-function, which is the end of the file, and change the template parameter for the call of `annealingManager`. You can use:
+SimAnMo supports the four types presented in the parameter section. If you want to create a model of that shape for your training data you have to edit the *SimulatedAnnealingExtraP.cpp*. There, go to the end of the `main`-function, which is the end of the file, and change the template parameter for the call of `annealingManager`. You can use:
 * `ExtraPSolution`: Extra-P model as employed in [BUR18]
 * `ExponentialSolution`: Extended Extra-P model
 * `ExponentialPolynomSolution`: The exponential-polynomial model presented in [BUR20]
@@ -113,7 +113,7 @@ SiMaNo supports the four types presented in the parameter section. If you want t
 Lin-log models can be created automatically by using the `--create_lin_log / --ll` calling parameter.
 
 #### Canging the Metric
-SiMaNo supports two different metrics in its current version *RSS* and the relative average Residual Sum of Differences *raRSD* as defined in [Bur20]. To exchange the metric employed, you have to edit the function `annealingManager` in *SimulatedAnnealingExtraP.cpp*. There, search the call of `doAnnealing` an change the second template parameter. Use `nnrRSSCostCalculator` for *raRSD* and *SSCostCalculator* for *RSS*.
+SimAnMo supports two different metrics in its current version *RSS* and the relative average Residual Sum of Differences *raRSD* as defined in [Bur20]. To exchange the metric employed, you have to edit the function `annealingManager` in *SimulatedAnnealingExtraP.cpp*. There, search the call of `doAnnealing` an change the second template parameter. Use `nnrRSSCostCalculator` for *raRSD* and *SSCostCalculator* for *RSS*.
 
 
 ## Reproducing Paper Results
