@@ -1,0 +1,338 @@
+\documentclass{article}
+\usepackage[letterpaper, margin=1.5cm]{geometry}
+\usepackage{xcolor, colortbl}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{pgfplots.statistics}
+\usetikzlibrary{patterns}
+\usetikzlibrary{calc}
+\usepgfplotslibrary{fillbetween}
+\definecolor{color1}{RGB}{255,0,0}
+\definecolor{color2}{RGB}{0,255,0}
+\definecolor{color3}{RGB}{0,0,255}
+\definecolor{color4}{RGB}{255,255,0}
+\definecolor{color5}{RGB}{255,0,255}
+\definecolor{color6}{RGB}{0,255,255}
+\definecolor{color7}{RGB}{90,90,255}
+\definecolor{color8}{RGB}{90,255,90}
+\definecolor{darkorange}{RGB}{255,140,0}
+\begin{document}
+\section{Evaluation}
+{\large
+\begin{equation}
+f_{model}(x) = -0.46 + 0.0079355 * 2 ^ {0.1 * x ^ {0.86}}
+\end{equation}\begin{itemize}
+\item Thread 3 found solution in 20441308 steps requiring 0 seconds.
+\item Cost ( raRSD ):0.00549887
+\item Metrics of our model: RSS: 0.000628 / anRSS: 0.002003 / arNRS: 0.005499\item Metrics of lin-log model : RSS: 0.000639 / anRSS: 0.002020 / arNRS: 0.005707\end{itemize}
+}
+\begin{figure}[htb]
+\centering
+\newlength\figureheight
+\newlength\figurewidth
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\pgfplotsset{every tick label/.append style={font=\small}}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ylabel={runtime in s},
+xlabel={rank of lattice $n$},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [domain= 148:157, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {-0.4561 + 0.0079355 * 2 ^ (0.101031 * \x ^ (0.863162)) });
+\addlegendentry{Our model $-0.46 + 0.0079355 * 2 ^ {0.1 * x ^ {0.86}}$ };
+\addplot [draw=darkorange , domain= 148:157, samples=110,unbounded coords=jump, very thick] 
+(\x, { 2^(-8.83764 + 0.0603088 * ( \x ^ 0.999) * log2(\x) ^0))});;
+\addlegendentry{Lin-Log model $2^{-8.84 + 0.0603088 * x ^ {1}}$ };
+\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	
+(148, 1.01843)
+(149, 1.08847)
+(150, 1.12227)
+(151, 1.16292)
+(152, 1.22448)
+(153, 1.26575)
+(154, 1.31248)
+(155, 1.38767)
+(156, 1.43824)
+(157, 1.49388)
+};
+\addlegendentry{ Training data };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\newpage
+\section{Log-Function Evaluation}
+{\large
+\begin{equation}
+f_{log-model}(x) = -8.84 + 0.0603088 * x ^ {1}
+\end{equation}}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\pgfplotsset{every tick label/.append style={font=\small}}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ylabel={runtime in s},
+xlabel={rank of lattice $n$},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [domain= 148:157, samples=110,unbounded coords=jump, draw=darkorange, very thick] 
+(\x, {-8.83764 + 0.0603088 * ( \x ^ 0.999) * log2(\x) ^0)});;
+\addlegendentry{Lin-log model $-8.84 + 0.0603088 * x ^ {1}$ };
+\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	
+(148, 0.0263468)
+(149, 0.122302)
+(150, 0.16642)
+(151, 0.217752)
+(152, 0.292169)
+(153, 0.339992)
+(154, 0.392295)
+(155, 0.472665)
+(156, 0.524304)
+(157, 0.579064)
+};
+\addlegendentry{ Training data };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\newpage
+\section{Prediction of Runtime}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ymode=log,
+xlabel={rank of lattice $n$},
+ylabel={runtime in s},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [name path=func, domain=152:398, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {-0.4561 + 0.0079355 * 2 ^ (0.101031 * \x ^ (0.863162)) });
+\addlegendentry{Our model $-0.46 + 0.0079355 * 2 ^ {0.1 * x ^ {0.86}}$ };
+\addplot [name path=func, domain=152:398, samples=110,unbounded coords=jump, draw=darkorange, very thick] 
+(\x, { 2^(-8.83764 + 0.0603088 * ( \x ^ 0.999) * log2(\x) ^0))});;
+\addlegendentry{Lin-log model $2^{-8.84 + 0.0603088 * x ^ {1}}$ };
+\addplot[only marks, mark = *, mark options = {scale=1.5, fill=color5}, draw = color5] coordinates { 
+( 158 , 1.56756 )
+( 159 , 1.62944 )
+( 160 , 1.70249 )
+( 161 , 1.74979 )
+( 162 , 1.83073 )
+( 163 , 1.93835 )
+( 164 , 2.00787 )
+( 165 , 2.06991 )
+( 166 , 2.12964 )
+( 167 , 2.25237 )
+( 168 , 2.33548 )
+( 169 , 2.44984 )
+( 170 , 2.52214 )
+( 171 , 2.60794 )
+( 172 , 2.71156 )
+( 173 , 2.86174 )
+( 174 , 2.97373 )
+( 175 , 3.09837 )
+( 176 , 3.1864 )
+( 177 , 3.3429 )
+( 178 , 3.47191 )
+( 179 , 3.66203 )
+( 180 , 3.73409 )
+( 181 , 3.87013 )
+( 182 , 4.08808 )
+( 183 , 4.21946 )
+( 184 , 4.35695 )
+( 185 , 4.53585 )
+( 186 , 4.6801 )
+( 187 , 4.87233 )
+( 188 , 5.02481 )
+( 189 , 5.29202 )
+( 190 , 5.45421 )
+( 191 , 5.62849 )
+( 192 , 5.90799 )
+( 193 , 6.12056 )
+( 194 , 6.23751 )
+( 195 , 6.1827 )
+( 196 , 6.15964 )
+( 197 , 6.16149 )
+( 198 , 6.40719 )
+( 199 , 6.67286 )
+( 200 , 6.94002 )
+( 201 , 7.23815 )
+( 202 , 7.50352 )
+( 203 , 7.80821 )
+( 204 , 8.04405 )
+( 205 , 8.34414 )
+( 206 , 8.59273 )
+( 207 , 8.80939 )
+( 208 , 9.28805 )
+( 209 , 9.59421 )
+( 210 , 9.88854 )
+( 211 , 10.3767 )
+( 212 , 10.6375 )
+( 213 , 11.1545 )
+( 214 , 11.4717 )
+( 215 , 11.8196 )
+( 216 , 12.3706 )
+( 217 , 12.8673 )
+( 218 , 13.2288 )
+( 219 , 13.6336 )
+( 220 , 13.9871 )
+( 221 , 14.6278 )
+( 222 , 15.1381 )
+( 223 , 15.5947 )
+( 224 , 16.45 )
+( 225 , 16.6039 )
+( 226 , 17.423 )
+( 227 , 18.0848 )
+( 228 , 18.7747 )
+( 229 , 19.3318 )
+( 230 , 19.9414 )
+( 231 , 20.528 )
+( 232 , 21.5063 )
+( 233 , 22.1496 )
+( 234 , 22.8001 )
+( 235 , 23.4397 )
+( 236 , 24.3185 )
+( 237 , 25.5705 )
+( 238 , 26.0905 )
+( 239 , 27.3896 )
+( 240 , 28.2684 )
+( 241 , 29.143 )
+( 242 , 29.9534 )
+( 243 , 31.211 )
+( 244 , 32.0195 )
+( 245 , 33.2972 )
+( 246 , 34.3263 )
+( 247 , 35.3224 )
+( 248 , 36.4646 )
+( 249 , 38.0523 )
+( 250 , 39.0631 )
+( 251 , 40.3852 )
+( 252 , 41.6325 )
+( 253 , 43.2858 )
+( 254 , 44.2879 )
+( 255 , 46.0008 )
+( 256 , 46.9623 )
+( 257 , 49.0848 )
+( 258 , 50.4967 )
+( 259 , 52.1786 )
+( 260 , 53.2214 )
+( 261 , 55.8867 )
+( 262 , 56.5008 )
+( 263 , 59.2972 )
+( 264 , 61.1245 )
+( 265 , 62.4955 )
+( 266 , 65.0197 )
+( 267 , 67.0752 )
+( 268 , 69.0708 )
+( 269 , 70.8378 )
+( 270 , 74.5308 )
+( 271 , 76.2734 )
+( 272 , 77.7997 )
+( 273 , 79.2689 )
+( 274 , 81.9384 )
+( 275 , 83.7138 )
+( 276 , 86.5776 )
+( 277 , 90.1549 )
+( 278 , 92.7237 )
+( 279 , 95.5365 )
+( 280 , 98.7164 )
+( 281 , 102.655 )
+( 282 , 105.005 )
+( 283 , 108.079 )
+( 284 , 111.326 )
+( 285 , 114.624 )
+( 286 , 118.118 )
+( 287 , 123.029 )
+( 288 , 124.599 )
+( 289 , 131.759 )
+( 290 , 134.757 )
+( 291 , 138.015 )
+( 292 , 141.665 )
+( 293 , 147.511 )
+( 294 , 152.182 )
+( 295 , 157.591 )
+( 296 , 168.592 )
+( 297 , 177.613 )
+( 298 , 181.833 )
+( 299 , 186.288 )
+( 300 , 192.309 )
+( 301 , 196.343 )
+( 302 , 203.875 )
+( 303 , 212.776 )
+( 304 , 216.133 )
+( 305 , 224.589 )
+( 306 , 231.95 )
+( 307 , 236.646 )
+( 308 , 245.565 )
+( 309 , 251.571 )
+( 310 , 258.779 )
+( 311 , 264.666 )
+( 312 , 275.688 )
+( 313 , 285.071 )
+( 314 , 290.765 )
+( 315 , 299.707 )
+( 316 , 308.655 )
+( 317 , 317.693 )
+( 318 , 331.422 )
+( 319 , 336.432 )
+( 320 , 347.197 )
+( 321 , 362.293 )
+( 322 , 370.918 )
+( 323 , 375.608 )
+( 324 , 393.195 )
+( 325 , 401.619 )
+( 326 , 412.426 )
+( 327 , 425.653 )
+( 328 , 437.512 )
+( 329 , 451.319 )
+( 330 , 464.189 )
+( 331 , 478.28 )
+( 332 , 486.512 )
+( 333 , 499.453 )
+( 398 , 2934.02 )
+};
+\addlegendentry{ Measurements };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+{\large\begin{itemize}
+\item Deviation of our model and reference at x=398 is 6772.68\%.
+\end{itemize}}
+{\large\begin{itemize}
+\item Deviation of our model and measures at x=398 is 41.4397\%.
+\item Deviation of reference model and measures at x=398 is 99.1479\%.
+\end{itemize}}
+\newpage
+\section{Development of Costs}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ymode = log,
+ylabel={costs},
+xlabel={step},
+legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\end{document}

@@ -222,7 +222,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	return 0;
 }
 
-template<class SolutionType>
+template<class SolutionType, class CostCalcType>
 int annealingManager() {
 	std::string inputfile = Configurator::getInstance().inputfile;
 	SolutionType* sol_per_thread = new SolutionType[no_threads];
@@ -243,7 +243,7 @@ int annealingManager() {
 		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
 			" / " << Configurator::getInstance().ann_cooling_rate << endl;
 
-		doAnnealing<SolutionType, nnrRSSCostCalculator>(inputDB, sol_per_thread, calcinf, stepcount, true,
+		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, true,
 			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		// Prepare the report generation	
@@ -650,9 +650,9 @@ int main(int argc, char** argv)
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
 	//annealingManager<Solution>();
-	//annealingManager<ExponentialSolution>();
-	annealingManager<ExponentialPolynomSolution>();
-	//annealingManager<ExtraPSolution>();
+	//annealingManager<ExponentialSolution, RSSCostCalculator>();
+	annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
+	//annealingManager<ExtraPSolution, RSSCostCalculator>();
 	return 0;
 }
 

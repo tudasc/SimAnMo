@@ -163,7 +163,8 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 	std::uniform_int_distribution<int> dist0or1(0, 1);
 	std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
-	double new_val = -1000;
+	double new_val_c1 = -1000;
+	double new_val_c2 = -1000;
 
 	int count = 0;
 
@@ -184,6 +185,8 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			if (count == 1000) {
 				count = 0;
 				random_sol.updateAt(2, old_c2);
+				random_sol.updateAt(3, old_c3);
+				cout << "R" << endl;
 			}
 
 			double sign = 1.0;
@@ -194,22 +197,60 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			// Make sure, that it is not too small
 			//perc += (perc / perc) * 0.001;
 
+			//cout << sign << " / ";
 
 			double change = perc * random_sol.getAt(2);
-			new_val = random_sol.getAt(2) + change;
+			new_val_c1 = random_sol.getAt(2) + change;
 
-			if (abs(perc) < 1e-3) {
-				//cerr << "Very small: " << perc << endl;
+
+			sign = 1.0;
+			if (dist0or1(engine) == 1) {
+				sign = -1.0;
 			}
+
+			//cout << sign << endl;
+
+			perc = sign * distTrial(engine);
+			new_val_c2 = random_sol.getAt(3) + change;
+
+
+
+			//if (abs(perc) < 1e-3) {
+				//cerr << "Very small: " << perc << endl;
+			//}
 
 			//cout << "Perc: " << perc << endl;
 
-		} while (!((new_val > Configurator::getInstance().min_exp_coeff_range) && (new_val <= Configurator::getInstance().max_exp_coeff_range)));
-		random_sol.updateAt(2, new_val);
+		} while (new_val_c1 < Configurator::getInstance().min_exp_coeff_range ||
+			new_val_c1 > Configurator::getInstance().max_exp_coeff_range ||
+			new_val_c2 < Configurator::getInstance().min_exp_exp_range ||
+			new_val_c2 > Configurator::getInstance().max_exp_exp_range
+			);
+
+
+		if (new_val_c1 < Configurator::getInstance().min_exp_coeff_range) {
+			int stop = 1;
+		}
+
+		if (new_val_c1 > Configurator::getInstance().max_exp_coeff_range) {
+			int stop = 1;
+		}
+
+		if (new_val_c2 < Configurator::getInstance().min_exp_exp_range) {
+			int stop = 1;
+		}
+
+		if (new_val_c2 > Configurator::getInstance().max_exp_exp_range) {
+			int stop = 1;
+		}
+
+
+		random_sol.updateAt(2, new_val_c1);
+		random_sol.updateAt(3, new_val_c2);
 	}
 
 	//else
-	{
+	/*{
 		// Change c_3
 		do
 		{
@@ -236,7 +277,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 		} while (!(new_val > Configurator::getInstance().min_exp_exp_range && new_val <= Configurator::getInstance().max_exp_exp_range));
 		random_sol.updateAt(3, new_val);
-	}
+	}*/
 
 	return random_sol;
 }

@@ -265,7 +265,7 @@ void LatexPrinter<SolType>::printColorDefinitions(int number, ofstream & stream)
 			+ std::to_string(rand() % 255) + "}");
 	}
 
-	for (int i = 0; i < Configurator::getInstance().num_threads; i++) {
+	for (int i = 0; i < colors.size(); i++) {
 		stream << colors[i].c_str() << std::endl;
 	}	
 
