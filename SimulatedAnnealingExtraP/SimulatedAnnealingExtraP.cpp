@@ -650,8 +650,8 @@ int main(int argc, char** argv)
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
 	//annealingManager<Solution>();
-	//annealingManager<ExponentialSolution, RSSCostCalculator>();
-	annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
+	annealingManager<ExponentialSolution, RSSCostCalculator>();
+	//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
 	//annealingManager<ExtraPSolution, RSSCostCalculator>();
 	return 0;
 }

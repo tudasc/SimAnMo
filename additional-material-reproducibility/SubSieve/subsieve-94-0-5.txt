@@ -1,0 +1,7 @@
+('Starting benchmark from ', 94, ' to ', 95, ' with seed ', 0, ' and target length ', 2526.0)
+--------------------- 94  -  0
+goal length set to 2526.0
+SUB_SIEVE   {'Time': 6373.42, 'len': 2525.7, 'n': 94} {'d': 15}
+SUB_SIEVE   {'Time': 6096.46, 'len': 2525.7, 'n': 94} {'d': 15}
+
+SUB_SIEVE   average : 6234.93620801

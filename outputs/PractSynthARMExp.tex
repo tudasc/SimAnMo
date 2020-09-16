@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage[letterpaper, margin=1.5cm]{geometry}
+\usepackage{xcolor, colortbl}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{pgfplots.statistics}
+\usetikzlibrary{patterns}
+\usetikzlibrary{calc}
+\usepgfplotslibrary{fillbetween}
+\definecolor{color1}{RGB}{255,0,0}
+\definecolor{color2}{RGB}{0,255,0}
+\definecolor{color3}{RGB}{0,0,255}
+\definecolor{color4}{RGB}{255,255,0}
+\definecolor{color5}{RGB}{255,0,255}
+\definecolor{color6}{RGB}{0,255,255}
+\definecolor{color7}{RGB}{90,90,255}
+\definecolor{color8}{RGB}{90,255,90}
+\definecolor{color9}{RGB}{214,107,41}
+\definecolor{color10}{RGB}{169,44,235}
+\definecolor{color11}{RGB}{187,33,3}
+\definecolor{color12}{RGB}{95,95,239}
+\definecolor{darkorange}{RGB}{255,140,0}
+\begin{document}
+\section{Evaluation}
+{\large
+\begin{equation}
+f_{model}(x) = -0.34 + 0.0125856 * 2 ^ {0.0540508 * x }
+\end{equation}\begin{itemize}
+\item Thread 0 found solution in 25794917 steps requiring 0 seconds.
+\item Cost ( RSS ):0.00272622
+\item Metrics of our model: RSS: 0.002726 / anRSS: 0.000000 / arNRS: 0.006174\item Metrics of lin-log model : RSS: 0.002769 / anRSS: 0.002296 / arNRS: 0.006368\end{itemize}
+}
+\begin{figure}[htb]
+\centering
+\newlength\figureheight
+\newlength\figurewidth
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\pgfplotsset{every tick label/.append style={font=\small}}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ylabel={runtime in s},
+xlabel={rank of lattice $n$},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [domain= 138:147, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {-0.34465 + 0.0125856 * 2 ^ (0.0540508 * \x )});
+\addlegendentry{Our model $-0.34 + 0.0125856 * 2 ^ {0.0540508 * x }$ };
+\addplot [draw=darkorange , domain= 138:147, samples=110,unbounded coords=jump, very thick] 
+(\x, { 2^(-7.69766 + 0.0626463 * ( \x ^ 0.999) * log2(\x) ^0))});;
+\addlegendentry{Lin-Log model $2^{-7.7 + 0.0626463 * x ^ {1}}$ };
+\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	
+(138, 1.86368)
+(139, 1.95843)
+(140, 2.06519)
+(141, 2.11459)
+(142, 2.21171)
+(143, 2.32695)
+(144, 2.45352)
+(145, 2.51078)
+(146, 2.66088)
+(147, 2.75048)
+};
+\addlegendentry{ Training data };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\newpage
+\section{Log-Function Evaluation}
+{\large
+\begin{equation}
+f_{log-model}(x) = -7.7 + 0.0626463 * x ^ {1}
+\end{equation}}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\pgfplotsset{every tick label/.append style={font=\small}}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ylabel={runtime in s},
+xlabel={rank of lattice $n$},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [domain= 138:147, samples=110,unbounded coords=jump, draw=darkorange, very thick] 
+(\x, {-7.69766 + 0.0626463 * ( \x ^ 0.999) * log2(\x) ^0)});;
+\addlegendentry{Lin-log model $-7.7 + 0.0626463 * x ^ {1}$ };
+\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	
+(138, 0.898154)
+(139, 0.969698)
+(140, 1.04627)
+(141, 1.08038)
+(142, 1.14516)
+(143, 1.21844)
+(144, 1.29485)
+(145, 1.32814)
+(146, 1.4119)
+(147, 1.45968)
+};
+\addlegendentry{ Training data };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\newpage
+\section{Prediction of Runtime}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+xlabel={rank of lattice $n$},
+ylabel={runtime in s},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [name path=func, domain=142:164, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {-0.34465 + 0.0125856 * 2 ^ (0.0540508 * \x )});
+\addlegendentry{Our model $-0.34 + 0.0125856 * 2 ^ {0.0540508 * x }$ };
+\addplot [name path=func, domain=142:164, samples=110,unbounded coords=jump, draw=darkorange, very thick] 
+(\x, { 2^(-7.69766 + 0.0626463 * ( \x ^ 0.999) * log2(\x) ^0))});;
+\addlegendentry{Lin-log model $2^{-7.7 + 0.0626463 * x ^ {1}}$ };
+\addplot[only marks, mark = *, mark options = {scale=1.5, fill=color5}, draw = color5] coordinates { 
+( 148 , 2.88635 )
+( 149 , 3.02565 )
+( 150 , 3.17193 )
+( 151 , 3.27728 )
+( 152 , 3.44242 )
+( 153 , 3.57432 )
+( 154 , 3.70247 )
+( 155 , 3.84446 )
+( 156 , 4.04903 )
+( 157 , 4.15909 )
+( 158 , 4.38595 )
+( 159 , 4.59265 )
+( 160 , 4.68538 )
+( 161 , 4.85123 )
+( 162 , 5.13294 )
+( 163 , 5.3655 )
+( 164 , 5.60372 )
+};
+\addlegendentry{ Measurements };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+{\large\begin{itemize}
+\item Deviation of our model and reference at x=164 is 77.9167\%.
+\end{itemize}}
+{\large\begin{itemize}
+\item Deviation of our model and measures at x=164 is 1.47927\%.
+\item Deviation of reference model and measures at x=164 is 346.132\%.
+\end{itemize}}
+\newpage
+\section{Development of Costs}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ymode = log,
+ylabel={costs},
+xlabel={step},
+legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\end{document}

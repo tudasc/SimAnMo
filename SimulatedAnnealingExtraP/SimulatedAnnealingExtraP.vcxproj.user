@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/PractSynth03.txt" --gl --texfile "PractSynth03Exp" --outpath "../outputs" -pcd --nt 12--epmie 0.39 --epmae 2.51 --epmic 0.1 --epmac 1.5 --ann_steps_wo_mod 80000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/PractSynthARM.txt" --gl --ll --texfile "PractSynthARMExp" --outpath "../outputs" -pcd --nt 12--epmie 0.39 --epmae 1.51 --epmic 0.1 --epmac 1.5 --ann_steps_wo_mod 120000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
