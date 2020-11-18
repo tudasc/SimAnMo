@@ -28,6 +28,7 @@
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
+#include "FactorialSolution.h"
 #include "Configurator.h"
 
 using namespace std;
@@ -650,9 +651,10 @@ int main(int argc, char** argv)
 	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
 
 	//annealingManager<Solution>();
-	annealingManager<ExponentialSolution, RSSCostCalculator>();
+	//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 	//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
-	//annealingManager<ExtraPSolution, RSSCostCalculator>();
+	annealingManager<FactorialSolution, nnrRSSCostCalculator>();
+	//annealingManager<ExtraPSolution,nnrRSSCostCalculator>();
 	return 0;
 }
 

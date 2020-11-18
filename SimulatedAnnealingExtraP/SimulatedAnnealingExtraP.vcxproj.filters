@@ -132,6 +132,9 @@
     <ClInclude Include="TopRankQueue.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="FactorialSolution.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -231,6 +234,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CostCalculator.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorialSolution.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

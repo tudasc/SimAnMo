@@ -44,6 +44,10 @@ public:
 	double min_exp_exp_range;
 	double max_exp_exp_range;
 
+	// factorial models
+	double min_fac_coeff_range;
+	double max_fac_coeff_range;
+
 	double min_log_range;
 	double max_log_range;
 	std::string inputfile;
@@ -100,8 +104,12 @@ private:
 		min_exp_coeff_range = 1e-3;
 		max_exp_coeff_range = 2;
 
-		min_exp_exp_range = 0.5;
+		min_exp_exp_range = 0.2;
 		max_exp_exp_range = 3.0;
+
+		// factorial models
+		min_fac_coeff_range = 0.01;
+		max_fac_coeff_range = 3.0;
 
 		no_of_trials = 1;
 

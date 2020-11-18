@@ -183,6 +183,7 @@
     <ClInclude Include="ExponentialPolynomSolution.h" />
     <ClInclude Include="ExponentialSolution.h" />
     <ClInclude Include="ExtraPSolution.h" />
+    <ClInclude Include="FactorialSolution.h" />
     <ClInclude Include="LatexPrinter.h" />
     <ClInclude Include="LinearRegressionFinder.h" />
     <ClInclude Include="LinearSolution.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="ExponentialPolynomSolution.cpp" />
     <ClCompile Include="ExponentialSolution.cpp" />
     <ClCompile Include="ExtraPSolution.cpp" />
+    <ClCompile Include="FactorialSolution.cpp" />
     <ClCompile Include="LatexPrinter.cpp" />
     <ClCompile Include="LinearRegressionFinder.cpp" />
     <ClCompile Include="LinearSolution.cpp" />

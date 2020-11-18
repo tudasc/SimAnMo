@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/PractSynth02its.txt" --gl  --texfile "PractSynt02its" --outpath "../outputs" -pcd --nt 1--epmie 0.49 --epmae 1.51 --epmic 0.1 --epmac 1.2 --ann_steps_wo_mod 80000 --ann_steps 25 --ann_cooling_rate 0.992 --ann_target_temp 1e-10 </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/TSPPar.txt" --gl  --logy --texfile "TSPPar" --outpath "../outputs" -pcd --nt 10--epmie 0.49 --epmae 1.51 --epmic 0.1 --epmac 1.2 --ann_steps_wo_mod 80000 --ann_steps 15 --ann_cooling_rate 0.99 --ann_target_temp 1e-10 </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/PractSynthARM.txt" --gl --ll --texfile "PractSynthARMExp" --outpath "../outputs" -pcd --nt 12--epmie 0.39 --epmae 1.51 --epmic 0.1 --epmac 1.5 --ann_steps_wo_mod 120000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/TSPPar.txt" --gl --logy  --texfile "TSPPar" --outpath "../outputs" -pcd --nt 8--epmie 0.39 --epmae 1.51 --epmic 0.1 --epmac 1.5 --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

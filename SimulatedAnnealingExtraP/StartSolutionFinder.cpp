@@ -11,6 +11,7 @@
 #include <cmath>
 #include "LinearSolution.h"
 #include "ExtraPSolution.h"
+#include "FactorialSolution.h"
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
 #include "nnrRSSCostCalculator.h"
@@ -90,9 +91,11 @@ template class StartSolutionFinder<LinearSolution, RSSCostCalculator>;
 template class StartSolutionFinder<ExtraPSolution, RSSCostCalculator>;
 template class StartSolutionFinder<ExponentialSolution, RSSCostCalculator>;
 template class StartSolutionFinder<ExponentialPolynomSolution, RSSCostCalculator>;
+template class StartSolutionFinder<FactorialSolution, RSSCostCalculator>;
 
 template class StartSolutionFinder<Solution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<LinearSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<ExtraPSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<ExponentialSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<ExponentialPolynomSolution, nnrRSSCostCalculator>;
+template class StartSolutionFinder<FactorialSolution, nnrRSSCostCalculator>;
