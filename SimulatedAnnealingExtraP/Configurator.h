@@ -91,11 +91,11 @@ private:
 		num_threads = 1;
 
 		// pol-log models
-		min_pol_range = 0;
+		min_pol_range = -3;
 		max_pol_range = 6;
 
-		min_log_range = 0.0;
-		max_log_range = 4.00;
+		min_log_range = -3;
+		max_log_range = 3.00;
 
 		// exp models
 		max_exp_range = 3.8;
@@ -108,8 +108,8 @@ private:
 		max_exp_exp_range = 3.0;
 
 		// factorial models
-		min_fac_coeff_range = 0.01;
-		max_fac_coeff_range = 3.0;
+		min_fac_coeff_range = 1e-3;
+		max_fac_coeff_range = 1e-1;
 
 		no_of_trials = 1;
 

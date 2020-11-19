@@ -55,8 +55,10 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 
 	do
 	{
-		act_sol.updateAt(2, distc23_pol(seeder));
-		act_sol.updateAt(3, distc23_log(seeder));
+		double v1 = distc23_pol(seeder);
+		act_sol.updateAt(2, v1);
+		double v2 = distc23_log(seeder);
+		act_sol.updateAt(3, v2);
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
 		//count++;

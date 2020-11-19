@@ -19,6 +19,9 @@
     <Filter Include="Headerdateien\alglib">
       <UniqueIdentifier>{11f0652d-486a-4df2-a4c1-380d03691026}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\SolutionTypes">
+      <UniqueIdentifier>{8e1f6fdf-9d2b-47b9-a4ed-45f5de9480b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Solution.h">
@@ -140,9 +143,6 @@
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Solution.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="MeasurementDB.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -168,9 +168,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TemperatureInitializer.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="LinearSolution.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="LinearRegressionFinder.cpp">
@@ -224,20 +221,26 @@
     <ClCompile Include="AlglibLinearRegressionFinder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ExponentialSolution.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ExponentialPolynomSolution.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="nnrRSSCostCalculator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CostCalculator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ExponentialPolynomSolution.cpp">
+      <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="ExponentialSolution.cpp">
+      <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Solution.cpp">
+      <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearSolution.cpp">
+      <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
     <ClCompile Include="FactorialSolution.cpp">
-      <Filter>Quelldateien</Filter>
+      <Filter>Quelldateien\SolutionTypes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

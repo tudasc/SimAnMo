@@ -57,7 +57,10 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	EigenParameterEstimator paramest = EigenParameterEstimator(inputDB);
 #endif
 
-	double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
+	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
+
+	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
+	double ref_array[5] = { 0.00000121395, -0.00000119724, 0.0, 0.00816359999, 0.0 }; // ManSolFac
 
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
