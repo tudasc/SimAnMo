@@ -3,9 +3,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>--inputfile "../inputs/TSPSerWOEarly.txt" --gl --ol  --texfile "TSPSerWOEarly3" --outpath "../outputs" -pcd --nt 1  --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerEnvironment>PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
+$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/FacSynth2.txt" --gl --pcd --ol  --texfile "TSPSerWOEarly3" --outpath "../outputs" -pcd --nt 8  --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/NegPol.txt" --gl --ol  --texfile "TSPSerWOEarly3" --outpath "../outputs" -pcd --nt 1  --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerEnvironment>PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
+$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>

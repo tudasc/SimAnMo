@@ -13,6 +13,7 @@ public:
 	AbstractSolution() 
 	{
 		setRandomID();
+		is_wrapped = false;
 	}
 
 	/**
@@ -21,10 +22,12 @@ public:
 	AbstractSolution(MeasurementDB* mdb)
 	{
 		setRandomID();
+		is_wrapped = false;
 	}
 
 	AbstractSolution(double* coefficients) {
 		setRandomID();
+		is_wrapped = false;
 	}
 
 	AbstractSolution(const AbstractSolution& other) {
@@ -34,6 +37,7 @@ public:
 		_nnrRSS = other._nnrRSS;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
+		is_wrapped = other.is_wrapped;
 	}
 
 	AbstractSolution & operator= (const AbstractSolution & other) {
@@ -43,6 +47,7 @@ public:
 		_anRSS = other._anRSS;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
+		is_wrapped = other.is_wrapped;
 		return *this; 
 	}
 
@@ -105,6 +110,7 @@ protected:
 	double _costs;
 	const int _len = -1;
 	unsigned long long id;
+	bool is_wrapped;
 
 };
 

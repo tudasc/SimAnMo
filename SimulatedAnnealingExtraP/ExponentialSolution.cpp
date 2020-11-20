@@ -19,6 +19,7 @@ ExponentialSolution::ExponentialSolution()
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
+	
 }
 
 ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
@@ -30,8 +31,8 @@ ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 	int thread_id = omp_get_thread_num();
 
 	double split_c4_steps = (abs(min_c_4) + abs(max_c_4)) / num_threads;
-	double split_c4_min = thread_id * split_c4_steps;
-	double split_c4_max = (thread_id + 1) * split_c4_steps;
+	//double split_c4_min = thread_id * split_c4_steps;
+	//double split_c4_max = (thread_id + 1) * split_c4_steps;
 
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb);

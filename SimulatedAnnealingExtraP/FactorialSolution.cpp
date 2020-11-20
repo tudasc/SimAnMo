@@ -15,6 +15,7 @@ Represents a model of form c_0 + c_1 * ( p!) * log2(p)^c_2
 ****************/
 
 FactorialSolution::FactorialSolution()
+	: AbstractSolution()
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -22,7 +23,8 @@ FactorialSolution::FactorialSolution()
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
 }
 
-FactorialSolution::FactorialSolution(MeasurementDB* mdb) {
+FactorialSolution::FactorialSolution(MeasurementDB* mdb)
+	: AbstractSolution(mdb) {
 
 	double min_c_2 = Configurator::getInstance().min_pol_range;
 	double max_c_2 = Configurator::getInstance().max_pol_range;
@@ -65,6 +67,7 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb) {
 }
 
 FactorialSolution::FactorialSolution(double* coefficients)
+	: AbstractSolution(coefficients)
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -110,7 +113,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	std::uniform_real_distribution<double> dist_log_change(pos_log_diff*(-300), pos_log_diff*(300));
 
 	// Decide which coefficient to change c_2 or c_3
-	int coeff = dist2_3(seeder);
+	int coeff = 2;// dist2_3(seeder);
 
 	// Change c_2
 	if (coeff == 2) {
@@ -123,6 +126,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
+		//cout << val << endl;
 	}
 
 	// Change c_3
@@ -161,16 +165,23 @@ double FactorialSolution::evaluateConstantTermAt(double p)
 	double* c = _coefficients; // just to make access brief
 	//double y = factorial(p) * pow(p, c[2]);
 
-	//double y = factorial(p) + factorial(p) * pow(p, c[2]) * pow(log2(p), c[3]);
+	double y = c[0] + c[1] * factorial(p) * pow(p, c[2]);
 
-	double y = c[0] + c[1] * factorial(p);
+	//double y = c[0] + c[1] * factorial(p);
 	return y;
 }
 
 void FactorialSolution::printModelFunction() {
 	double * c = _coefficients;
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " * fac(p) " << " + " << c[1]
-		<< " * fac(p)" << " * p ^ " << c[2] << " * log2(p) ^ " << c[3] << std::endl;
+	//std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " * fac(p) " << " + " << c[1]
+	//	<< " * fac(p)" << " * p ^ " << c[2] << " * log2(p) ^ " << c[3] << std::endl;
+
+	//std factorial
+	//std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
+	//		<< " * fac(p)" << std::endl;
+
+	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
+		<< " * fac(p)" << "* p^" << c[2] << std::endl;
 }
 
 std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed) const {
@@ -197,8 +208,15 @@ std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed)
 	std::string func = "";
 	if (scale < std::abs(1e-5) && !powed)
 	{
-		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
-			+ "log2(\\x) ^ " + str_c2 + ") * factorial(\\x)" + "});";
+		//func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
+		//	+ "log2(\\x) ^ " + str_c2 + ") * factorial(\\x)" + "});";
+
+		//std fac
+		//func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
+		//	+ "factorial(\\x)" + "});";
+
+		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
+			+ "factorial(\\x) * \\x^" + str_c2 + "});";
 	}
 
 	else if (powed) {
@@ -237,8 +255,11 @@ std::string FactorialSolution::printModelFunctionLatexShow() const {
 
 	std::string func = "";
 
+	//func += str_c0 + " + " + str_c1 + " * "
+	//	+ "log2(x) ^ {" + str_c2 + "}" + " * factorial(p)";
+
 	func += str_c0 + " + " + str_c1 + " * "
-		+ "log2(x) ^ {" + str_c2 + "}" + " * factorial(p)";
+		" factorial(p)";
 
 	return func;
 }

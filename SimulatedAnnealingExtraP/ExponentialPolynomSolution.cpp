@@ -228,7 +228,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			);
 
 
-		if (new_val_c1 < Configurator::getInstance().min_exp_coeff_range) {
+		/*if (new_val_c1 < Configurator::getInstance().min_exp_coeff_range) {
 			int stop = 1;
 		}
 
@@ -242,7 +242,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 		if (new_val_c2 > Configurator::getInstance().max_exp_exp_range) {
 			int stop = 1;
-		}
+		}*/
 
 
 		random_sol.updateAt(2, new_val_c1);

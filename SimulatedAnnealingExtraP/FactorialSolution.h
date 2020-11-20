@@ -36,7 +36,6 @@ public:
 protected:
 	const int _len = 4;
 	FactorialSolution* lin_log_sol;
-	bool is_wrapped;
 
 private:
 	uint64_t factorial(int inp);

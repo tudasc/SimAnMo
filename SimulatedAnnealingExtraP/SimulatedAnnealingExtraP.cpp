@@ -48,7 +48,7 @@ int no_threads = 1;
 
 template<class SolutionType, class CostCalculatorType>
 double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
-	unsigned int& stepcount = 1, bool do_quality_log = false,
+	unsigned int& stepcount, bool do_quality_log = false,
 	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
@@ -56,7 +56,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #else
 	EigenParameterEstimator paramest = EigenParameterEstimator(inputDB);
 #endif
-
+	stepcount = 1;
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
@@ -121,7 +121,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			if (tid == 0) {
 				std::cout << "[";
-				int pos = barWidth * progress;
+				//int pos = barWidth * progress;
 				for (int i = 0; i < barWidth; ++i) {
 					//if (i < pos) std::cout << "=";
 					//else if (i == pos) std::cout << ">";

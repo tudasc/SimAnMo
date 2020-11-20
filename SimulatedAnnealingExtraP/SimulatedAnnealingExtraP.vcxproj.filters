@@ -173,9 +173,6 @@
     <ClCompile Include="LinearRegressionFinder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ExtraPSolution.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="EigenParameterEstimator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -240,6 +237,9 @@
       <Filter>Quelldateien\SolutionTypes</Filter>
     </ClCompile>
     <ClCompile Include="FactorialSolution.cpp">
+      <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtraPSolution.cpp">
       <Filter>Quelldateien\SolutionTypes</Filter>
     </ClCompile>
   </ItemGroup>

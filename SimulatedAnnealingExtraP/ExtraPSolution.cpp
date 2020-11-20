@@ -15,6 +15,7 @@
 ****************/
 
 ExtraPSolution::ExtraPSolution()
+	: AbstractSolution()
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -22,7 +23,9 @@ ExtraPSolution::ExtraPSolution()
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
 }
 
-ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
+ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
+	: AbstractSolution(mdb) {
+	is_wrapped = false;
 	double min_c_2 = Configurator::getInstance().min_pol_range;
 	double max_c_2 = Configurator::getInstance().max_pol_range;
 
@@ -56,8 +59,10 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 	do
 	{
 		double v1 = distc23_pol(seeder);
+		//v1 = 4.3541777161633748;
 		act_sol.updateAt(2, v1);
 		double v2 = distc23_log(seeder);
+		//v2 = 0.76860518759366092;
 		act_sol.updateAt(3, v2);
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
@@ -68,6 +73,7 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb) {
 }
 
 ExtraPSolution::ExtraPSolution(double* coefficients)
+	: AbstractSolution (coefficients)
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -89,6 +95,7 @@ ExtraPSolution::ExtraPSolution(const ExtraPSolution& other)
 
 ExtraPSolution & ExtraPSolution::operator= (const ExtraPSolution & other) {
 	AbstractSolution::operator=(other);
+
 	if (_len > 0)
 		_coefficients = new double[_len];
 
@@ -233,7 +240,7 @@ std::string ExtraPSolution::printModelFunctionLatexShow() const {
 	func += str_c0 + " + " + str_c1 + " * "
 		+ "x ^ {" + str_c2 + "}"; 
 		
-	if (abs(getAt(3) > 1e-3)) {
+	if (abs(getAt(3)) > 1e-3) {
 		func += " * log2(x) ^ {" + str_c3	+ "}";
 	}
 	return func;
@@ -265,7 +272,7 @@ std::string ExtraPSolution::printModelFunctionLatexShow(bool set) const {
 	func += str_base + "^{" + str_c0 + " + " + str_c1 + " * "
 		+ "x ^ {" + str_c2 + "}";
 
-	if (abs(getAt(3) > 1e-3)) {
+	if (abs(getAt(3)) > 1e-3) {
 		func += " * log2(x) ^ {" + str_c3	+ "}";
 	}
 	func += "}";

@@ -36,7 +36,6 @@ public:
 protected:
 	const int _len = 4;
 	ExtraPSolution* lin_log_sol;
-	bool is_wrapped;
 };
 
 #endif
