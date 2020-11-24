@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/TSPSerWOEarly.txt" --gl --ol  --texfile "TSPSerWOEarly3" --outpath "../outputs" -pcd --nt 1  --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/FacPolSynth.txt"  --min_pol_range -0.501 --max_pol_range -0.499 --pcd --gl --ol  --texfile "FacSynth2" --outpath "../outputs" -pcd --nt 8  --ann_steps_wo_mod 120000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--inputfile "../inputs/NegPol.txt" --gl --ol  --texfile "TSPSerWOEarly3" --outpath "../outputs" -pcd --nt 1  --ann_steps_wo_mod 12000 --ann_steps 80 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--inputfile "../inputs/TSPSerWOEarly.txt"  --min_pol_range -1.5 --max_pol_range 1.5  --pcd --gl --ol  --texfile "TSPSerWOEarly" --outpath "../outputs" -pcd --nt 12  --ann_steps_wo_mod 200000 --ann_steps 100 --ann_cooling_rate 0.999 --ann_target_temp 1e-14</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>

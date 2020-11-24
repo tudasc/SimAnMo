@@ -91,8 +91,8 @@ private:
 		num_threads = 1;
 
 		// pol-log models
-		min_pol_range = -3;
-		max_pol_range = 6;
+		min_pol_range = 0.000;
+		max_pol_range = 5.000;
 
 		min_log_range = -3;
 		max_log_range = 3.00;

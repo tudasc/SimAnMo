@@ -60,7 +60,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
-	double ref_array[5] = { 0.00000121395, -0.00000119724, 0.0, 0.00816359999, 0.0 }; // ManSolFac
+	double ref_array[5] = { 0.0, 1, 0.0, 0.0, 0.0 }; // ManSolFac
 
 	SolutionType ref_sol = SolutionType(ref_array);
 	refCostCalc.calculateCost(&ref_sol);
@@ -90,6 +90,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 #pragma omp critical
 		startfind.findStartSolution(&act_sol, tid, no_threads);
+		//act_sol = ref_sol;
 
 #pragma omp critical
 		{
@@ -177,7 +178,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 					//cout << accept_prob  << " :" <<  act_sol_now.get_costs() << " " << act_sol.get_costs() << endl;
 
-					if (accept_prob > prob) {
+					if (accept_prob > prob && 1 == 2) {
 						act_sol = act_sol_now;
 						if (do_quality_log) {
 							std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
@@ -386,7 +387,9 @@ void printHelp() {
 	// Pol-Log
 	cout << endl << "SECTION: Polynomial-logarithmic (pol-log) model configuration" << endl;
 	cout << "--max_log_range / --melog + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for lorarithms (default=4.00)" << endl;
+	cout << "--min_pol_range / --mipol + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent for polynoms (default=-2.00)" << endl;
 	cout << "--max_pol_range / --mepol + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for polynoms (default=6.00)" << endl;
+
 
 	// Lin-Log
 	cout << endl << "SECTION: Linear-logarithmic (lin-log) model configuration" << endl;
@@ -577,6 +580,15 @@ int main(int argc, char** argv)
 				exit(-1);
 			}
 			Configurator::getInstance().max_pol_range = atof(argv[i + 1]);
+			i++;
+		}
+
+		if (input == "--min_pol_range" || input == "--mipol") {
+			if (argc <= i) {
+				std::cerr << "Missing argument for parameter mix_pol_range. Terminating." << std::endl;
+				exit(-1);
+			}
+			Configurator::getInstance().min_pol_range = atof(argv[i + 1]);
 			i++;
 		}
 

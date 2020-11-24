@@ -104,13 +104,14 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3(2, 3);
-	std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
+	//std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 
 	double pos_pol_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
-	double pos_log_diff = Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range;
+	//double pos_log_diff = Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range;
 
-	std::uniform_real_distribution<double> dist_pol_change(pos_pol_diff*(-300), pos_pol_diff*(300));
-	std::uniform_real_distribution<double> dist_log_change(pos_log_diff*(-300), pos_log_diff*(300));
+	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.33);
+	std::uniform_int_distribution<int> sign_for_change(0, 1);
+	//std::uniform_real_distribution<double> dist_log_change(pos_log_diff*(-300), pos_log_diff*(300));
 
 	// Decide which coefficient to change c_2 or c_3
 	int coeff = 2;// dist2_3(seeder);
@@ -119,18 +120,29 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	if (coeff == 2) {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
+		int cnt = 0;
 		do {
 			//double temp = (double)distc_2_3_change(engine);
-			double temp = (double)dist_log_change(engine);
-			change = temp / 500.0;
+			double sign_pol = 1.0;
+			if (sign_for_change(engine) == 0) sign_pol = -1.0;
+
+			double temp = sign_pol * dist_pol_change(engine);
+			change = temp * abs(random_sol.getAt(2));
+			//cout << "C:" << change << " ";
+			cnt++;
+			if (cnt == 10) {
+				change = 0.0;
+				break;
+			}
+
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
-		//cout << val << endl;
+		//cout << val << ": " << (double)(pos_pol_diff * (-300)) << " / " << (double)(pos_pol_diff * (300)) <<  endl;
 	}
 
 	// Change c_3
-	if (coeff == 3) {
+	/*if (coeff == 3) {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
 		do {
@@ -139,7 +151,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);
-	}
+	}*/
 
 	return random_sol;
 }
@@ -165,7 +177,7 @@ double FactorialSolution::evaluateConstantTermAt(double p)
 	double* c = _coefficients; // just to make access brief
 	//double y = factorial(p) * pow(p, c[2]);
 
-	double y = c[0] + c[1] * factorial(p) * pow(p, c[2]);
+	double y = factorial(p) * pow(p, c[2]);
 
 	//double y = c[0] + c[1] * factorial(p);
 	return y;
@@ -181,7 +193,7 @@ void FactorialSolution::printModelFunction() {
 	//		<< " * fac(p)" << std::endl;
 
 	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
-		<< " * fac(p)" << "* p^" << c[2] << std::endl;
+		<< " * fac(p)" << "* p^(" << c[2] << ")" << std::endl;
 }
 
 std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed) const {
@@ -216,7 +228,7 @@ std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed)
 		//	+ "factorial(\\x)" + "});";
 
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
-			+ "factorial(\\x) * \\x^" + str_c2 + "});";
+			+ "factorial(\\x) * \\x^(" + str_c2 + ")});";
 	}
 
 	else if (powed) {
@@ -259,12 +271,15 @@ std::string FactorialSolution::printModelFunctionLatexShow() const {
 	//	+ "log2(x) ^ {" + str_c2 + "}" + " * factorial(p)";
 
 	func += str_c0 + " + " + str_c1 + " * "
-		" factorial(p)";
+		" factorial(p) * x^{" + str_c2 +"}";
 
 	return func;
 }
 
 std::string FactorialSolution::printModelFunctionLatexShow(bool set) const {
+	cerr << "ERR!!!" << endl;
+	int stop = 0;
+	cin >> stop;
 	std::ostringstream streamObj;
 
 	streamObj << round(getAt(0) * 100) / 100; //getAt(0);
