@@ -1,7 +1,16 @@
 MAKE=make
 TARGET=SiMaNo
-CXX=g++ 
-CC=g++ 
+
+#CC=armv7hl-redhat-linux-gnueabi-g++
+#AR=armv7hl-redhat-linux-gnueabi-g++-ar rcs
+#RANLIB=armv7hl-redhat-linux-gnueabi-g++-ranlib
+#LD=armv7hl-redhat-linux-gnueabi-ld
+
+CC=g++
+AR=ar
+RANLIB=ranlib
+LD=g++
+
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := SimulatedAnnealingExtraP
@@ -19,10 +28,10 @@ OBJEXT      := o
 LIBS=-lstdc++fs
 
 #Flags, Libraries and Includes
-CXXFLAGS := -std=c++17 -O3 -g -Wall -c -fmessage-length=0 -fopenmp -MMD -MP
+CXXFLAGS := -std=c++17 -g0 -Ofast -Wall -c -fmessage-length=0 -fopenmp -MMD -MP -Wno-strict-aliasing
 #DEFINES := -DUSE_NAG
-LIB := -fopenmp -lm -g
-LDFLAGS := -fopenmp -g
+LIB := -fopenmp -lm -g0
+LDFLAGS := -fopenmp -g0
 INC := -I$(INCDIR) -I/usr/local/include
 INCDEP := -I$(INCDIR)
 

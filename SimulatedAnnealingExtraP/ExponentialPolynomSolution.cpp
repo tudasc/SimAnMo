@@ -171,7 +171,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	// Do changes to both constants at once
 
 	// What to change
-	int choice = dist0or1(engine);
+	//int choice = dist0or1(engine);
 	double old_c2 = random_sol.getAt(2);
 	double old_c3 = random_sol.getAt(3);
 

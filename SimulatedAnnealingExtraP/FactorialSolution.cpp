@@ -106,7 +106,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	std::uniform_int_distribution<int> dist2_3(2, 3);
 	//std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 
-	double pos_pol_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
+	//double pos_pol_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
 	//double pos_log_diff = Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range;
 
 	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.33);

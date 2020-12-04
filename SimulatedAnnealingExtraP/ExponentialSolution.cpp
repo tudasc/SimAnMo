@@ -27,10 +27,10 @@ ExponentialSolution::ExponentialSolution(MeasurementDB* mdb)
 	double min_c_4 = 0.2;
 	double max_c_4 = Configurator::getInstance().max_exp_range;
 
-	int num_threads = Configurator::getInstance().num_threads;
-	int thread_id = omp_get_thread_num();
+	//int num_threads = Configurator::getInstance().num_threads;
+	//int thread_id = omp_get_thread_num();
 
-	double split_c4_steps = (abs(min_c_4) + abs(max_c_4)) / num_threads;
+	//double split_c4_steps = (abs(min_c_4) + abs(max_c_4)) / num_threads;
 	//double split_c4_min = thread_id * split_c4_steps;
 	//double split_c4_max = (thread_id + 1) * split_c4_steps;
 

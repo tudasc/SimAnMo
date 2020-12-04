@@ -42,7 +42,7 @@ double QualityLogger::get_max_cost_to_print(int stepsize)
 		it != logbookmap.end(); ++it) {
 		// Search in all entries of the corresponding vector
 		const LogVector& vec = it->second;
-		for (int i = 0; i < vec.size(); i += stepsize) {
+		for (size_t i = 0; i < vec.size(); i += stepsize) {
 			std::pair<unsigned int, double> act_pair = get_entry_at(i, it->first);
 			if (act_pair.second > maxcost)
 				maxcost = act_pair.second;
@@ -59,7 +59,7 @@ double QualityLogger::get_max_cost_to_print(int stepsize, int tid)
 		// Search in all entries of the corresponding vector
 		const LogVector& vec = this->logbookmap[tid];
 
-		for (int i = 0; i < vec.size(); i += stepsize) {
+		for (size_t i = 0; i < vec.size(); i += stepsize) {
 			std::pair<unsigned int, double> act_pair = vec[i];
 			if (act_pair.second > maxcost)
 				maxcost = act_pair.second;

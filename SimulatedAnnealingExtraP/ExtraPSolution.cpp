@@ -1,7 +1,6 @@
 #include "ExtraPSolution.h"
 #include <math.h>
 #include <iostream>
-#include <random>
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #else
@@ -13,6 +12,8 @@
 /****************
 	Represents a model of form c_0 + c_1 * p ^ (c_2) * log_2 ^ (c_3) (p)
 ****************/
+
+blaze_rng::xorshf128 ExtraPSolution::m_rng(time(NULL));
 
 ExtraPSolution::ExtraPSolution()
 	: AbstractSolution()
@@ -51,6 +52,7 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
+
 	std::uniform_real_distribution<double> distc23_pol(min_c_2, max_c_2);
 	std::uniform_real_distribution<double> distc23_log(min_c_3, max_c_3);
 
@@ -110,21 +112,22 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	ExtraPSolution random_sol = ExtraPSolution(this->get_coefficients());
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
+
 	std::uniform_int_distribution<int> dist2_3 (2, 3);
 	std::uniform_int_distribution<int> distc_2_3_change (-300, 300);
 	double pos_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
 	std::uniform_real_distribution<double> dist_pol_change(pos_diff*(-300), pos_diff*(300));
 
 	// Decide which coefficient to change c_2 or c_3
-	int coeff = dist2_3(engine);
+	int coeff = dist2_3(m_rng);
 
 	// Change c_2
 	if (coeff == 2) {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
 		do {
-			//double temp = (double)distc_2_3_change(engine);
-			double temp = (double)dist_pol_change(engine);
+			//double temp = (double)distc_2_3_change(mytwister);
+			double temp = (double)dist_pol_change(m_rng);
 			change = temp / 500.0;
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
@@ -136,7 +139,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
 		do {
-			change = (double)distc_2_3_change(engine) / 1000.0;
+			change = (double)distc_2_3_change(m_rng) / 1000.0;
 		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);

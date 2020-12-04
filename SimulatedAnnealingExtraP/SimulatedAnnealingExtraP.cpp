@@ -411,6 +411,7 @@ void printHelp() {
 
 int main(int argc, char** argv)
 {
+
 #ifdef USE_NAG
 	cout << "Running Modeler with NAG-Support" << endl;
 #endif
@@ -668,8 +669,8 @@ int main(int argc, char** argv)
 	//annealingManager<Solution>();
 	//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 	//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
-	annealingManager<FactorialSolution, nnrRSSCostCalculator>();
-	//annealingManager<ExtraPSolution,nnrRSSCostCalculator>();
+	//annealingManager<FactorialSolution, nnrRSSCostCalculator>();
+	annealingManager<ExtraPSolution,nnrRSSCostCalculator>();
 	return 0;
 }
 

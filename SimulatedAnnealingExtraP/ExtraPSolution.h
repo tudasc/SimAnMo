@@ -4,6 +4,8 @@
 #include "AbstractSolution.h"
 #include <string>
 #include <sstream>
+#include <random>
+#include "xorshf128.tcc"
 
 class ExtraPSolution : public AbstractSolution {
 public:
@@ -36,6 +38,12 @@ public:
 protected:
 	const int _len = 4;
 	ExtraPSolution* lin_log_sol;
+
+private:
+    static std::random_device   m_rd;
+    static blaze_rng::xorshf128 m_rng;
 };
+
+
 
 #endif
