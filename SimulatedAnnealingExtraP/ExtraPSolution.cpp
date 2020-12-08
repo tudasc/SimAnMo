@@ -8,6 +8,7 @@
 #endif
 #include "RSSCostCalculator.h"
 #include "Configurator.h"
+#include <iomanip>
 
 /****************
 	Represents a model of form c_0 + c_1 * p ^ (c_2) * log_2 ^ (c_3) (p)
@@ -128,7 +129,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		do {
 			//double temp = (double)distc_2_3_change(mytwister);
 			double temp = (double)dist_pol_change(m_rng);
-			change = temp / 500.0;
+			change = temp / 100.0;
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
@@ -139,7 +140,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
 		do {
-			change = (double)distc_2_3_change(m_rng) / 1000.0;
+			change = (double)distc_2_3_change(m_rng) / 500.0;
 		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);
@@ -167,10 +168,20 @@ double ExtraPSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
-void ExtraPSolution::printModelFunction() {
+std::string ExtraPSolution::printModelType() {
+	return "PolyomialLogarithmical";
+}
+
+std::string ExtraPSolution::printModelFunction() {
 	double * c = _coefficients;
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * p ^ "
+	std::stringstream strstr;
+
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * p ^ "
 		<< c[2] << " * log_2 ^ " << c[3] <<  "(p) " << std::endl;
+
+	std::cout << strstr.str();
+
+	return strstr.str();
 }
 
 std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) const {

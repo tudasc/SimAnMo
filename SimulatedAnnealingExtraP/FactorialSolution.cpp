@@ -9,6 +9,7 @@
 #endif
 #include "RSSCostCalculator.h"
 #include "Configurator.h"
+#include <iomanip>
 
 /****************
 Represents a model of form c_0 + c_1 * ( p!) * log2(p)^c_2
@@ -183,7 +184,11 @@ double FactorialSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
-void FactorialSolution::printModelFunction() {
+std::string FactorialSolution::printModelType() {
+	return "Factorial";
+}
+
+std::string FactorialSolution::printModelFunction() {
 	double * c = _coefficients;
 	//std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " * fac(p) " << " + " << c[1]
 	//	<< " * fac(p)" << " * p ^ " << c[2] << " * log2(p) ^ " << c[3] << std::endl;
@@ -192,8 +197,12 @@ void FactorialSolution::printModelFunction() {
 	//std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
 	//		<< " * fac(p)" << std::endl;
 
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
+	std::stringstream strstr;
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
 		<< " * fac(p)" << "* p^(" << c[2] << ")" << std::endl;
+
+	std::cout << strstr.str();
+	return strstr.str();
 }
 
 std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed) const {

@@ -12,6 +12,7 @@
 #include "Configurator.h"
 #include "RSSCostCalculator.h"
 #include <sstream>
+#include <iomanip>
 
 ExponentialSolution::ExponentialSolution()
 {
@@ -154,11 +155,20 @@ double ExponentialSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
-void ExponentialSolution::printModelFunction() {
+std::string ExponentialSolution::printModelType() {
+	return "Exponential";
+}
+
+std::string ExponentialSolution::printModelFunction() {
 	double * c = _coefficients;
 
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
+	std::stringstream strstr;
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p)" << std::endl;
+
+	std::cout << strstr.str();
+
+	return strstr.str();
 }
 
 std::string ExponentialSolution::printModelFunctionLatex(double scale, bool powed) const {

@@ -17,7 +17,8 @@ public:
 
 	double evaluateModelFunctionAt(double x, double scale = 0);
 	double evaluateConstantTermAt(double x);
-	void printModelFunction();	
+	std::string printModelType();
+	std::string printModelFunction();	
 
 	std::string printModelFunctionLatex(double scale=0.0, bool powed=false) const;
 	std::string printModelFunctionLatexShow() const;

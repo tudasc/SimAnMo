@@ -7,6 +7,7 @@
 #include "EigenParameterEstimator.h"
 #endif
 #include <iostream>
+#include <sstream>
 #include <random>
 #include <omp.h>
 #include "Configurator.h"
@@ -180,13 +181,21 @@ double Solution::evaluateConstantTermAt(double p)
 	return y;
 }
 
+std::string Solution::printModelType() {
+	return "Solution";
+}
+
 /*
 */
-void Solution::printModelFunction() {
+std::string Solution::printModelFunction() {
 	double * c = _coefficients;
 
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
+	std::stringstream strstr;
+	strstr << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p" << " ) * p^ " << c[3] << std::endl;
+
+	std::cout << strstr.str();
+	return strstr.str();
 }
 
 /*

@@ -138,6 +138,15 @@
     <ClInclude Include="FactorialSolution.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="SimAnMoTools.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="LibraryInterface.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SimulatedAnnealingExtraP.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -241,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="ExtraPSolution.cpp">
       <Filter>Quelldateien\SolutionTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="SimAnMoTools.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="LibraryInterface.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

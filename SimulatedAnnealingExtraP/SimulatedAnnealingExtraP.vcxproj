@@ -189,6 +189,7 @@
     <ClInclude Include="ExtraPSolution.h" />
     <ClInclude Include="FactorialSolution.h" />
     <ClInclude Include="LatexPrinter.h" />
+    <ClInclude Include="LibraryInterface.h" />
     <ClInclude Include="LinearRegressionFinder.h" />
     <ClInclude Include="LinearSolution.h" />
     <ClInclude Include="LinLogConversionRSSCalculator.h" />
@@ -199,6 +200,8 @@
     <ClInclude Include="QualityLogger.h" />
     <ClInclude Include="RingQueue.h" />
     <ClInclude Include="RSSCostCalculator.h" />
+    <ClInclude Include="SimAnMoTools.h" />
+    <ClInclude Include="SimulatedAnnealingExtraP.h" />
     <ClInclude Include="Solution.h" />
     <ClInclude Include="SolutionModifier.h" />
     <ClInclude Include="StartSolutionFinder.h" />
@@ -227,6 +230,7 @@
     <ClCompile Include="ExtraPSolution.cpp" />
     <ClCompile Include="FactorialSolution.cpp" />
     <ClCompile Include="LatexPrinter.cpp" />
+    <ClCompile Include="LibraryInterface.cpp" />
     <ClCompile Include="LinearRegressionFinder.cpp" />
     <ClCompile Include="LinearSolution.cpp" />
     <ClCompile Include="MeasurementDB.cpp" />
@@ -235,6 +239,7 @@
     <ClCompile Include="ParameterEstimator.cpp" />
     <ClCompile Include="QualityLogger.cpp" />
     <ClCompile Include="RSSCostCalculator.cpp" />
+    <ClCompile Include="SimAnMoTools.cpp" />
     <ClCompile Include="SimulatedAnnealingExtraP.cpp" />
     <ClCompile Include="Solution.cpp" />
     <ClCompile Include="SolutionModifier.cpp" />

@@ -314,11 +314,20 @@ double ExponentialPolynomSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
-void ExponentialPolynomSolution::printModelFunction() {
+std::string ExponentialPolynomSolution::printModelType() { 
+	return "ExponentialPolynomial"; 
+}
+
+std::string ExponentialPolynomSolution::printModelFunction() {
 	double * c = _coefficients;
 
-	std::cout << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
+	std::stringstream strstr;
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p^" << c[3] << " )" << std::endl;
+
+	std::cout << strstr.str();
+
+	return strstr.str();
 }
 
 std::string ExponentialPolynomSolution::printModelFunctionLatex(double scale, bool powed) const {
@@ -378,5 +387,6 @@ std::string ExponentialPolynomSolution::printModelFunctionLatexShow() const {
 	std::string func = "";
 	func += str_c0 + " + " + str_c1 + " * 2 ^ {"
 		+ str_c2 + " * x ^ {" + str_c3 + "}}";
+
 	return func;
 }

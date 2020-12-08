@@ -13,7 +13,9 @@ public:
 		return instance;
 	}
 
-	static Configurator* _instance;
+	~Configurator() {}
+
+	//static Configurator& _instance;
 
 	/*unsigned long long getID() {
 		return  this->glob_id++;
@@ -94,8 +96,8 @@ private:
 		min_pol_range = 0.000;
 		max_pol_range = 5.000;
 
-		min_log_range = -3;
-		max_log_range = 3.00;
+		min_log_range = 0.00;
+		max_log_range = 4.00;
 
 		// exp models
 		max_exp_range = 3.8;
@@ -132,7 +134,9 @@ private:
 	}
 
 	Configurator(const Configurator&);
-	~Configurator() {}
+	Configurator& operator = (const Configurator&) {
+		return *this;
+	};
 
 
 

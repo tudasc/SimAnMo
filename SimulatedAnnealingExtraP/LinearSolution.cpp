@@ -1,5 +1,7 @@
 #include "LinearSolution.h"
 #include <random>
+#include <sstream>
+#include <iomanip>
 
 LinearSolution::LinearSolution()
 {
@@ -90,7 +92,15 @@ double LinearSolution::evaluateConstantTermAt(double p) {
 	return evaluateModelFunctionAt(p);
 }
 
-void LinearSolution::printModelFunction() {
+std::string LinearSolution::printModelType() {
+	return "Linear";
+}
+
+std::string LinearSolution::printModelFunction() {
 	double * c = _coefficients;
-	std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + p * " << c[1] << std::endl;
+	std::stringstream strstr;
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + p * " << c[1] << std::endl;
+
+	std::cout << strstr.str();
+	return strstr.str();
 }
