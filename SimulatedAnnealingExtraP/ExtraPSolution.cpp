@@ -115,7 +115,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	std::mt19937 engine(seeder());
 
 	std::uniform_int_distribution<int> dist2_3 (2, 3);
-	std::uniform_int_distribution<int> distc_2_3_change (-300, 300);
+	std::uniform_int_distribution<int> distc_2_3_change (-100, 100);
 	double pos_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
 	std::uniform_real_distribution<double> dist_pol_change(pos_diff*(-300), pos_diff*(300));
 
@@ -127,9 +127,7 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
 		do {
-			//double temp = (double)distc_2_3_change(mytwister);
-			double temp = (double)dist_pol_change(m_rng);
-			change = temp / 100.0;
+			change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);			
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
@@ -140,7 +138,8 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
 		do {
-			change = (double)distc_2_3_change(m_rng) / 500.0;
+			change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);
+			//cout << change << " from " << val << endl;
 		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
 		random_sol.updateAt(3, val);

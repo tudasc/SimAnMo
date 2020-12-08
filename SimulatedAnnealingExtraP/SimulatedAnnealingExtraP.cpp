@@ -44,7 +44,7 @@ extern "C" FILE * __cdecl __iob_func(void)
 }
 #endif
 
-int no_threads = 1;
+//int no_threads = 1;
 
 
 template<class SolutionType, class CostCalculatorType>
@@ -61,22 +61,20 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
-	double ref_array[5] = { 0.0, 1, 0.0, 0.0, 0.0 }; // ManSolFac
+	double ref_array[5] = { 2.5, 1.2, 1.0, 0.0, 0.0 }; // ManSolFac
 
 	SolutionType ref_sol = SolutionType(ref_array);
-	refCostCalc.calculateCost(&ref_sol);
+	//refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	//TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
 	double temp_init = 1.0;// tempin.estimateInitialCost(550, 32);
 	//target_temp = temp_init * target_temp;
 
- 	Configurator::getInstance().num_threads = no_threads;
-
-    
-
 	const double cooling_rate = _cooling_rate;
 	const int step_max = steps_per_it;
+
+	const int no_threads = Configurator::getInstance().num_threads;
 
 #pragma omp parallel num_threads( no_threads )
 	{
@@ -228,49 +226,21 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	return 0;
 }
 
-SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
-	std::map<double, double>& measurement_points, std::string options) {
-
-	// Input parameters to standardformat
-	istringstream iss(options);
-	vector<string> voptions{ istream_iterator<string>{iss},
-						  istream_iterator<string>{} };
-
-	for (auto i : voptions) {
-		cout << i << endl;
-	}
-	
-	std::vector<char*> cstrings;
-	cstrings.reserve(voptions.size());
-	for (size_t i = 0; i < voptions.size(); ++i)
-		cstrings.push_back(const_cast<char*>(voptions[i].c_str()));
-
-	int temp;
-	if (!cstrings.empty())
-		SimAnMo::parseConsoleParameters(cstrings.size(), &cstrings[0], temp);
-
-	// Input DB from maps
-
-	// Annealing with several types
-	return SimAnMo::FunctionModel();
-}
-
 template<class SolutionType, class CostCalcType>
-int annealingManager() {
+SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 	MeasurementDB* inputDB = nullptr;
-	if (SimAnMo::readInputMeasurementData(inputDB)) {
-		cerr << "Exiting due to measurement data reading error." << endl;
-		exit(1001);
+	if (idb != nullptr) {
+		inputDB = idb;
 	}
 
+	else {
+		if (SimAnMo::readInputMeasurementData(inputDB)) {
+			cerr << "Exiting due to measurement data reading error." << endl;
+			exit(1001);
+		}
+	}
 
-	
-
-	//std::string inputfile = Configurator::getInstance().inputfile;
-	//MeasurementDBReader dbreader = MeasurementDBReader();
-	//MeasurementDB* inputDB = dbreader.readInputFile(inputfile);
-
-	SolutionType* sol_per_thread = new SolutionType[no_threads];
+	SolutionType* sol_per_thread = new SolutionType[Configurator::getInstance().num_threads ];
 	CalcuationInfo<SolutionType> best_calcinf = CalcuationInfo<SolutionType>();
 	double best_cost = std::numeric_limits<double>::max();
 	SolutionType best_abs_min_sol;
@@ -289,6 +259,8 @@ int annealingManager() {
 
 		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, true,
 			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
+
+		const int no_threads = Configurator::getInstance().num_threads;
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
@@ -346,7 +318,7 @@ int annealingManager() {
 
 		stepcount = 1;
 
-		ExtraPSolution* sol_per_thread_log = new ExtraPSolution[no_threads];
+		ExtraPSolution* sol_per_thread_log = new ExtraPSolution[Configurator::getInstance().num_threads];
 		MeasurementDB* inputDB_log = inputDB->cloneToLogVersion(inputDB);
 		//inputDB = inputDB_log;
 
@@ -358,7 +330,7 @@ int annealingManager() {
 		Configurator::getInstance().min_pol_range = min_pol_range_back;
 
 		min_cost = std::numeric_limits<double>::max();
-		for (int i = 0; i < no_threads; i++) {
+		for (int i = 0; i < Configurator::getInstance().num_threads; i++) {
 			calcinf_log.sol_per_thread.push_back(sol_per_thread_log[i]);
 			if (min_cost > sol_per_thread_log[i].get_costs()) {
 				min_cost = sol_per_thread_log[i].get_costs();
@@ -386,18 +358,50 @@ int annealingManager() {
 		LatexPrinter<SolutionType> latprint = LatexPrinter<SolutionType>();
 		latprint.printSolution("", &best_abs_min_sol, inputDB, best_calcinf);
 	}
-
-
-	delete inputDB;
-	return 0;
+	
+	//delete inputDB;
+	return best_abs_min_sol;
 }
 
+SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
+	std::map<double, double>& measurement_points, std::string options) {
 
+	// Input parameters to standardformat
+	istringstream iss(options);
+	vector<string> voptions{ istream_iterator<string>{iss},
+						  istream_iterator<string>{} };
+
+	for (auto i : voptions) {
+		cout << i << endl;
+	}
+
+	std::vector<char*> cstrings;
+	cstrings.reserve(voptions.size());
+	for (size_t i = 0; i < voptions.size(); ++i)
+		cstrings.push_back(const_cast<char*>(voptions[i].c_str()));
+
+	int temp;
+	if (!cstrings.empty())
+		SimAnMo::parseConsoleParameters(cstrings.size(), &cstrings[0], temp);
+
+	// Input DB from maps
+	MeasurementDB* mdb = new MeasurementDB(training_points, measurement_points);
+
+	ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(mdb);
+	exsol.printModelFunction();
+
+	SimAnMo::FunctionModel funcmod = SimAnMo::FunctionModel();
+
+	// Annealing with several types
+	return SimAnMo::FunctionModel();
+}
 
 int main(int argc, char** argv)
 {
-	std::map<double, double> mempty;
-	SimAnMo::findModel(mempty, mempty, "--inputfile \"../inputs/fplll1.00.txt\" --gl --ol  --texfile \"fplll1.00vTest.txt\" --outpath \"../outputs\"  --nt 8  --ann_steps_wo_mod 20000 --ann_steps 20 --ann_cooling_rate 0.997 --ann_target_temp 1e-14");
+	std::map<double, double> mtrai{ {1,3.7}, {2,4.9}, {3,6.1}, {4,7.3}, {5,8.5}, {6,9.7}, {17,22.9}, {25,32.5} };
+	std::map<double, double> mmess{ {25,32.5}, {35,44.5}, {45,56.5} };
+
+	SimAnMo::findModel(mtrai, mmess, "--inputfile .. / inputs / Const01.txt  --texfile fplll1.00vTest.txt --outpath ../outputs  --nt 8  --ann_steps_wo_mod 20000 --ann_steps 40 --ann_cooling_rate 0.998 --pcd --ann_target_temp 1e-14");
 
 	return 0;
 #ifdef USE_NAG
@@ -406,7 +410,7 @@ int main(int argc, char** argv)
 	int depp = 1;
 	SimAnMo::parseConsoleParameters(argc, argv, depp);
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
-	omp_set_num_threads(no_threads); // Use X threads for all consecutive parallel regions
+	omp_set_num_threads(Configurator::getInstance().num_threads); // Use X threads for all consecutive parallel regions
 
 	//annealingManager<Solution>();
 	//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();

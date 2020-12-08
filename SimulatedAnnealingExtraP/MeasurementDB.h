@@ -3,10 +3,13 @@
 
 #include <vector>
 #include <utility>
+#include <map>
 
 class MeasurementDB {
 public:
 	MeasurementDB();
+	MeasurementDB(std::map<double,double>& trai, std::map<double, double>& mes);
+
 	MeasurementDB* cloneToLogVersion(MeasurementDB* inputDB);
 	void addTrainingPoint(std::pair<double, double>& measurement);
 	void addMeasurementPoint(std::pair<double, double>& measurement);

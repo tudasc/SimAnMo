@@ -51,7 +51,7 @@ public:
 		return *this; 
 	}
 
-	~AbstractSolution() {
+	virtual ~AbstractSolution() {
 		delete _coefficients;
 	}
 
@@ -68,7 +68,7 @@ public:
 	virtual double evaluateModelFunctionAt(double x, double scale=0) = 0;
 	virtual double evaluateConstantTermAt(double x) = 0;
 
-	void updateAt(int pos, double val) { _coefficients[pos] = val; }
+	virtual void updateAt(int pos, double val) { _coefficients[pos] = val; }
 
 	virtual std::string printModelFunction() = 0;
 	virtual std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const = 0;

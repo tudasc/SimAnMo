@@ -10,6 +10,21 @@ MeasurementDB::MeasurementDB() {
 	this->_no_measurements = 0;
 }
 
+MeasurementDB::MeasurementDB(std::map<double, double>& trai, std::map<double, double>& mes) {
+	this->_no_trainingpoints = 0;
+	this->_no_measurements = 0;
+	for (const auto& m1 : trai) {
+		std::pair<double, double> tp{ m1.first, m1.second };
+		addTrainingPoint(tp);
+	}
+
+	for (const auto& m2 : mes) {
+		std::pair<double, double> tp{ m2.first, m2.second };
+		addMeasurementPoint(tp);
+	}
+	printMeasurementDB();
+}
+
 MeasurementDB* MeasurementDB::cloneToLogVersion(MeasurementDB* inputDB) {
 	MeasurementDB* newLogDB = new MeasurementDB();	
 	int base = Configurator::getInstance().base_for_lin_log;

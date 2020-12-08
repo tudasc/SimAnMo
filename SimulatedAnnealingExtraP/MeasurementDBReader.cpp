@@ -102,8 +102,8 @@ MeasurementDB * MeasurementDBReader::giveExampleMeasurementDB03()
 	std::pair<double, double> pair3(2, 4.124504793);
 	std::pair<double, double> pair4(3, 5.428171392);
 	std::pair<double, double> pair5(4, 7.778031643);
-	std::pair<double, double> pair6(4, 12.01365692);
-	std::pair<double, double> pair7(4, 19.6483754);
+	//std::pair<double, double> pair6(4, 12.01365692);
+	//std::pair<double, double> pair7(4, 19.6483754);
 
 	mdb->addTrainingPoint(pair1);
 	mdb->addTrainingPoint(pair2);
