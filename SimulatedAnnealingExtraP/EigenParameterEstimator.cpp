@@ -44,11 +44,11 @@ void EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double 
 
 	// Update Solution
 	for (int i = 1; i <= n; ++i) {
-		if (abs(x[i - 1]) < 10e-15) {
+		if (abs(x[i - 1]) < 10e-11) {
 			if (abs(x[i - 1]) > 0.0)
-				x[i - 1] = 10e-15;
+				x[i - 1] = 10e-11;
 			else
-				x[i - 1] = -10e-15;
+				x[i - 1] = -10e-11;
 		}
 			
 		sol->updateAt(i - 1, x[i - 1]);

@@ -147,6 +147,9 @@
     <ClInclude Include="SimulatedAnnealingExtraP.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="InMaps.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">

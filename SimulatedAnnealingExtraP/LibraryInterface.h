@@ -7,25 +7,28 @@
 
 namespace SimAnMo {
 
-	struct Costs
+	/*struct Costs
 	{
 		double RSS;
 		double anrRSS;
-	};
+	};*/
 
 class FunctionModel {
 public:
 	FunctionModel();
+	FunctionModel(AbstractSolution* insol);
+
 	double evaluateModelFunctionAt(double x);
 
 	std::string getTypeOfModelFunction();
 	std::string getModelFunction();
+	bool isConstant();
 
-	Costs getCosts();
-
+	double getRSS();
+	double getraRSD();
+	double getCosts();
 
 private:
-	Costs costs;
 	AbstractSolution* sol;
 };
 

@@ -170,6 +170,12 @@ double Solution::evaluateModelFunctionAt(double p, double scale)
 	return y;
 }
 
+bool Solution::isConstantModel() {
+	if (_coefficients[1] < abs(10e-10))
+		return true;
+	return false;
+}
+
 /*
 */
 double Solution::evaluateConstantTermAt(double p)
@@ -187,14 +193,13 @@ std::string Solution::printModelType() {
 
 /*
 */
-std::string Solution::printModelFunction() {
+std::string Solution::getModelFunction() {
 	double * c = _coefficients;
 
 	std::stringstream strstr;
 	strstr << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p" << " ) * p^ " << c[3] << std::endl;
 
-	std::cout << strstr.str();
 	return strstr.str();
 }
 

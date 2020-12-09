@@ -114,34 +114,43 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
 
-	std::uniform_int_distribution<int> dist2_3 (2, 3);
-	std::uniform_int_distribution<int> distc_2_3_change (-100, 100);
-	double pos_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
-	std::uniform_real_distribution<double> dist_pol_change(pos_diff*(-300), pos_diff*(300));
+	std::uniform_int_distribution<int> dist2_3 (2, 5);
+	std::uniform_int_distribution<int> distc_2_3_change (-15, 15);
+	
+	double pol_diff = abs(Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range);
+	double log_diff = abs(Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range);
+
+
 
 	// Decide which coefficient to change c_2 or c_3
 	int coeff = dist2_3(m_rng);
 
 	// Change c_2
-	if (coeff == 2) {
+	if (coeff == 2 || coeff >= 4) {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
+		int cnt = 0;
 		do {
-			change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);			
+			double t = (double)distc_2_3_change(m_rng) / 10;
+			change = (t / 100.0) * pol_diff;
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
 		random_sol.updateAt(2, val);
 	}
 
 	// Change c_3
-	if (coeff == 3) {
+	if (coeff >= 3) {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
+		int cnt = 0;
 		do {
-			change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);
-			//cout << change << " from " << val << endl;
+			//change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);
+			double t = (double)distc_2_3_change(m_rng) / 10;
+			change = (t / 100.0) * log_diff;
+			//cout << change << " from " << val << " after " << ++cnt << endl;
 		} while (!((val + change) >= Configurator::getInstance().min_log_range && (val + change <= Configurator::getInstance().max_log_range)));
 		val += change;
+		//cout << "now: " << val << endl;
 		random_sol.updateAt(3, val);
 	}
 
@@ -160,6 +169,12 @@ double ExtraPSolution::evaluateModelFunctionAt(double p, double scale) {
 		return y;
 }
 
+bool ExtraPSolution::isConstantModel() {
+	if (_coefficients[1] < abs(10e-10))
+		return true;
+	return false;
+}
+
 double ExtraPSolution::evaluateConstantTermAt(double p)
 {
 	double* c = _coefficients; // just to make access brief
@@ -171,14 +186,12 @@ std::string ExtraPSolution::printModelType() {
 	return "PolyomialLogarithmical";
 }
 
-std::string ExtraPSolution::printModelFunction() {
+std::string ExtraPSolution::getModelFunction() {
 	double * c = _coefficients;
 	std::stringstream strstr;
 
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * p ^ "
 		<< c[2] << " * log_2 ^ " << c[3] <<  "(p) " << std::endl;
-
-	std::cout << strstr.str();
 
 	return strstr.str();
 }

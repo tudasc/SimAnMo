@@ -32,6 +32,8 @@
 #include "SimAnMoTools.h"
 #include "SimulatedAnnealingExtraP.h"
 
+#include "InMaps.h"
+
 using namespace std;
 
 
@@ -51,7 +53,7 @@ template<class SolutionType, class CostCalculatorType>
 double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
 	unsigned int& stepcount, bool do_quality_log = false,
 	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
-	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
+	//CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
 #else
@@ -109,7 +111,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0.0, 1.0);
+#if SIMANMO_VERBOSE > 1
 		cout << "Starting temp is: " << target_temp << endl;
+#endif
 
 		double progress = 0.0;
 		const int barWidth = 10;
@@ -119,6 +123,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		int without_glob_improve2 = 0;		
 		while (T > target_temp) {    
 
+#if SIMANMO_VERBOSE > 1
 			if (tid == 0) {
 				std::cout << "[";
 				//int pos = barWidth * progress;
@@ -131,6 +136,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				std::cout << "] " << int(progress * 100.0) << " %\r";
 				std::cout.flush();
 			}
+#endif
 
 			progress += progressstepwidth; // for demonstration only
 			steps++;
@@ -216,7 +222,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #endif
 
 	LinearSolution linsol = linfind.findSolution();
+#if SIMANMO_VERBOSE > 1
 	linsol.printModelFunction();
+#endif
 
 	calcinf.iterations = stepcount;	
 	calcinf.lin_sol = linsol;
@@ -257,7 +265,7 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
 			" / " << Configurator::getInstance().ann_cooling_rate << endl;
 
-		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, true,
+		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, false,
 			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		const int no_threads = Configurator::getInstance().num_threads;
@@ -268,9 +276,10 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 		SolutionType abs_min_sol;
 		for (int i = 0; i < no_threads; i++) {
 			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
-
+#if SIMANMO_VERBOSE > 1
 			cout << "Found minimal cost in thread " << i << " is " << sol_per_thread[i].get_costs() << " for" << endl;
 			sol_per_thread[i].printModelFunction();
+#endif
 
 			if (min_cost > sol_per_thread[i].get_costs()) {
 				min_cost = sol_per_thread[i].get_costs();
@@ -371,9 +380,11 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 	vector<string> voptions{ istream_iterator<string>{iss},
 						  istream_iterator<string>{} };
 
+	cout << "Found options: ";
 	for (auto i : voptions) {
-		cout << i << endl;
+		cout << i << " ";
 	}
+	cout << endl;
 
 	std::vector<char*> cstrings;
 	cstrings.reserve(voptions.size());
@@ -385,23 +396,71 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 		SimAnMo::parseConsoleParameters(cstrings.size(), &cstrings[0], temp);
 
 	// Input DB from maps
-	MeasurementDB* mdb = new MeasurementDB(training_points, measurement_points);
+	MeasurementDB mdb = MeasurementDB(training_points, measurement_points);
 
-	ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(mdb);
-	exsol.printModelFunction();
+	// Test a Exponential Solution
+	ExponentialPolynomSolution expolsol = annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>(&mdb);
+	SimAnMo::FunctionModel funcmod_expol = SimAnMo::FunctionModel(new ExponentialPolynomSolution(expolsol));
 
-	SimAnMo::FunctionModel funcmod = SimAnMo::FunctionModel();
+	// Test a Polynomial Logarithmical Solution
+	ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(&mdb);
+	SimAnMo::FunctionModel funcmod_pollog = SimAnMo::FunctionModel(new ExtraPSolution(exsol));
 
-	// Annealing with several types
-	return SimAnMo::FunctionModel();
+	if (funcmod_pollog.getCosts() < funcmod_expol.getCosts())
+		return funcmod_pollog;
+
+	else
+		return funcmod_expol;
+
+	
 }
 
 int main(int argc, char** argv)
 {
-	std::map<double, double> mtrai{ {1,3.7}, {2,4.9}, {3,6.1}, {4,7.3}, {5,8.5}, {6,9.7}, {17,22.9}, {25,32.5} };
-	std::map<double, double> mmess{ {25,32.5}, {35,44.5}, {45,56.5} };
 
-	SimAnMo::findModel(mtrai, mmess, "--inputfile .. / inputs / Const01.txt  --texfile fplll1.00vTest.txt --outpath ../outputs  --nt 8  --ann_steps_wo_mod 20000 --ann_steps 40 --ann_cooling_rate 0.998 --pcd --ann_target_temp 1e-14");
+	std::ofstream out("out.txt");
+	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
+	//std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
+
+	//std::map<double, double> mtrai{ {1,3.72}, {2,3.74}, {3,3.72}, {4,3.74}, {5,3.72}, {6,3.74}, {17,3.72}, {45,3.74} };
+	std::map<double, double> mmess{  };
+
+	SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 1 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD() 
+		<< ". It is constant: " << modi.isConstant() << endl;
+
+	// Mod 2
+	/*modi = SimAnMo::findModel(m2, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
+		<< ". It is constant: " << modi.isConstant() << endl;
+
+	// Mod 3
+	modi = SimAnMo::findModel(m3, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
+		<< ". It is constant: " << modi.isConstant() << endl;*/
+
+	// Mod 4
+	modi = SimAnMo::findModel(m4, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 50 --ann_cooling_rate 0.999 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
+		<< ". It is constant: " << modi.isConstant() << endl;
+
+	// Mod 5
+	/*modi = SimAnMo::findModel(m5, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
+		<< ". It is constant: " << modi.isConstant() << endl;*/
+
+
+	std::cout.rdbuf(coutbuf); //reset to standard output again
 
 	return 0;
 #ifdef USE_NAG

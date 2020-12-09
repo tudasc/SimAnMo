@@ -25,9 +25,9 @@ public:
 	FactorialSolution getNeighborSolution();
 	double evaluateModelFunctionAt(double x, double scale = 0);
 	double evaluateConstantTermAt(double p);
+	bool isConstantModel();
 	std::string printModelType();
-	std::string printModelFunction();
-
+	std::string getModelFunction();
 
 	std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const;
 

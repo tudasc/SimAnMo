@@ -155,18 +155,22 @@ double ExponentialSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
+bool ExponentialSolution::isConstantModel() {
+	if (_coefficients[1] < abs(10e-12))
+		return true;
+	return false;
+}
+
 std::string ExponentialSolution::printModelType() {
 	return "Exponential";
 }
 
-std::string ExponentialSolution::printModelFunction() {
+std::string ExponentialSolution::getModelFunction() {
 	double * c = _coefficients;
 
 	std::stringstream strstr;
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p)" << std::endl;
-
-	std::cout << strstr.str();
 
 	return strstr.str();
 }

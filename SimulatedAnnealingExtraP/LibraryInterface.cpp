@@ -5,12 +5,29 @@ SimAnMo::FunctionModel::FunctionModel() {
 
 }
 
+SimAnMo::FunctionModel::FunctionModel(AbstractSolution* insol) {
+	sol = insol;
+}
+
 double SimAnMo::FunctionModel::evaluateModelFunctionAt(double x) {
 	return sol->evaluateModelFunctionAt(x);
 }
 
-SimAnMo::Costs SimAnMo::FunctionModel::getCosts() {
-	return this->costs;
+bool SimAnMo::FunctionModel::isConstant() {
+	return sol->isConstantModel();
+}
+
+
+double SimAnMo::FunctionModel::getRSS() {
+	return sol->_RSS;
+}
+
+double SimAnMo::FunctionModel::getraRSD() {
+	return sol->_nnrRSS;
+}
+
+double SimAnMo::FunctionModel::getCosts() {
+	return sol->get_costs();
 }
 
 std::string SimAnMo::FunctionModel::getTypeOfModelFunction() {
@@ -18,7 +35,7 @@ std::string SimAnMo::FunctionModel::getTypeOfModelFunction() {
 }
 
 std::string SimAnMo::FunctionModel::getModelFunction () {
-	return sol->printModelFunction();
+	return sol->getModelFunction();
 }
 
 SimAnMo::FunctionModel SimAnMo::findModel(std::map<double, double>& training_points,

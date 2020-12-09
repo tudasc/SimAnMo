@@ -184,11 +184,16 @@ double FactorialSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
+// Per definition never constant!
+bool FactorialSolution::isConstantModel() {
+	return false;
+}
+
 std::string FactorialSolution::printModelType() {
 	return "Factorial";
 }
 
-std::string FactorialSolution::printModelFunction() {
+std::string FactorialSolution::getModelFunction() {
 	double * c = _coefficients;
 	//std::cout << "(ID: " << this->id << ") \t f(p) = " << c[0] << " * fac(p) " << " + " << c[1]
 	//	<< " * fac(p)" << " * p ^ " << c[2] << " * log2(p) ^ " << c[3] << std::endl;
@@ -200,8 +205,6 @@ std::string FactorialSolution::printModelFunction() {
 	std::stringstream strstr;
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
 		<< " * fac(p)" << "* p^(" << c[2] << ")" << std::endl;
-
-	std::cout << strstr.str();
 	return strstr.str();
 }
 

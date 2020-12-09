@@ -314,18 +314,22 @@ double ExponentialPolynomSolution::evaluateConstantTermAt(double p)
 	return y;
 }
 
+bool ExponentialPolynomSolution::isConstantModel() {
+	if(_coefficients[1] < abs(10e-12))
+		return true;
+	return false;
+}
+
 std::string ExponentialPolynomSolution::printModelType() { 
 	return "ExponentialPolynomial"; 
 }
 
-std::string ExponentialPolynomSolution::printModelFunction() {
-	double * c = _coefficients;
+std::string ExponentialPolynomSolution::getModelFunction() {
+	double* c = _coefficients;
 
 	std::stringstream strstr;
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p^" << c[3] << " )" << std::endl;
-
-	std::cout << strstr.str();
 
 	return strstr.str();
 }

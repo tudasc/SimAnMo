@@ -16,8 +16,9 @@ public:
 
 	double evaluateModelFunctionAt(double x, double scale = 0);
 	double evaluateConstantTermAt(double x);
+	bool isConstantModel();
 	std::string printModelType();
-	std::string printModelFunction();
+	std::string getModelFunction();
 
 	std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const;
 	std::string printModelFunctionLatexShow() const;

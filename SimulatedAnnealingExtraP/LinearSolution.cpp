@@ -88,6 +88,12 @@ double LinearSolution::evaluateModelFunctionAt(double p, double scale)
 	return y;
 }
 
+bool LinearSolution::isConstantModel() {
+	if (_coefficients[1] < abs(10e-10))
+		return true;
+	return false;
+}
+
 double LinearSolution::evaluateConstantTermAt(double p) {
 	return evaluateModelFunctionAt(p);
 }
@@ -96,11 +102,9 @@ std::string LinearSolution::printModelType() {
 	return "Linear";
 }
 
-std::string LinearSolution::printModelFunction() {
+std::string LinearSolution::getModelFunction() {
 	double * c = _coefficients;
 	std::stringstream strstr;
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + p * " << c[1] << std::endl;
-
-	std::cout << strstr.str();
 	return strstr.str();
 }

@@ -188,6 +188,7 @@
     <ClInclude Include="ExponentialSolution.h" />
     <ClInclude Include="ExtraPSolution.h" />
     <ClInclude Include="FactorialSolution.h" />
+    <ClInclude Include="InMaps.h" />
     <ClInclude Include="LatexPrinter.h" />
     <ClInclude Include="LibraryInterface.h" />
     <ClInclude Include="LinearRegressionFinder.h" />

@@ -67,10 +67,17 @@ public:
 
 	virtual double evaluateModelFunctionAt(double x, double scale=0) = 0;
 	virtual double evaluateConstantTermAt(double x) = 0;
+	virtual bool isConstantModel() = 0;
 
 	virtual void updateAt(int pos, double val) { _coefficients[pos] = val; }
 
-	virtual std::string printModelFunction() = 0;
+	virtual std::string printModelFunction() {
+		std::string str = getModelFunction();
+		std::cout << str;
+		return str;
+	}
+	virtual std::string getModelFunction() = 0;
+
 	virtual std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const = 0;
 	virtual std::string printModelFunctionLatexShow() const = 0;
 	virtual std::string printModelType() { return "Abstract"; }

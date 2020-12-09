@@ -26,9 +26,10 @@ public:
 
 	ExtraPSolution getNeighborSolution();
 	double evaluateModelFunctionAt(double x, double scale = 0);
+	bool isConstantModel();
 	double evaluateConstantTermAt(double p);
 	std::string printModelType();
-	std::string printModelFunction();
+	std::string getModelFunction();
 
 	void updateAt(int pos, double val) { 
 		if(abs(val) > 0.1)
