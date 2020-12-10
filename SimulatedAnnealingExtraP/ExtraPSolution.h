@@ -32,10 +32,7 @@ public:
 	std::string getModelFunction();
 
 	void updateAt(int pos, double val) { 
-		if(abs(val) > 0.1)
-			_coefficients[pos] = val; 
-		else
-			_coefficients[pos] = 0.0;
+		_coefficients[pos] = val; 
 	}
 
 	std::string printModelFunctionLatex(double scale = 0.0, bool powed = false) const;

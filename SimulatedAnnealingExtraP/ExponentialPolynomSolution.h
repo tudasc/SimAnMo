@@ -2,6 +2,7 @@
 #define EXPONENTIALPOLYNOMSOLUTION_H
 
 #include "AbstractSolution.h"
+#include "xorshf128.tcc"
 
 class ExponentialPolynomSolution : public AbstractSolution {
 public:
@@ -25,6 +26,10 @@ public:
 
 protected:
 	const int _len = 5;
+
+private:
+	static std::random_device   m_rd;
+	static blaze_rng::xorshf128 m_rng;
 };
 
 #endif

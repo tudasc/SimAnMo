@@ -20,11 +20,13 @@ public:
 		y=362436069; 
 		z=521288629;
 		w=88675123;
+		for (int i=0; i<10; ++i)
+			this->operator ()();
 	}
 	
 	xorshf128_32bit(T _seed) {
-		x=_seed;
-		y=(_seed/17) * (_seed-3);
+		x=123456789; 
+		y=362436069; 
 		z=521288629;
 		w=88675123;
 		for (int i=0; i<10; ++i)

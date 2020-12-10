@@ -14,7 +14,7 @@
 	Represents a model of form c_0 + c_1 * p ^ (c_2) * log_2 ^ (c_3) (p)
 ****************/
 
-blaze_rng::xorshf128 ExtraPSolution::m_rng(time(NULL));
+blaze_rng::xorshf128 ExtraPSolution::m_rng( (uint32_t) time(NULL) );
 
 ExtraPSolution::ExtraPSolution()
 	: AbstractSolution()
@@ -111,10 +111,10 @@ ExtraPSolution & ExtraPSolution::operator= (const ExtraPSolution & other) {
 
 ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	ExtraPSolution random_sol = ExtraPSolution(this->get_coefficients());
-	std::random_device seeder;
-	std::mt19937 engine(seeder());
+	//std::random_device seeder;
+	//std::mt19937 engine(seeder());
 
-	std::uniform_int_distribution<int> dist2_3 (2, 5);
+	std::uniform_int_distribution<int> dist2_3 (2, 4);
 	std::uniform_int_distribution<int> distc_2_3_change (-15, 15);
 	
 	double pol_diff = abs(Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range);
@@ -129,9 +129,8 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	if (coeff == 2 || coeff >= 4) {
 		double change = 0.0;
 		double val = random_sol.getAt(2);
-		int cnt = 0;
 		do {
-			double t = (double)distc_2_3_change(m_rng) / 10;
+			double t = (double)distc_2_3_change(m_rng/*engine*/) / 10;
 			change = (t / 100.0) * pol_diff;
 		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
 		val += change;
@@ -142,7 +141,6 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	if (coeff >= 3) {
 		double change = 0.0;
 		double val = random_sol.getAt(3);
-		int cnt = 0;
 		do {
 			//change = ((double)distc_2_3_change(m_rng) / 200.0) * abs(val);
 			double t = (double)distc_2_3_change(m_rng) / 10;

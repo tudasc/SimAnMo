@@ -17,6 +17,8 @@
 #include "nnrRSSCostCalculator.h"
 
 #include <iomanip>
+blaze_rng::xorshf128 ExponentialPolynomSolution::m_rng((uint32_t)time(NULL));
+
 
 ExponentialPolynomSolution::ExponentialPolynomSolution()
 {
@@ -154,15 +156,18 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 	ExponentialPolynomSolution random_sol = ExponentialPolynomSolution(this->get_coefficients());
 
-	std::random_device seeder;
-	std::mt19937 engine(seeder());
+	//std::random_device seeder;
+	//std::mt19937 engine(seeder());
 	//std::mt19937 engine(getRandomID());
 
 	//std::uniform_int_distribution<int> dist2_3(2, 3);
-	//std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
+	std::uniform_int_distribution<int> distc_2_3_change(-15, 15);
 
-	std::uniform_int_distribution<int> dist0or1(0, 1);
-	std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
+	const double exp_diff = abs(Configurator::getInstance().max_exp_exp_range - Configurator::getInstance().min_exp_exp_range);
+	const double coeff_diff = abs(Configurator::getInstance().max_exp_coeff_range - Configurator::getInstance().min_exp_coeff_range);
+
+	//std::uniform_int_distribution<int> dist0or1(0, 1);
+	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
 	double new_val_c1 = -1000;
 	double new_val_c2 = -1000;
 
@@ -189,37 +194,30 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 				cout << "R" << endl;
 			}
 
-			double sign = 1.0;
-			if (dist0or1(engine) == 1) {
+			/*double sign = 1.0;
+			if (dist0or1(m_rng) == 1) {
 				sign = -1.0;
 			}
-			double perc = sign * distTrial(engine);
-			// Make sure, that it is not too small
-			//perc += (perc / perc) * 0.001;
-
-			//cout << sign << " / ";
+			double perc = sign * distTrial(m_rng);			
 
 			double change = perc * random_sol.getAt(2);
+			new_val_c1 = random_sol.getAt(2) + change;*/
+
+			double t = (double)distc_2_3_change(m_rng) / 10;
+			double change = (t / 100.0) * coeff_diff;
 			new_val_c1 = random_sol.getAt(2) + change;
 
-
-			sign = 1.0;
-			if (dist0or1(engine) == 1) {
+			/*double sign = 1.0;
+			if (dist0or1(m_rng) == 1) {
 				sign = -1.0;
 			}
 
-			//cout << sign << endl;
+			double perc = sign * distTrial(m_rng);
+			new_val_c2 = random_sol.getAt(3) + change;*/
 
-			perc = sign * distTrial(engine);
+			t = (double)distc_2_3_change(m_rng) / 10;
+			change = (t / 100.0) * exp_diff;
 			new_val_c2 = random_sol.getAt(3) + change;
-
-
-
-			//if (abs(perc) < 1e-3) {
-				//cerr << "Very small: " << perc << endl;
-			//}
-
-			//cout << "Perc: " << perc << endl;
 
 		} while (new_val_c1 < Configurator::getInstance().min_exp_coeff_range ||
 			new_val_c1 > Configurator::getInstance().max_exp_coeff_range ||

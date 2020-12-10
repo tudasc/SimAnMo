@@ -79,9 +79,9 @@ public:
 private:
 	Configurator() {
 		// Configuration for annealing itself
-		ann_steps = 15;
-		ann_cooling_rate = 0.99;
-		ann_target_temp = 1e-9;
+		ann_steps = 35;
+		ann_cooling_rate = 0.998;
+		ann_target_temp = 1e-14;
 		ann_steps_wo_mod = 200000;
 		ann_steps_backtrack = 200000;
 
@@ -93,21 +93,21 @@ private:
 		num_threads = 1;
 
 		// pol-log models
-		min_pol_range = 0.500;
-		max_pol_range = 1.200;
+		min_pol_range = 0.0;
+		max_pol_range = 5.00;
 
 		min_log_range = 0.00;
-		max_log_range = 0.10;
+		max_log_range = 3.00;
 
 		// exp models
-		max_exp_range = 3.8;
+		max_exp_range = 3.0;
 
 		// exp-pol models
 		min_exp_coeff_range = 1e-3;
 		max_exp_coeff_range = 2;
 
-		min_exp_exp_range = 0.2;
-		max_exp_exp_range = 3.0;
+		min_exp_exp_range = 0.1;
+		max_exp_exp_range = 2.2;
 
 		// factorial models
 		min_fac_coeff_range = 1e-3;

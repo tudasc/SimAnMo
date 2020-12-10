@@ -53,7 +53,7 @@ template<class SolutionType, class CostCalculatorType>
 double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, CalcuationInfo<SolutionType>& calcinf,
 	unsigned int& stepcount, bool do_quality_log = false,
 	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
-	//CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
+	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
 #else
@@ -63,10 +63,10 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
-	double ref_array[5] = { 2.5, 1.2, 1.0, 0.0, 0.0 }; // ManSolFac
+	double ref_array[5] = { 50, 0.12, 1.5, 0.0, 0.0 }; // ManSolFac
 
 	SolutionType ref_sol = SolutionType(ref_array);
-	//refCostCalc.calculateCost(&ref_sol);
+	refCostCalc.calculateCost(&ref_sol);
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	//TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
@@ -265,7 +265,7 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 		cout << "Annealing with " << Configurator::getInstance().ann_steps << " / " << Configurator::getInstance().ann_target_temp <<
 			" / " << Configurator::getInstance().ann_cooling_rate << endl;
 
-		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, false,
+		doAnnealing<SolutionType, CostCalcType>(inputDB, sol_per_thread, calcinf, stepcount, Configurator::getInstance().print_costs,
 			Configurator::getInstance().ann_steps, Configurator::getInstance().ann_target_temp, Configurator::getInstance().ann_cooling_rate);
 
 		const int no_threads = Configurator::getInstance().num_threads;
@@ -403,15 +403,15 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 	SimAnMo::FunctionModel funcmod_expol = SimAnMo::FunctionModel(new ExponentialPolynomSolution(expolsol));
 
 	// Test a Polynomial Logarithmical Solution
-	ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(&mdb);
+	/*ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(&mdb);
 	SimAnMo::FunctionModel funcmod_pollog = SimAnMo::FunctionModel(new ExtraPSolution(exsol));
 
 	if (funcmod_pollog.getCosts() < funcmod_expol.getCosts())
 		return funcmod_pollog;
 
 	else
-		return funcmod_expol;
-
+		return funcmod_expol;*/
+	return funcmod_expol;
 	
 }
 
@@ -425,14 +425,14 @@ int main(int argc, char** argv)
 	//std::map<double, double> mtrai{ {1,3.72}, {2,3.74}, {3,3.72}, {4,3.74}, {5,3.72}, {6,3.74}, {17,3.72}, {45,3.74} };
 	std::map<double, double> mmess{  };
 
-	SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 1 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+	/*SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 1 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD() 
 		<< ". It is constant: " << modi.isConstant() << endl;
 
 	// Mod 2
-	/*modi = SimAnMo::findModel(m2, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+	modi = SimAnMo::findModel(m2, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
@@ -443,21 +443,21 @@ int main(int argc, char** argv)
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;*/
+		<< ". It is constant: " << modi.isConstant() << endl;
 
 	// Mod 4
-	modi = SimAnMo::findModel(m4, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 50 --ann_cooling_rate 0.999 --ann_target_temp 1e-14");
+	modi = SimAnMo::findModel(m4, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 6  --ann_steps_wo_mod 20000 --ann_steps 35 --ann_cooling_rate 0.99 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
+		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
+		<< ". It is constant: " << modi.isConstant() << endl;*/
+
+	// Mod 5
+	SimAnMo::FunctionModel  modi = SimAnMo::findModel(m5, mmess, "--gl --texfile fplll1.00vTest --outpath ../outputs  --nt 12  --ann_steps_wo_mod 20000 --ann_steps 200 --ann_cooling_rate 0.999 --ann_target_temp 1e-16");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
 		<< ". It is constant: " << modi.isConstant() << endl;
-
-	// Mod 5
-	/*modi = SimAnMo::findModel(m5, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;*/
 
 
 	std::cout.rdbuf(coutbuf); //reset to standard output again
