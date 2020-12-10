@@ -110,7 +110,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		// For decision if worse solution is accepted
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
-		std::uniform_real_distribution<double> distreal(0.0, 1.0);
+		std::uniform_real_distribution<double> distreal(0, 1.0);
 #if SIMANMO_VERBOSE > 1
 		cout << "Starting temp is: " << target_temp << endl;
 #endif
@@ -123,7 +123,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		int without_glob_improve2 = 0;		
 		while (T > target_temp) {    
 
-#if SIMANMO_VERBOSE > 1
+#if SIMANMO_VERBOSE > 0
 			if (tid == 0) {
 				std::cout << "[";
 				//int pos = barWidth * progress;
@@ -143,11 +143,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				/*if (without_glob_improve == 150000) {
+				if (without_glob_improve == 2000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
-					cout << "Backtracked";
-				}*/
+					//cout << "Backtracked";
+				}
 
 				if (without_glob_improve2 == 1000000) {
 					cout << "Thread " << tid << " ends." << endl;
@@ -178,12 +178,12 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 				// Randomize if the worse solution is accepted
 				else if (act_sol_now.get_costs() >= act_sol.get_costs()) {
-					double prob = exp(-(act_sol_now.get_costs() - act_sol.get_costs()) / T);
+					double prob = (exp(-(act_sol_now.get_costs() - act_sol.get_costs()) / T));
+
+					//cout << prob << " : " << act_sol.get_costs() << " / " << act_sol_now.get_costs() << endl;
 					double accept_prob = distreal(rng);
 
-					//cout << accept_prob  << " :" <<  act_sol_now.get_costs() << " " << act_sol.get_costs() << endl;
-
-					if (accept_prob > prob && 1 == 2) {
+					if (accept_prob > prob) {
 						act_sol = act_sol_now;
 						if (do_quality_log) {
 							std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
@@ -453,7 +453,7 @@ int main(int argc, char** argv)
 		<< ". It is constant: " << modi.isConstant() << endl;*/
 
 	// Mod 5
-	SimAnMo::FunctionModel  modi = SimAnMo::findModel(m5, mmess, "--gl --texfile fplll1.00vTest --outpath ../outputs  --nt 12  --ann_steps_wo_mod 20000 --ann_steps 200 --ann_cooling_rate 0.999 --ann_target_temp 1e-16");
+	SimAnMo::FunctionModel  modi = SimAnMo::findModel(m5, mmess, "--logy --gl --pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 1  --ann_steps_wo_mod 20000 --ann_steps 15 --ann_cooling_rate 0.997 --ann_target_temp 1e-16");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()

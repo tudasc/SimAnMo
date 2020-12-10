@@ -44,7 +44,7 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType>::randomModifySolu
 
 
 
-	} while (std::isnan(newsol.get_costs()));
+	} while (std::isnan(newsol.get_costs()) || newsol.get_costs() == std::numeric_limits<double>::infinity());
 
 	return newsol;
 }

@@ -7,7 +7,10 @@ nnrRSSCostCalculator::nnrRSSCostCalculator(MeasurementDB * mdb) : CostCalculator
 
 double nnrRSSCostCalculator::calculateCost(AbstractSolution* sol) {
 	calculateMetrics(sol);
-	sol->set_costs( this->nnrRSS );
+	if (this->nnrRSS <= 1.0)
+		sol->set_costs(this->nnrRSS);
+	else
+		sol->set_costs(std::numeric_limits<double>::infinity() );
 	
 	return sol->get_costs();
 }

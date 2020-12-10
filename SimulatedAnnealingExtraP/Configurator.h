@@ -104,10 +104,10 @@ private:
 
 		// exp-pol models
 		min_exp_coeff_range = 1e-3;
-		max_exp_coeff_range = 2;
+		max_exp_coeff_range = 2.5;
 
 		min_exp_exp_range = 0.1;
-		max_exp_exp_range = 2.2;
+		max_exp_exp_range = 2.5;
 
 		// factorial models
 		min_fac_coeff_range = 1e-3;

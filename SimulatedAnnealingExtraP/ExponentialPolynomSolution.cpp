@@ -75,6 +75,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 
 	std::random_device seeder;
 	std::mt19937 engine(seeder());
+
 	std::uniform_real_distribution<double> distc2(min_c_2, max_c_2);
 	//std::uniform_real_distribution<double> distc3(min_c_3, max_c_3);
 	std::uniform_real_distribution<double> distc3(c_3_thread_min, c_3_thread_max);
@@ -102,7 +103,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 		costcalc.calculateCost(&act_sol);
 		count++;
 
-	} while (/*(act_sol.get_costs() > this->get_costs()) || */std::isnan(act_sol.get_costs()));
+	} while (act_sol.get_costs() == std::numeric_limits<double>::infinity() || std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }
@@ -166,22 +167,19 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	const double exp_diff = abs(Configurator::getInstance().max_exp_exp_range - Configurator::getInstance().min_exp_exp_range);
 	const double coeff_diff = abs(Configurator::getInstance().max_exp_coeff_range - Configurator::getInstance().min_exp_coeff_range);
 
-	//std::uniform_int_distribution<int> dist0or1(0, 1);
+	std::uniform_int_distribution<int> dist0or1(0, 1);
 	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
-	double new_val_c1 = -1000;
-	double new_val_c2 = -1000;
 
 	int count = 0;
 
-	// Do changes to both constants at once
-
 	// What to change
-	//int choice = dist0or1(engine);
+	int choice = dist0or1(m_rng);
 	double old_c2 = random_sol.getAt(2);
 	double old_c3 = random_sol.getAt(3);
 
-	//if (choice == 0)
+	if (choice == 0)
 	{
+		double new_val_c1 = -1000;
 		// Change c_2
 		do
 		{
@@ -198,7 +196,7 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			if (dist0or1(m_rng) == 1) {
 				sign = -1.0;
 			}
-			double perc = sign * distTrial(m_rng);			
+			double perc = sign * distTrial(m_rng);
 
 			double change = perc * random_sol.getAt(2);
 			new_val_c1 = random_sol.getAt(2) + change;*/
@@ -207,75 +205,42 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 			double change = (t / 100.0) * coeff_diff;
 			new_val_c1 = random_sol.getAt(2) + change;
 
-			/*double sign = 1.0;
-			if (dist0or1(m_rng) == 1) {
-				sign = -1.0;
-			}
-
-			double perc = sign * distTrial(m_rng);
-			new_val_c2 = random_sol.getAt(3) + change;*/
-
 			t = (double)distc_2_3_change(m_rng) / 10;
 			change = (t / 100.0) * exp_diff;
-			new_val_c2 = random_sol.getAt(3) + change;
+			new_val_c1 = random_sol.getAt(2) + change;
 
 		} while (new_val_c1 < Configurator::getInstance().min_exp_coeff_range ||
-			new_val_c1 > Configurator::getInstance().max_exp_coeff_range ||
-			new_val_c2 < Configurator::getInstance().min_exp_exp_range ||
-			new_val_c2 > Configurator::getInstance().max_exp_exp_range
+			new_val_c1 > Configurator::getInstance().max_exp_coeff_range
 			);
-
-
-		/*if (new_val_c1 < Configurator::getInstance().min_exp_coeff_range) {
-			int stop = 1;
-		}
-
-		if (new_val_c1 > Configurator::getInstance().max_exp_coeff_range) {
-			int stop = 1;
-		}
-
-		if (new_val_c2 < Configurator::getInstance().min_exp_exp_range) {
-			int stop = 1;
-		}
-
-		if (new_val_c2 > Configurator::getInstance().max_exp_exp_range) {
-			int stop = 1;
-		}*/
-
-
+		
 		random_sol.updateAt(2, new_val_c1);
-		random_sol.updateAt(3, new_val_c2);
 	}
 
-	//else
-	/*{
-		// Change c_3
+	if (choice == 1)
+	{
+		double new_val_c2 = -1000;
+		// Change c_2
 		do
 		{
 			// Backtrack
 			count++;
 			if (count == 1000) {
 				count = 0;
+				random_sol.updateAt(2, old_c2);
 				random_sol.updateAt(3, old_c3);
+				cout << "R" << endl;
 			}
 
-			double sign = 1.0;
-			if (dist0or1(engine) == 1) {
-				sign = -1.0;
-			}
+			double t = (double)distc_2_3_change(m_rng) / 100;
+			double change = (t / 100.0) * exp_diff;
+			new_val_c2 = random_sol.getAt(3) + change;
 
-			double perc = sign * distTrial(engine);
+		} while (	new_val_c2 < Configurator::getInstance().min_exp_exp_range ||
+					new_val_c2 > Configurator::getInstance().max_exp_exp_range
+			);
 
-			// Make sure, that it is not too small
-			//perc += (perc / perc) * 0.001;
-			double change = perc * random_sol.getAt(3);
-			new_val = random_sol.getAt(3) + change;
-
-			//cout << "Perc: " << perc << endl;
-
-		} while (!(new_val > Configurator::getInstance().min_exp_exp_range && new_val <= Configurator::getInstance().max_exp_exp_range));
-		random_sol.updateAt(3, new_val);
-	}*/
+		random_sol.updateAt(3, new_val_c2);
+	}
 
 	return random_sol;
 }
