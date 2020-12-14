@@ -18,7 +18,9 @@ http://www.fsf.org/licensing/licenses
 >>> END OF LICENSE >>>
 *************************************************************************/
 #ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
+#ifndef _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
+#endif // !1 _CRT_SECURE_NO_WARNINGS
 #endif
 #include "alglibmisc.h"
 

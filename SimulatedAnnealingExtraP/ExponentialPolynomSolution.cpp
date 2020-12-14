@@ -89,11 +89,22 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 	ExponentialPolynomSolution act_sol = *this;
 
 	int count = 0;
+	int outercnt = 0;
+	int give_up_cnt = 0;
+
 	do
 	{
 		// Backtrack
-		if (count == 5000) {
+		if (count == 100) {
 			act_sol.updateAt(3, distc3(seeder));
+		}
+
+		// If it seems not possible to find a valid solution in this range, then relax the search space
+		if (++outercnt == 5) {
+			distc3 = std::uniform_real_distribution<double>(min_c_3, max_c_3);
+			act_sol.updateAt(3, distc3(seeder));
+			//cout << "Relaxing" << endl;
+			outercnt = 0;
 		}
 
 		act_sol.updateAt(2, distc2(seeder));
@@ -103,7 +114,13 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 		costcalc.calculateCost(&act_sol);
 		count++;
 
-	} while (act_sol.get_costs() == std::numeric_limits<double>::infinity() || std::isnan(act_sol.get_costs()));
+		give_up_cnt++;
+		if (give_up_cnt > 10000) {
+			*this = act_sol;
+			break;
+		}
+
+	} while (act_sol.get_costs() == std::numeric_limits<double>::max() || std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }
@@ -167,56 +184,50 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	const double exp_diff = abs(Configurator::getInstance().max_exp_exp_range - Configurator::getInstance().min_exp_exp_range);
 	const double coeff_diff = abs(Configurator::getInstance().max_exp_coeff_range - Configurator::getInstance().min_exp_coeff_range);
 
-	std::uniform_int_distribution<int> dist0or1(0, 1);
+	std::uniform_int_distribution<int> dist2or3(2, 3);
 	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
 
 	int count = 0;
 
-	// What to change
-	int choice = dist0or1(m_rng);
+	// What to change	
 	double old_c2 = random_sol.getAt(2);
 	double old_c3 = random_sol.getAt(3);
 
-	if (choice == 0)
+	// Both coefficients in one loop
+	double new_val_c2 = 0;
+	double new_val_c3 = 0;
+	do
 	{
-		double new_val_c1 = -1000;
-		// Change c_2
-		do
-		{
-			// Backtrack
-			count++;
-			if (count == 1000) {
-				count = 0;
-				random_sol.updateAt(2, old_c2);
-				random_sol.updateAt(3, old_c3);
-				cout << "R" << endl;
-			}
+		// Backtrack
+		if (++count == 15) {
+			count = 0;
+			random_sol.updateAt(2, old_c2);
+			random_sol.updateAt(3, old_c3);
+		}
 
-			/*double sign = 1.0;
-			if (dist0or1(m_rng) == 1) {
-				sign = -1.0;
-			}
-			double perc = sign * distTrial(m_rng);
+		double t = (double)distc_2_3_change(m_rng) / 100;
+		double change = (t / 100.0) * coeff_diff;
+		new_val_c2 = random_sol.getAt(2) + change;
 
-			double change = perc * random_sol.getAt(2);
-			new_val_c1 = random_sol.getAt(2) + change;*/
+		t = (double)distc_2_3_change(m_rng) / 100;
+		change = (t / 100.0) * exp_diff;
+		new_val_c3 = random_sol.getAt(3) + change;
 
-			double t = (double)distc_2_3_change(m_rng) / 10;
-			double change = (t / 100.0) * coeff_diff;
-			new_val_c1 = random_sol.getAt(2) + change;
+	} while (	new_val_c2 < Configurator::getInstance().min_exp_coeff_range ||
+				new_val_c2 > Configurator::getInstance().max_exp_coeff_range ||
+				new_val_c3 < Configurator::getInstance().min_exp_exp_range ||
+				new_val_c3 > Configurator::getInstance().max_exp_exp_range
+		);
 
-			t = (double)distc_2_3_change(m_rng) / 10;
-			change = (t / 100.0) * exp_diff;
-			new_val_c1 = random_sol.getAt(2) + change;
+	random_sol.updateAt(2, new_val_c2);
+	random_sol.updateAt(3, new_val_c3);
 
-		} while (new_val_c1 < Configurator::getInstance().min_exp_coeff_range ||
-			new_val_c1 > Configurator::getInstance().max_exp_coeff_range
-			);
-		
-		random_sol.updateAt(2, new_val_c1);
-	}
 
-	if (choice == 1)
+
+
+	/*
+	int choice = dist2or3(m_rng);
+	if (choice == 2 || 1==1)
 	{
 		double new_val_c2 = -1000;
 		// Change c_2
@@ -224,7 +235,32 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 		{
 			// Backtrack
 			count++;
-			if (count == 1000) {
+			if (count == 5) {
+				count = 0;
+				random_sol.updateAt(2, old_c2);
+				cout << "R" << endl;
+			}
+
+			double t = (double)distc_2_3_change(m_rng) / 50;
+			double change = (t / 100.0) * coeff_diff;
+			new_val_c2 = random_sol.getAt(2) + change;
+
+		} while (new_val_c2 < Configurator::getInstance().min_exp_coeff_range ||
+			new_val_c2 > Configurator::getInstance().max_exp_coeff_range
+			);
+		
+		random_sol.updateAt(2, new_val_c2);
+	}
+
+	if (choice == 1 || 1 == 1)
+	{
+		double new_val_c3 = -1000;
+		// Change c_2
+		do
+		{
+			// Backtrack
+			count++;
+			if (count == 5) {
 				count = 0;
 				random_sol.updateAt(2, old_c2);
 				random_sol.updateAt(3, old_c3);
@@ -233,14 +269,14 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 			double t = (double)distc_2_3_change(m_rng) / 100;
 			double change = (t / 100.0) * exp_diff;
-			new_val_c2 = random_sol.getAt(3) + change;
+			new_val_c3 = random_sol.getAt(3) + change;
 
-		} while (	new_val_c2 < Configurator::getInstance().min_exp_exp_range ||
-					new_val_c2 > Configurator::getInstance().max_exp_exp_range
+		} while (	new_val_c3 < Configurator::getInstance().min_exp_exp_range ||
+					new_val_c3 > Configurator::getInstance().max_exp_exp_range
 			);
 
-		random_sol.updateAt(3, new_val_c2);
-	}
+		random_sol.updateAt(3, new_val_c3);
+	}*/
 
 	return random_sol;
 }

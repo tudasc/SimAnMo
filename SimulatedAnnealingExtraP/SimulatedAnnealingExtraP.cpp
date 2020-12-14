@@ -32,7 +32,7 @@
 #include "SimAnMoTools.h"
 #include "SimulatedAnnealingExtraP.h"
 
-#include "InMaps.h"
+
 
 using namespace std;
 
@@ -86,10 +86,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		SolutionType abs_min_sol_thread = SolutionType();
 		SolutionModifier<SolutionType, CostCalculatorType> solmod = SolutionModifier<SolutionType, CostCalculatorType>(inputDB);
 		StartSolutionFinder<SolutionType, CostCalculatorType> startfind = StartSolutionFinder<SolutionType, CostCalculatorType>(inputDB);
-
 #pragma omp barrier
 
-#pragma omp critical
+//#pragma omp critical
 		startfind.findStartSolution(&act_sol, tid, no_threads);
 		//act_sol = ref_sol;
 
@@ -250,7 +249,7 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 
 	SolutionType* sol_per_thread = new SolutionType[Configurator::getInstance().num_threads ];
 	CalcuationInfo<SolutionType> best_calcinf = CalcuationInfo<SolutionType>();
-	double best_cost = std::numeric_limits<double>::max();
+	double best_cost = std::numeric_limits<double>::infinity();
 	SolutionType best_abs_min_sol;
 	double tstart = omp_get_wtime();
 
@@ -272,7 +271,7 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
-		min_cost = std::numeric_limits<double>::max();
+		min_cost = std::numeric_limits<double>::infinity();
 		SolutionType abs_min_sol;
 		for (int i = 0; i < no_threads; i++) {
 			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
@@ -398,84 +397,25 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 	// Input DB from maps
 	MeasurementDB mdb = MeasurementDB(training_points, measurement_points);
 
-	// Test a Exponential Solution
-	ExponentialPolynomSolution expolsol = annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>(&mdb);
-	SimAnMo::FunctionModel funcmod_expol = SimAnMo::FunctionModel(new ExponentialPolynomSolution(expolsol));
-
 	// Test a Polynomial Logarithmical Solution
-	/*ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(&mdb);
+	ExtraPSolution exsol = annealingManager<ExtraPSolution, nnrRSSCostCalculator>(&mdb);
 	SimAnMo::FunctionModel funcmod_pollog = SimAnMo::FunctionModel(new ExtraPSolution(exsol));
 
-	if (funcmod_pollog.getCosts() < funcmod_expol.getCosts())
-		return funcmod_pollog;
+	// Test a Exponential Solution
+	if (funcmod_pollog.getCosts() > 0.1) {
+		ExponentialPolynomSolution expolsol =
+			annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>(&mdb);
+		SimAnMo::FunctionModel funcmod_expol =
+			SimAnMo::FunctionModel(new ExponentialPolynomSolution(expolsol));
 
-	else
-		return funcmod_expol;*/
-	return funcmod_expol;
+		if (funcmod_pollog.getCosts() < funcmod_expol.getCosts())
+			return funcmod_pollog;
+
+		else
+			return funcmod_expol;
+	}
+
+
+	return funcmod_pollog;
 	
 }
-
-int main(int argc, char** argv)
-{
-
-	std::ofstream out("out.txt");
-	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
-	//std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
-
-	//std::map<double, double> mtrai{ {1,3.72}, {2,3.74}, {3,3.72}, {4,3.74}, {5,3.72}, {6,3.74}, {17,3.72}, {45,3.74} };
-	std::map<double, double> mmess{  };
-
-	/*SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 1 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD() 
-		<< ". It is constant: " << modi.isConstant() << endl;
-
-	// Mod 2
-	modi = SimAnMo::findModel(m2, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;
-
-	// Mod 3
-	modi = SimAnMo::findModel(m3, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 30 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;
-
-	// Mod 4
-	modi = SimAnMo::findModel(m4, mmess, "--texfile fplll1.00vTest --outpath ../outputs  --nt 6  --ann_steps_wo_mod 20000 --ann_steps 35 --ann_cooling_rate 0.99 --ann_target_temp 1e-14");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;*/
-
-	// Mod 5
-	SimAnMo::FunctionModel  modi = SimAnMo::findModel(m5, mmess, "--logy --gl --pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 1  --ann_steps_wo_mod 20000 --ann_steps 15 --ann_cooling_rate 0.997 --ann_target_temp 1e-16");
-
-	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
-		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
-		<< ". It is constant: " << modi.isConstant() << endl;
-
-
-	std::cout.rdbuf(coutbuf); //reset to standard output again
-
-	return 0;
-#ifdef USE_NAG
-	cout << "Running Modeler with NAG-Support" << endl;
-#endif
-	int depp = 1;
-	SimAnMo::parseConsoleParameters(argc, argv, depp);
-	omp_set_dynamic(0);     // Explicitly disable dynamic teams
-	omp_set_num_threads(Configurator::getInstance().num_threads); // Use X threads for all consecutive parallel regions
-
-	//annealingManager<Solution>();
-	//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
-	//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
-	//annealingManager<FactorialSolution, nnrRSSCostCalculator>();
-	annealingManager<ExtraPSolution,nnrRSSCostCalculator>();
-	return 0;
-}
-

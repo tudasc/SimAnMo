@@ -6,7 +6,7 @@
 #else
 #include "EigenParameterEstimator.h"
 #endif
-#include "RSSCostCalculator.h"
+#include "nnrRSSCostCalculator.h"
 #include "Configurator.h"
 #include <iomanip>
 
@@ -39,7 +39,7 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
 	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
 #endif
 	
-	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
+	nnrRSSCostCalculator costcalc = nnrRSSCostCalculator(mdb);
 
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -62,15 +62,19 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
 	do
 	{
 		double v1 = distc23_pol(seeder);
-		//v1 = 4.3541777161633748;
 		act_sol.updateAt(2, v1);
 		double v2 = distc23_log(seeder);
-		//v2 = 0.76860518759366092;
 		act_sol.updateAt(3, v2);
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
 		//count++;
-	} while ((act_sol.get_costs() > this->get_costs()) || std::isnan(act_sol.get_costs()));
+	} while (  /*act_sol.get_costs() == std::numeric_limits<double>::infinity() || */
+		std::isnan(act_sol.get_costs())
+	);
+
+	/*} while ((act_sol.get_costs() > this->get_costs())  ||
+		act_sol.get_costs() == std::numeric_limits<double>::infinity())
+	);*/
 
 	*this = act_sol;
 }
@@ -119,8 +123,6 @@ ExtraPSolution ExtraPSolution::getNeighborSolution() {
 	
 	double pol_diff = abs(Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range);
 	double log_diff = abs(Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range);
-
-
 
 	// Decide which coefficient to change c_2 or c_3
 	int coeff = dist2_3(m_rng);

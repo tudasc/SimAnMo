@@ -39,49 +39,6 @@ double StartSolutionFinder<SolutionType, CostCalcType>::findStartSolution(Soluti
 	CostCalcType cost_calc = CostCalcType(_mdb);
 	cost_calc.calculateCost(sol);
 
-
-	/*CostCalcType costcalc = CostCalcType(_mdb);
-	ParameterEstimator paramest = ParameterEstimator(_mdb);
-
-	double start_vals[5] = { 0, 0, 1, 0, 0 };
-	sol->set_coefficients(start_vals);
-	paramest.estimateParameters(sol);
-	costcalc.calculateCost(sol);
-
-	double split_c4_steps = (abs(min_c_4) + abs(max_c_4)) / nothreads;
-
-	double split_c4_min = threadno * split_c4_steps;
-	double split_c4_max = (threadno + 1) * split_c4_steps;
-
-	//std::cout << split_c4_min << " / " << split_c4_max << std::endl;
-
-	SolutionType act_sol = *sol;
-	bool initial_change = false;
-
-	do {		
-		for (double c_4 = split_c4_min; c_4 < split_c4_max; c_4 += 0.1) {
-			act_sol.updateAt(3, c_4);
-			for (int exp = (int)log10(min_c_3); exp < (int)log10(max_c_3); exp++) {
-				int var = exp - 1;
-				double change = pow(10, var);
-				double c_3 = pow(10, exp);
-				for (int i = 0; i < 10; i++) {
-					c_3 += change;
-					act_sol.updateAt(2, c_3);
-
-					paramest.estimateParameters(&act_sol);
-					costcalc.calculateCost(&act_sol);
-
-					if (act_sol.get_costs() < sol->get_costs()) {
-						*sol = act_sol;
-						initial_change = true;
-					}
-				}
-			}
-			split_c4_min = split_c4_min - 0.1;
-		} 
-	} while (!initial_change);*/
-
 	return sol->get_costs();
 }
 
