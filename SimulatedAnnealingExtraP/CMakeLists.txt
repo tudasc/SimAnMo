@@ -25,6 +25,11 @@ TemperatureInitializer.cpp)
 
 add_subdirectory(alglib)
 
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(SimAnMoLib PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
 target_link_libraries(SimAnMoLib PUBLIC 
 	AlgLib	
 )
