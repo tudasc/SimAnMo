@@ -2,10 +2,13 @@
 #define LIBRARYINTERFACE_H
 
 #include "AbstractSolution.h"
+#include "VersionInfo.h"
 #include "Configurator.h"
 #include <map>
 
 namespace SimAnMo {
+
+	std::string getSimAnMoLibVersion();
 
 	/*struct Costs
 	{

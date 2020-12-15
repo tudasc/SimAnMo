@@ -1,6 +1,8 @@
 #include "LibraryInterface.h"
 #include "SimulatedAnnealingExtraP.h"
 
+#include <iostream>
+
 SimAnMo::FunctionModel::FunctionModel() {
 
 }
@@ -42,3 +44,10 @@ SimAnMo::FunctionModel SimAnMo::findModel(std::map<double, double>& training_poi
 	std::map<double, double>& measurement_points, std::string options) {
 	return findBestModel(training_points, measurement_points, options);
 }
+
+std::string SimAnMo::getSimAnMoLibVersion() {
+    std::cout << "SimAnMo library in version " << Tutorial_VERSION_MAJOR << "."
+              << Tutorial_VERSION_MINOR << std::endl;
+	return std::to_string(Tutorial_VERSION_MAJOR) + "." + std::to_string(Tutorial_VERSION_MINOR);
+}
+

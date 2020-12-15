@@ -19,6 +19,8 @@
 #include "RingQueue.h"
 #include "TemperatureInitializer.h"
 #include <iostream>
+#include <sstream>      // std::istringstream
+#include <iterator>
 #include <stdio.h>
 #include <math.h>
 #include <random>

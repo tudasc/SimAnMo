@@ -1,0 +1,2 @@
+#define Tutorial_VERSION_MAJOR @SimAnMo_VERSION_MAJOR@
+#define Tutorial_VERSION_MINOR @SimAnMo_VERSION_MINOR@
