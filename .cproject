@@ -133,7 +133,7 @@
                     					
                     <sourceEntries>
                         						
-                        <entry excluding="CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="SimAnMoTest|CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				
@@ -277,7 +277,7 @@
                     					
                     <sourceEntries>
                         						
-                        <entry excluding="CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="SimAnMoTest|CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				
