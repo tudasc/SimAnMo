@@ -116,12 +116,12 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
 		std::uniform_real_distribution<double> distreal(0, 1.0);
-#if SIMANMO_VERBOSE > 1
+#if SIMANMO_VERBOSE > 0
 		cout << "Starting temp is: " << target_temp << endl;
 #endif
 
 		double progress = 0.0;
-#if SIMANMO_VERBOSE > 1
+#if SIMANMO_VERBOSE > 0
 		const int barWidth = 10;
 #endif
 		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));		

@@ -4,7 +4,7 @@
 #include <iostream>
 
 SimAnMo::FunctionModel::FunctionModel() {
-
+	sol = nullptr;
 }
 
 SimAnMo::FunctionModel::FunctionModel(AbstractSolution* insol) {
