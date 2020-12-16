@@ -30,8 +30,11 @@ add_subdirectory(SimulatedAnnealingExtraP)
 #add_subdirectory(SimulatedAnnealingExtraP/alglib)
 
 # add the executable
-add_executable(SimAnMo)
+add_executable(SimAnMo "")
+add_executable(SimAnMoTester "")
+
 add_subdirectory(SimAnMoDriver)
+add_subdirectory(SimAnMoTest)
 
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
@@ -43,10 +46,15 @@ target_link_libraries(SimAnMo PUBLIC
 #	AlgLib	
 )
 
+target_link_libraries(SimAnMoTester PUBLIC 
+	SimAnMoLib
+#	AlgLib	
+)
+
 message(STATUS "foo include dir: ${CMAKE_BUILD_TYPE}")
 
 # add the binary tree to the search path for include files
 target_include_directories(SimAnMo PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            ${PROJECT_SOURCE_DIR}/SimulatedAnnealingExtraP
-                           )
+ )

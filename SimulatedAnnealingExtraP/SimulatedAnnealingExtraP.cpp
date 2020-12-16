@@ -25,7 +25,9 @@
 #include <math.h>
 #include <random>
 #include <omp.h>
+#include <algorithm>    // std::transform
 #include <limits>
+
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
@@ -49,6 +51,8 @@ extern "C" FILE * __cdecl __iob_func(void)
 #endif
 
 //int no_threads = 1;
+
+
 
 
 template<class SolutionType, class CostCalculatorType>
@@ -117,7 +121,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #endif
 
 		double progress = 0.0;
+#if SIMANMO_VERBOSE > 1
 		const int barWidth = 10;
+#endif
 		const double progressstepwidth = 1.0 / ((log(target_temp/T) / log(cooling_rate)));		
 
 		int without_glob_improve = 0;
@@ -420,4 +426,24 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 
 	return funcmod_pollog;
 	
+}
+
+
+int findAModel(std::string mtype, std::string costcaltype) {
+	std::transform (mtype.begin(), mtype.end(), mtype.begin(), ::tolower);
+	std::transform (costcaltype.begin(), costcaltype.end(), costcaltype.begin(), ::tolower);
+
+	if(mtype.compare("extrapsolution") == 0 && costcaltype.compare("nnrrsscostcalculator")==0) {
+		cout << "extrapsolution/nnrrsscostcalculator" << endl;
+		//annealingManager<Solution>();
+		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
+		//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
+		//annealingManager<FactorialSolution, nnrRSSCostCalculator>();
+		annealingManager<ExtraPSolution, nnrRSSCostCalculator>();
+	}
+	else {
+		cout << "No match for " << mtype << " and " << costcaltype << endl;
+	}
+
+	return 0;
 }

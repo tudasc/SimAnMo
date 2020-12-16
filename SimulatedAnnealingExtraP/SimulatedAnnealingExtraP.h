@@ -7,4 +7,6 @@
 SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 	std::map<double, double>& measurement_points, std::string options);
 
+int findAModel(std::string mtype, std::string costcaltype);
+
 #endif

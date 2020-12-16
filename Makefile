@@ -131,6 +131,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named SimAnMoTester
+
+# Build rule for target.
+SimAnMoTester: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SimAnMoTester
+.PHONY : SimAnMoTester
+
+# fast build rule for target.
+SimAnMoTester/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/build
+.PHONY : SimAnMoTester/fast
+
+#=============================================================================
 # Target rules for targets named SimAnMo
 
 # Build rule for target.
@@ -196,6 +209,33 @@ SimAnMoDriver/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMo.dir/build.make CMakeFiles/SimAnMo.dir/SimAnMoDriver/main.cpp.s
 .PHONY : SimAnMoDriver/main.cpp.s
 
+SimAnMoTest/main.o: SimAnMoTest/main.cpp.o
+
+.PHONY : SimAnMoTest/main.o
+
+# target to build an object file
+SimAnMoTest/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.o
+.PHONY : SimAnMoTest/main.cpp.o
+
+SimAnMoTest/main.i: SimAnMoTest/main.cpp.i
+
+.PHONY : SimAnMoTest/main.i
+
+# target to preprocess a source file
+SimAnMoTest/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.i
+.PHONY : SimAnMoTest/main.cpp.i
+
+SimAnMoTest/main.s: SimAnMoTest/main.cpp.s
+
+.PHONY : SimAnMoTest/main.s
+
+# target to generate assembly for a file
+SimAnMoTest/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.s
+.PHONY : SimAnMoTest/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -207,9 +247,13 @@ help:
 	@echo "... AlgLib"
 	@echo "... SimAnMo"
 	@echo "... SimAnMoLib"
+	@echo "... SimAnMoTester"
 	@echo "... SimAnMoDriver/main.o"
 	@echo "... SimAnMoDriver/main.i"
 	@echo "... SimAnMoDriver/main.s"
+	@echo "... SimAnMoTest/main.o"
+	@echo "... SimAnMoTest/main.i"
+	@echo "... SimAnMoTest/main.s"
 .PHONY : help
 
 

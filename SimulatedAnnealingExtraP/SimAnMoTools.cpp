@@ -21,7 +21,7 @@ using namespace std;
 		cout << "--help / -h" << setw(55) << "Print the help" << endl;
 		cout << "" << endl;
 		cout << "--inputfile / -i + PATH_TO_INPUT_FILE/FILNAME" << setw(55) << "MANDATORY. The path and name to/of the input file" << endl;
-		cout << "--outfile / -o + PATH_TO_OUT_FILE" << setw(55) << "The path to the output files (default=folder of executable)" << endl;
+		cout << "--outpath / -o + PATH_TO_OUT_FILE" << setw(55) << "The path to the output files (default=folder of executable)" << endl;
 		cout << "--texfile / -t + NAME_OF_FILES" << setw(55) << "MANDATORY. The name of output tex and pdf files" << endl;
 
 		cout << "--number_of_threads / --nt + INT" << setw(55) << "How many threads anneal in parallel (default=1)" << endl;
@@ -152,6 +152,7 @@ using namespace std;
 					std::cerr << "Missing inputfile in argument outpath. Terminating." << std::endl;
 					exit(-1);
 				}
+				std::cout << "Outpath is: " << input << std::endl;
 				Configurator::getInstance().outpath = std::string(argv[i + 1]);
 				i++;
 			}

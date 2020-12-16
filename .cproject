@@ -47,9 +47,9 @@
                                 								
                                 <option defaultValue="gnu.cpp.compiler.debugging.level.max" id="gnu.cpp.compiler.exe.debug.option.debugging.level.995436264" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
                                 								
-                                <option id="gnu.cpp.compiler.option.dialect.std.1311722379" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+                                <option id="gnu.cpp.compiler.option.dialect.std.1311722379" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
                                 								
-                                <option id="gnu.cpp.compiler.option.dialect.flags.2054307083" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++17" valueType="string"/>
+                                <option id="gnu.cpp.compiler.option.dialect.flags.2054307083" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++17" valueType="string"/>
                                 								
                                 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1767673376" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
                                 							
@@ -91,9 +91,49 @@
                         					
                     </folderInfo>
                     					
+                    <folderInfo id="cdt.managedbuild.config.gnu.exe.debug.1290449271.1418452969" name="/" resourcePath="SimulatedAnnealingExtraP">
+                        						
+                        <toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.273112633" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.debug" unusedChildren="">
+                            							
+                            <targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.debug"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.archiver.base.148596142" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.1055686134"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.221529967" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1815157229">
+                                								
+                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1768272675" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/mburger/Dokumente/extrap-annaeling/SimulatedAnnealingExtraP"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1892090764" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1062008238" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.388207653">
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.723497958" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1514336817" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1773183045"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.446590446" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1604709558"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.459305798" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug.203103482">
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.assembler.input.2037205170" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
                     <sourceEntries>
                         						
-                        <entry excluding="SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				
@@ -195,9 +235,49 @@
                         					
                     </folderInfo>
                     					
+                    <folderInfo id="cdt.managedbuild.config.gnu.exe.release.719174372.327923165" name="/" resourcePath="SimulatedAnnealingExtraP">
+                        						
+                        <toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.671421571" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.release" unusedChildren="">
+                            							
+                            <targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.release" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.release"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.archiver.base.2142229324" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.890212771"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1092031881" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1187173399">
+                                								
+                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.359320732" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/mburger/Dokumente/extrap-annaeling/SimulatedAnnealingExtraP"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.295705512" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1291806653" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release.284674322">
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.2022703122" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1366646016" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release.716299424"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1211987892" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1431197391"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.414907210" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release.1473819739">
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.assembler.input.380184406" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
                     <sourceEntries>
                         						
-                        <entry excluding="SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="CMakeFiles|SimulatedAnnealingExtraP/xorshf128.tcc|additional-material-reproducibility" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				

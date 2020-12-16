@@ -1,4 +1,4 @@
-target_sources(SimAnMo
+target_sources(SimAnMoTester
 	PRIVATE 
 		${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
@@ -12,4 +12,3 @@ target_include_directories(SimAnMo PUBLIC
 
 
 message(STATUS "include dir: ${PARENT_DIR}/SimulatedAnnealingExtraP")
-
