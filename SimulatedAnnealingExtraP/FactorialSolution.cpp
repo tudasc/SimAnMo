@@ -62,7 +62,7 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 		act_sol.updateAt(3, distc23_log(seeder));
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
-	} while ((act_sol.get_costs() > this->get_costs()) || std::isnan(act_sol.get_costs()));
+	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e250));
 
 	*this = act_sol;
 }
@@ -74,6 +74,8 @@ FactorialSolution::FactorialSolution(double* coefficients)
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) _coefficients[i] = coefficients[i];
+
+	lin_log_sol = nullptr;
 }
 
 FactorialSolution::FactorialSolution(const FactorialSolution& other)
@@ -86,6 +88,7 @@ FactorialSolution::FactorialSolution(const FactorialSolution& other)
 		this->_coefficients[i] = other._coefficients[i];
 
 	setRandomID();
+	lin_log_sol = nullptr;
 }
 
 FactorialSolution & FactorialSolution::operator= (const FactorialSolution & other) {

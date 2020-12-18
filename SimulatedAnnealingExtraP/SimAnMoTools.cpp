@@ -200,7 +200,7 @@ using namespace std;
 				i++;
 			}
 
-			if (input == "--logy" || input == "--logy") {
+			if (input == "--logy") {
 				Configurator::getInstance().ymode_log = true;
 				cout << "Printing logged" << endl;
 			}

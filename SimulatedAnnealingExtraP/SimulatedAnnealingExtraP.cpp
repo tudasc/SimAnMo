@@ -437,10 +437,19 @@ int findAModel(std::string mtype, std::string costcaltype) {
 		cout << "extrapsolution/nnrrsscostcalculator" << endl;
 		//annealingManager<Solution>();
 		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
-		//annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
-		//annealingManager<FactorialSolution, nnrRSSCostCalculator>();
 		annealingManager<ExtraPSolution, nnrRSSCostCalculator>();
 	}
+
+	else if (mtype.compare("factorialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
+		cout << "factorialsolution/nnrrsscostcalculator" << endl;
+		annealingManager<FactorialSolution, nnrRSSCostCalculator>();
+	}
+
+	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
+		cout << "factorialsolution/nnrrsscostcalculator" << endl;
+		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
+	}
+
 	else {
 		cout << "No match for " << mtype << " and " << costcaltype << endl;
 	}
