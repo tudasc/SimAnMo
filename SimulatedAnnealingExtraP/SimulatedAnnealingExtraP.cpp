@@ -445,6 +445,11 @@ int findAModel(std::string mtype, std::string costcaltype) {
 		annealingManager<FactorialSolution, nnrRSSCostCalculator>();
 	}
 
+	else if (mtype.compare("factorialsolution") == 0 && costcaltype.compare("rsscostcalculator") == 0) {
+		cout << "factorialsolution/rsscostcalculator" << endl;
+		annealingManager<FactorialSolution, RSSCostCalculator>();
+	}
+
 	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
 		cout << "factorialsolution/nnrrsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();

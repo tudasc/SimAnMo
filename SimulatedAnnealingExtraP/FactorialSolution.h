@@ -4,6 +4,7 @@
 #include "AbstractSolution.h"
 #include <string>
 #include <sstream>
+#include "xorshf128.tcc"
 
 class FactorialSolution : public AbstractSolution {
 public:
@@ -40,6 +41,8 @@ protected:
 
 private:
 	uint64_t factorial(int inp);
+	static std::random_device   m_rd;
+	static blaze_rng::xorshf128 m_rng;
 };
 
 #endif

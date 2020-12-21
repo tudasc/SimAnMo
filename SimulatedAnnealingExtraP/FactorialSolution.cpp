@@ -11,6 +11,10 @@
 #include "Configurator.h"
 #include <iomanip>
 
+#define LOGVARIANT
+
+blaze_rng::xorshf128 FactorialSolution::m_rng( std::random_device{}() );
+
 /****************
 Represents a model of form c_0 + c_1 * ( p!) * log2(p)^c_2
 ****************/
@@ -22,6 +26,7 @@ FactorialSolution::FactorialSolution()
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
+	lin_log_sol = nullptr;
 }
 
 FactorialSolution::FactorialSolution(MeasurementDB* mdb)
@@ -45,12 +50,13 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 	double start_vals[4] = { 0, 0, 0, 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];
 
-	paramest.estimateParameters(this);
-	costcalc.calculateCost(this);
+	//paramest.estimateParameters(this);
+	//costcalc.calculateCost(this);
 	this->_costs = std::numeric_limits<double>::max();
 
-	std::random_device seeder;
-	std::mt19937 engine(seeder());
+	//std::random_device seeder;
+	//std::mt19937 engine(seeder());
+
 	std::uniform_real_distribution<double> distc23_pol(min_c_2, max_c_2);
 	std::uniform_real_distribution<double> distc23_log(min_c_3, max_c_3);
 
@@ -58,11 +64,11 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 
 	do
 	{
-		act_sol.updateAt(2, distc23_pol(seeder));
-		act_sol.updateAt(3, distc23_log(seeder));
+		act_sol.updateAt(2, distc23_pol(m_rng));
+		act_sol.updateAt(3, distc23_log(m_rng));
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
-	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e250));
+	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e-300));
 
 	*this = act_sol;
 }
@@ -99,14 +105,15 @@ FactorialSolution & FactorialSolution::operator= (const FactorialSolution & othe
 	for (int i = 0; i < this->_len; i++)
 		this->_coefficients[i] = other._coefficients[i];
 
+	lin_log_sol = other.lin_log_sol;
 	setRandomID();
 	return *this;
 }
 
 FactorialSolution FactorialSolution::getNeighborSolution() {
 	FactorialSolution random_sol = FactorialSolution(this->get_coefficients());
-	std::random_device seeder;
-	std::mt19937 engine(seeder());
+	//std::random_device seeder;
+	//std::mt19937 engine(seeder());
 	std::uniform_int_distribution<int> dist2_3(2, 3);
 	//std::uniform_int_distribution<int> distc_2_3_change(-300, 300);
 
@@ -123,26 +130,51 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	// Change c_2
 	if (coeff == 2) {
 		double change = 0.0;
+		double change_c3 = 0.0;
 		double val = random_sol.getAt(2);
+		double val_c3 = random_sol.getAt(3);
+
 		int cnt = 0;
 		do {
 			//double temp = (double)distc_2_3_change(engine);
 			double sign_pol = 1.0;
-			if (sign_for_change(engine) == 0) sign_pol = -1.0;
-
-			double temp = sign_pol * dist_pol_change(engine);
+			if (sign_for_change(m_rng/*engine*/) == 0) sign_pol = -1.0;
+			double temp = sign_pol * dist_pol_change(m_rng/*engine*/);
 			change = temp * abs(random_sol.getAt(2));
-			//cout << "C:" << change << " ";
+
+#ifdef LOGVARIANT
+			sign_pol = 1.0;
+			if (sign_for_change(m_rng/*engine*/) == 0) 
+				sign_pol = -1.0;
+			temp = sign_pol * dist_pol_change(m_rng/*engine*/);
+			change_c3 = temp * abs(random_sol.getAt(3));
+#endif
+
 			cnt++;
 			if (cnt == 10) {
 				change = 0.0;
+				change_c3 = 0.0;
 				break;
 			}
 
-		} while (!((val + change) >= Configurator::getInstance().min_pol_range && (val + change <= Configurator::getInstance().max_pol_range)));
+		} while (!	(
+				(val + change) >= Configurator::getInstance().min_pol_range 
+			&&	(val + change) <= Configurator::getInstance().max_pol_range
+#ifdef LOGVARIANT
+			&& (val_c3 + change) >= Configurator::getInstance().min_pol_range
+			&& (val_c3 + change) <= Configurator::getInstance().max_pol_range
+#endif
+			)
+		);
+
 		val += change;
+		val_c3 += change_c3;
+
 		random_sol.updateAt(2, val);
-		//cout << val << ": " << (double)(pos_pol_diff * (-300)) << " / " << (double)(pos_pol_diff * (300)) <<  endl;
+#ifdef LOGVARIANT
+		random_sol.updateAt(3, val_c3);
+#endif
+
 	}
 
 	// Change c_3
@@ -163,10 +195,12 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 double FactorialSolution::evaluateModelFunctionAt(double p, double scale) {
 	double* c = _coefficients; // just to make access brief
 	
-	double y = c[0] + c[1] * factorial(p) * pow(p, c[2]);	
-	//double y = c[0] + c[1] * factorial(p) * pow(log2(p), c[2]);
-
-	//double y = c[0] * factorial(p) + c[1] * factorial(p) * pow(p, c[2]) * pow(log2(p), c[3]);
+	double y = 0.0;
+#ifndef	LOGVARIANT
+	y = c[0] + c[1] * (double)factorial(p) * pow(p, c[2]);	
+#else
+	y = c[0] + c[1] * (double)factorial((int)p) * pow(p, c[2]) * pow(log2(p), c[3]);
+#endif
 
 	if (is_wrapped) {
 		return pow(2, y);
@@ -179,11 +213,13 @@ double FactorialSolution::evaluateModelFunctionAt(double p, double scale) {
 double FactorialSolution::evaluateConstantTermAt(double p)
 {
 	double* c = _coefficients; // just to make access brief
-	//double y = factorial(p) * pow(p, c[2]);
 
-	double y = factorial(p) * pow(p, c[2]);
-
-	//double y = c[0] + c[1] * factorial(p);
+	double y = 0.0;
+#ifndef	LOGVARIANT
+	y = factorial((int)p) * pow(p, c[2]);
+#else
+	y = factorial((int)p) * pow(p, c[2]) * pow(log2(p), c[3]);
+#endif
 	return y;
 }
 
@@ -206,8 +242,13 @@ std::string FactorialSolution::getModelFunction() {
 	//		<< " * fac(p)" << std::endl;
 
 	std::stringstream strstr;
+#ifndef	LOGVARIANT
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
 		<< " * fac(p)" << "* p^(" << c[2] << ")" << std::endl;
+#else
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
+		<< " * fac(p)" << "* p^(" << c[2] << ") * log2^(" << c[2] << ") (p)" << std::endl;
+#endif
 	return strstr.str();
 }
 
@@ -241,16 +282,22 @@ std::string FactorialSolution::printModelFunctionLatex(double scale, bool powed)
 		//std fac
 		//func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
 		//	+ "factorial(\\x)" + "});";
-
+#ifdef	LOGVARIANT
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
-			+ "factorial(\\x) * \\x^(" + str_c2 + ")});";
+			+ "factorial(\\x) * \\x^(" + str_c2 + ")" + "*log2(\\x) ^ " + str_c3  + "});";
+#else
+		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * "
+			+ "factorial(\\x) * \\x^(" + str_c2 + ")" + "});";
+#endif
 	}
 
+	//To Check
 	else if (powed) {
 		func += "(\\x, { " + str_base + "^(" + str_c0 + " + " + str_c1 + " * ( "
 			+ "log2(\\x) ^ " + str_c2 + ") * factorial(\\x) ^" + ")});";
 	}
 
+	//To Check
 	else {
 		std::string  act_func = str_c0 + " + " + str_c1 + " * ( "
 			+ "log(\\x) ^ " + str_c2 + ") * factorial(\\x) ^" + ")";
@@ -284,9 +331,13 @@ std::string FactorialSolution::printModelFunctionLatexShow() const {
 
 	//func += str_c0 + " + " + str_c1 + " * "
 	//	+ "log2(x) ^ {" + str_c2 + "}" + " * factorial(p)";
-
+#ifdef	LOGVARIANT
 	func += str_c0 + " + " + str_c1 + " * "
-		" factorial(p) * x^{" + str_c2 +"}";
+		" factorial(p) * x^{" + str_c2 +"}" + " * log2(x) ^ {" + str_c3 + "}";
+#else
+	func += str_c0 + " + " + str_c1 + " * "
+		" factorial(p) * x^{" + str_c2 + "}";
+#endif
 
 	return func;
 }
@@ -318,7 +369,7 @@ std::string FactorialSolution::printModelFunctionLatexShow(bool set) const {
 	std::string func = "";
 
 	func += str_base + "^{" + str_c0 + " + " + str_c1 + " * "
-		+ "log2(x) ^ {" + str_c2 + "}";
+		+ "log2(x) ^ {" + str_c2 + "}" + " * log2(x) ^ {" + str_c3 + "}";
 
 	func += " * factorial(p)";
 	func += "}";

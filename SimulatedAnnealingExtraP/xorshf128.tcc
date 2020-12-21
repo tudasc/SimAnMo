@@ -24,12 +24,12 @@ public:
 			this->operator ()();
 	}
 	
-	xorshf128_32bit(T _seed) {
-		x=123456789; 
-		y=362436069; 
-		z=521288629;
-		w=88675123;
-		for (int i=0; i<10; ++i)
+	xorshf128_32bit(T _seed0) {
+		x=123456789 * _seed0; 
+		y=362436069 * _seed0; 
+		z=521288629 * _seed0;
+		w=88675123 * _seed0;
+		for (int i=0; i<20; ++i)
 			this->operator ()();
 	}
 	
@@ -37,6 +37,7 @@ public:
 	  T t = x ^ (x << 11);
 	  x = y; y = z; z = w;
 	  w ^= (w >> 19) ^ t ^ (t >> 8);
+	  //cout << w << endl;
 	  return w;	
 	}
 	
