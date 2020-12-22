@@ -75,6 +75,8 @@ public:
 
 	unsigned long long glob_id;
 
+	double max_cost; // A cap for the costs within the Solultion initializer
+
 
 private:
 	Configurator() {
@@ -131,6 +133,8 @@ private:
 
 
 		glob_id = 1;
+
+		max_cost = std::numeric_limits<double>::max() * 10e-200;
 	}
 
 	Configurator(const Configurator&);

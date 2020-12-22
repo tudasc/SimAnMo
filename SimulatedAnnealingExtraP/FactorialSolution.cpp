@@ -68,7 +68,7 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 		act_sol.updateAt(3, distc23_log(m_rng));
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
-	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e-300));
+	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e-250));
 
 	*this = act_sol;
 }
