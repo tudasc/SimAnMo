@@ -10,20 +10,21 @@
 #include "ExponentialPolynomSolution.h"
 #include "FactorialSolution.h"
 
-template<class SolutionType, class CostCalulatorType>
-SolutionModifier<SolutionType, CostCalulatorType>::SolutionModifier(MeasurementDB* mdb) : _mdb(mdb)
+template<class SolutionType, class CostCalulatorType, class ParamEstType>
+SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::SolutionModifier(MeasurementDB* mdb) 
+	: _mdb(mdb)
 {
 #ifdef USE_NAG
 	this->param_est = new ParameterEstimator(_mdb);
 #else
-	this->param_est = new EigenParameterEstimator(_mdb);
+	this->param_est = new ParamEstType(_mdb);
 #endif
 	
 	this->cost_calc = CostCalulatorType(_mdb);
 }
 
-template<class SolutionType, class CostCalulatorType>
-SolutionType SolutionModifier<SolutionType, CostCalulatorType>::randomModifySolution(SolutionType * sol)
+template<class SolutionType, class CostCalulatorType, class ParamEstType>
+SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::randomModifySolution(SolutionType * sol)
 {
 
 	SolutionType solBack = *sol;
@@ -49,8 +50,8 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType>::randomModifySolu
 	return newsol;
 }
 
-template<class SolutionType, class CostCalulatorType>
-SolutionModifier<SolutionType, CostCalulatorType>::~SolutionModifier() {
+template<class SolutionType, class CostCalulatorType, class ParamEstType>
+SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::~SolutionModifier() {
 	if (param_est == NULL) {
 		delete param_est;
 		param_est = NULL;

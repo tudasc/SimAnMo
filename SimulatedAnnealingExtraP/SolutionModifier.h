@@ -5,18 +5,23 @@
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #else
-#include "EigenParameterEstimator.h"
+#include "GeneralParameterEstimator.h"
 #endif
 
 #include "MeasurementDB.h"
 #include "RSSCostCalculator.h"
 
-template<class SolutionType, class CostCalulatorType>
+template<class SolutionType, class CostCalulatorType, 
+	class ParamEstTyp=GeneralParameterEstimator>
 class SolutionModifier {
 public:
-	SolutionModifier() { param_est = NULL; }
+	SolutionModifier() {
+		param_est = NULL;
+		_mdb = nullptr;
+	}
 	SolutionModifier(MeasurementDB* mdb);
-	SolutionModifier(const SolutionModifier& other) {}
+	SolutionModifier(const SolutionModifier& other) {
+	}
 	~SolutionModifier();
 
 	SolutionType randomModifySolution(SolutionType* sol);
@@ -26,7 +31,7 @@ private:
 #ifdef USE_NAG
 	ParameterEstimator* param_est;
 #else
-	EigenParameterEstimator* param_est;
+	ParameterEstimatorInterface* param_est;
 	
 #endif
 	CostCalulatorType cost_calc;

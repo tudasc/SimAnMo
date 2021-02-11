@@ -11,6 +11,8 @@ public:
 	MeasurementDB(std::map<double,double>& trai, std::map<double, double>& mes);
 
 	MeasurementDB* cloneToLogVersion(MeasurementDB* inputDB);
+	int unifyMeasurementsToTraining();
+
 	void addTrainingPoint(std::pair<double, double>& measurement);
 	void addMeasurementPoint(std::pair<double, double>& measurement);
 

@@ -3,13 +3,16 @@
 
 #include "MeasurementDB.h"
 #include "AbstractSolution.h"
+#include "ParameterEstimatorInterface.h"
 
-class EigenParameterEstimator {
+class EigenParameterEstimator : public ParameterEstimatorInterface {
 public:
 	EigenParameterEstimator();
 	EigenParameterEstimator(MeasurementDB* mdb);
 	~EigenParameterEstimator();
-	void estimateParameters(AbstractSolution* sol, double newrelerr = 0.0);
+	void estimateParameters(AbstractSolution* sol, double newrelerr=0.0);
+
+
 private:
 	MeasurementDB * _mdb;
 };

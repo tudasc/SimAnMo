@@ -39,7 +39,6 @@ FunctionModel findModel(std::map<double, double>& training_points,
 	std::map<double, double>& measurement_points, std::string options);
 
 
-
 } // End namespace SimAnMo
 
 #endif // !LIBRARYINTERFACE_H

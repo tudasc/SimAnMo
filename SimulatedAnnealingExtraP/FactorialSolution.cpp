@@ -129,9 +129,9 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 
 	// Change c_2
 	if (coeff == 2) {
-		double change = 0.0;
+		double change_c2 = 0.0;
 		double change_c3 = 0.0;
-		double val = random_sol.getAt(2);
+		double val_c2 = random_sol.getAt(2);
 		double val_c3 = random_sol.getAt(3);
 
 		int cnt = 0;
@@ -140,7 +140,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 			double sign_pol = 1.0;
 			if (sign_for_change(m_rng/*engine*/) == 0) sign_pol = -1.0;
 			double temp = sign_pol * dist_pol_change(m_rng/*engine*/);
-			change = temp * abs(random_sol.getAt(2));
+			change_c2 = temp * abs(random_sol.getAt(2));
 
 #ifdef LOGVARIANT
 			sign_pol = 1.0;
@@ -152,25 +152,25 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 
 			cnt++;
 			if (cnt == 10) {
-				change = 0.0;
+				change_c2 = 0.0;
 				change_c3 = 0.0;
 				break;
 			}
 
 		} while (!	(
-				(val + change) >= Configurator::getInstance().min_pol_range 
-			&&	(val + change) <= Configurator::getInstance().max_pol_range
+				(val_c2 + change_c2) >= Configurator::getInstance().min_pol_range 
+			&&	(val_c2 + change_c2) <= Configurator::getInstance().max_pol_range
 #ifdef LOGVARIANT
-			&& (val_c3 + change) >= Configurator::getInstance().min_pol_range
-			&& (val_c3 + change) <= Configurator::getInstance().max_pol_range
+			&& (val_c3 + change_c3) >= Configurator::getInstance().min_pol_range
+			&& (val_c3 + change_c3) <= Configurator::getInstance().max_pol_range
 #endif
 			)
 		);
 
-		val += change;
+		val_c2 += change_c2;
 		val_c3 += change_c3;
 
-		random_sol.updateAt(2, val);
+		random_sol.updateAt(2, val_c2);
 #ifdef LOGVARIANT
 		random_sol.updateAt(3, val_c3);
 #endif
@@ -216,9 +216,9 @@ double FactorialSolution::evaluateConstantTermAt(double p)
 
 	double y = 0.0;
 #ifndef	LOGVARIANT
-	y = factorial((int)p) * pow(p, c[2]);
+	y = (double)factorial((int)p) * pow(p, c[2]);
 #else
-	y = factorial((int)p) * pow(p, c[2]) * pow(log2(p), c[3]);
+	y = (double)factorial((int)p) * pow(p, c[2]) * pow(log2(p), c[3]);
 #endif
 	return y;
 }
@@ -247,7 +247,7 @@ std::string FactorialSolution::getModelFunction() {
 		<< " * fac(p)" << "* p^(" << c[2] << ")" << std::endl;
 #else
 	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1]
-		<< " * fac(p)" << "* p^(" << c[2] << ") * log2^(" << c[2] << ") (p)" << std::endl;
+		<< " * fac(p)" << "* p^(" << c[2] << ") * log2^(" << c[3] << ") (p)" << std::endl;
 #endif
 	return strstr.str();
 }
@@ -386,5 +386,6 @@ uint64_t FactorialSolution::factorial(int inp) {
 		fac *= i;
 	}
 
+	//cout << "returning " << fac << endl;
 	return fac;
 }

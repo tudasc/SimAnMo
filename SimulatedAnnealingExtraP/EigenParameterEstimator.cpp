@@ -37,10 +37,20 @@ void EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double 
 	// Fill the coefficient matrix
 	for (int row = 0; row < m; row++) {
 		A(row, 0) = 1.0;
+		//double tmp = sol->evaluateConstantTermAt(_mdb->getPairAt(row).first);
+		//cout << tmp << endl;
 		A(row, 1) = sol->evaluateConstantTermAt(_mdb->getPairAt(row).first);
 	}
 
+	// Try with perhaps more stable version
+	/*cout << "The solution using the QR decomposition is:\n"
+		<< A.colPivHouseholderQr().solve(b) << endl;*/
+
+	// Old Way
 	x = A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b);
+
+	/*cout << "The solution using the SVD decomposition is:\n"
+		<< x << endl;*/
 
 	// Update Solution
 	for (int i = 1; i <= n; ++i) {

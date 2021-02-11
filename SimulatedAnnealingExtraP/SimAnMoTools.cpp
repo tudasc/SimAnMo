@@ -182,6 +182,10 @@ using namespace std;
 				i++;
 			}
 
+			if (input == "--generate_robust" || input == "--gr") {
+				Configurator::getInstance().gen_robust = true;
+			}
+
 			// Printing Configuration
 			if (input == "--genlatex" || input == "--gl") {
 				Configurator::getInstance().do_latex_output = true;
@@ -244,10 +248,19 @@ using namespace std;
 
 			if (input == "--min_pol_range" || input == "--mipol") {
 				if (argc <= i) {
-					std::cerr << "Missing argument for parameter mix_pol_range. Terminating." << std::endl;
+					std::cerr << "Missing argument for parameter min_pol_range. Terminating." << std::endl;
 					exit(-1);
 				}
 				Configurator::getInstance().min_pol_range = atof(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--min_log_range" || input == "--milog") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter min_log_range. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().min_log_range = atof(argv[i + 1]);
 				i++;
 			}
 

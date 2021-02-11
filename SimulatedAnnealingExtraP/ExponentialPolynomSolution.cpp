@@ -4,7 +4,7 @@
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #else
-#include "EigenParameterEstimator.h"
+#include "GeneralParameterEstimator.h"
 #endif
 #include <iostream>
 #include <random>
@@ -60,7 +60,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb);
 #else
-	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
+	GeneralParameterEstimator paramest = GeneralParameterEstimator(mdb);
 #endif
 	nnrRSSCostCalculator costcalc = nnrRSSCostCalculator(mdb);
 

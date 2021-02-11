@@ -5,6 +5,9 @@
 
 //using namespace std;
 
+#define TYPE_EIGENPARAMETER 0
+#define TYPE_ALGLIBPARAMETER 1
+
 class Configurator {
 public:
 	static Configurator& getInstance()
@@ -59,6 +62,7 @@ public:
 	int no_of_trials;
 
 	bool create_log_exp_model;
+	bool gen_robust;
 
 	// Print Configuration
 	bool do_latex_output;
@@ -76,7 +80,7 @@ public:
 	unsigned long long glob_id;
 
 	double max_cost; // A cap for the costs within the Solultion initializer
-
+	int param_est_typ;
 
 private:
 	Configurator() {
@@ -123,6 +127,7 @@ private:
 		path_pdf_xchange = "C:\\Program Files\\Tracker Software\\PDF Viewer";
 
 		ymode_log = false;
+		gen_robust = false;
 
 		print_confidence = false;
 		confidence_interval = 0.0;
@@ -135,6 +140,7 @@ private:
 		glob_id = 1;
 
 		max_cost = std::numeric_limits<double>::max() * 10e-200;
+		param_est_typ = TYPE_EIGENPARAMETER;
 	}
 
 	Configurator(const Configurator&);

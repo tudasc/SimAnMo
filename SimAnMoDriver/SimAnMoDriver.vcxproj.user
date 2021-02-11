@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--ylog --pcd --gll --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile test02 --nt 1 --ann_steps 2 --ann_cooling_rate 0.6</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--ngr --npcd --ngl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 1 --ann_cooling_rate 0.0000001 --mipol -0.14612 --mepol  -0.14611 --milog -0.0001 --melog 0.0001</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--logy  --gl --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile StringPermutations --nt 12 --ann_steps 150 --ann_cooling_rate 0.9985 --mipol -3 --mepol 2</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--ngr --npcd --gl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 45 --ann_cooling_rate 0.998 --mipol -0.1 --mepol  2 --milog -0.000001 --melog 2.000001</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

@@ -191,6 +191,7 @@
     <ClInclude Include="ExponentialSolution.h" />
     <ClInclude Include="ExtraPSolution.h" />
     <ClInclude Include="FactorialSolution.h" />
+    <ClInclude Include="GeneralParameterEstimator.h" />
     <ClInclude Include="InMaps.h" />
     <ClInclude Include="LatexPrinter.h" />
     <ClInclude Include="LibraryInterface.h" />
@@ -199,6 +200,8 @@
     <ClInclude Include="LinLogConversionRSSCalculator.h" />
     <ClInclude Include="MeasurementDB.h" />
     <ClInclude Include="MeasurementDBReader.h" />
+    <ClInclude Include="ParameterEstimatorInterface.h" />
+    <ClInclude Include="raRSDParameterEstimator.h" />
     <ClInclude Include="nnrRSSCostCalculator.h" />
     <ClInclude Include="ParameterEstimator.h" />
     <ClInclude Include="QualityLogger.h" />
@@ -233,6 +236,7 @@
     <ClCompile Include="ExponentialSolution.cpp" />
     <ClCompile Include="ExtraPSolution.cpp" />
     <ClCompile Include="FactorialSolution.cpp" />
+    <ClCompile Include="GeneralParameterEstimator.cpp" />
     <ClCompile Include="LatexPrinter.cpp" />
     <ClCompile Include="LibraryInterface.cpp" />
     <ClCompile Include="LinearRegressionFinder.cpp" />
@@ -240,6 +244,7 @@
     <ClCompile Include="MeasurementDB.cpp" />
     <ClCompile Include="MeasurementDBReader.cpp" />
     <ClCompile Include="nnrRSSCostCalculator.cpp" />
+    <ClCompile Include="raRSDParameterEstimator.cpp" />
     <ClCompile Include="ParameterEstimator.cpp" />
     <ClCompile Include="QualityLogger.cpp" />
     <ClCompile Include="RSSCostCalculator.cpp" />

@@ -507,7 +507,7 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 		myfile << "{\\large"
 			<< "\\begin{itemize}" << std::endl
 			<< "\\item " << "Deviation of our model and measures at x=" << measurex
-			<< " is " << ourdef << "\\%." << std::endl;
+			<< " is " << ourdef << "\\%. (" << oury << " vs. " << measurey << ")" << std::endl;
 
 		
 		if (cinfo.print_ref_solution) {			

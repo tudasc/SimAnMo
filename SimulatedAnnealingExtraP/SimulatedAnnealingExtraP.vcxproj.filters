@@ -22,6 +22,12 @@
     <Filter Include="Quelldateien\SolutionTypes">
       <UniqueIdentifier>{8e1f6fdf-9d2b-47b9-a4ed-45f5de9480b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Estimators">
+      <UniqueIdentifier>{050b07dc-9be0-4c78-82e3-d1b862d22665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\ParameterEstimation">
+      <UniqueIdentifier>{e2dfed58-424f-4ad0-8102-5cba539b4c73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Solution.h">
@@ -37,9 +43,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="MeasurementDBReader.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ParameterEstimator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="SolutionModifier.h">
@@ -73,9 +76,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ExtraPSolution.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="EigenParameterEstimator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="alglib\alglibinternal.h">
@@ -150,6 +150,21 @@
     <ClInclude Include="InMaps.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterEstimatorInterface.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="EigenParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
+    <ClInclude Include="raRSDParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -183,9 +198,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="LinearRegressionFinder.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="EigenParameterEstimator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="alglib\specialfunctions.cpp">
@@ -259,6 +271,15 @@
     </ClCompile>
     <ClCompile Include="LibraryInterface.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="EigenParameterEstimator.cpp">
+      <Filter>Quelldateien\Estimators</Filter>
+    </ClCompile>
+    <ClCompile Include="raRSDParameterEstimator.cpp">
+      <Filter>Quelldateien\Estimators</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralParameterEstimator.cpp">
+      <Filter>Quelldateien\Estimators</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

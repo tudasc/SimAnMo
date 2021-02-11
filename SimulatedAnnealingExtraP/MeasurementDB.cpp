@@ -53,6 +53,29 @@ MeasurementDB* MeasurementDB::cloneToLogVersion(MeasurementDB* inputDB) {
 	return newLogDB;
 }
 
+/*
+* Copies all Measurment-points to the training point for complete
+* metrics evaluation.
+* non-reversible
+*/
+int MeasurementDB::unifyMeasurementsToTraining() {
+	for (int i = 0; i < this->_no_measurements; i++) {
+		// Avoid double insertion
+		if (std::find(_xvals.begin(), _xvals.end(), this->_xmeasure[i]) != _xvals.end())
+			continue;
+
+		this->_xvals.push_back(this->_xmeasure[i]);
+		this->_yvals.push_back(this->_ymeasure[i]);
+		this->_no_trainingpoints++;
+	}
+
+	_xmeasure = _xvals;
+	_ymeasure = _yvals;
+	_no_measurements = _no_trainingpoints;
+
+	return this->_no_trainingpoints;
+}
+
 void MeasurementDB::addTrainingPoint(std::pair<double, double>& measurement) {
 	this->_xvals.push_back( measurement.first);
 	this->_yvals.push_back(measurement.second);
