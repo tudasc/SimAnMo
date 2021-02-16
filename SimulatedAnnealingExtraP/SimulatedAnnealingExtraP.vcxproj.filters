@@ -28,6 +28,9 @@
     <Filter Include="Headerdateien\ParameterEstimation">
       <UniqueIdentifier>{e2dfed58-424f-4ad0-8102-5cba539b4c73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Solutions">
+      <UniqueIdentifier>{b63ec128-8814-48a9-a0b3-a3cc7ef731b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Solution.h">
@@ -61,9 +64,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="TemperatureInitializer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="AbstractSolution.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="LinearSolution.h">
@@ -123,9 +123,6 @@
     <ClInclude Include="ExponentialSolution.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ExponentialPolynomSolution.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="nnrRSSCostCalculator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -156,14 +153,23 @@
     <ClInclude Include="GeneralParameterEstimator.h">
       <Filter>Headerdateien\ParameterEstimation</Filter>
     </ClInclude>
-    <ClInclude Include="ParameterEstimatorInterface.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="EigenParameterEstimator.h">
       <Filter>Headerdateien\ParameterEstimation</Filter>
     </ClInclude>
     <ClInclude Include="raRSDParameterEstimator.h">
       <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterEstimatorInterface.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
+    <ClInclude Include="SimAnMoStatus.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractSolution.h">
+      <Filter>Headerdateien\Solutions</Filter>
+    </ClInclude>
+    <ClInclude Include="ExponentialPolynomSolution.h">
+      <Filter>Headerdateien\Solutions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

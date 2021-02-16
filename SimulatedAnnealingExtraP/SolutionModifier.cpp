@@ -36,16 +36,38 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::ra
 		if (count > 1000) {
 			newsol = solBack;
 			count = 0;
+			//cout << "CHI";
 		}
 
-		newsol = newsol.getNeighborSolution();
-		param_est->estimateParameters(&newsol);
-		cost_calc.calculateCost(&newsol);
 		count++;
 
+		newsol = newsol.getNeighborSolution();
+		int ret = param_est->estimateParameters(&newsol);
+		
+		if (ret > 0 && ret < 100)
+			continue;
+
+		cost_calc.calculateCost(&newsol);
+
+		if (newsol.get_costs() < 1e-10)
+		{
+			newsol.printModelFunction();
+			cout << "ERRR" << endl;
+			int stop = 1;
+			//cin >> stop;
+		}
 
 
-	} while (std::isnan(newsol.get_costs()) /*|| newsol.get_costs() == std::numeric_limits<double>::infinity()*/);
+
+	} while (std::isnan(newsol.get_costs()) || newsol.get_costs() > Configurator::getInstance().max_cost);
+
+	if (newsol.get_costs() < 1e-10)
+	{
+		newsol.printModelFunction();
+		cout << "ERRR" << endl;
+		int stop = 1;
+		//cin >> stop;
+	}
 
 	return newsol;
 }

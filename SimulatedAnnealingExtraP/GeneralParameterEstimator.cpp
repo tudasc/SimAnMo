@@ -22,6 +22,6 @@ GeneralParameterEstimator::~GeneralParameterEstimator() {
 	delete this->_esti;
 }
 
-void GeneralParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
-	this->_esti->estimateParameters(sol, newrelerr);
+int GeneralParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
+	return this->_esti->estimateParameters(sol, newrelerr);
 }

@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage[letterpaper, margin=1.5cm]{geometry}
+\usepackage{xcolor, colortbl}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{pgfplots.statistics}
+\usetikzlibrary{patterns}
+\usetikzlibrary{calc}
+\usepgfplotslibrary{fillbetween}
+\definecolor{color1}{RGB}{255,0,0}
+\definecolor{color2}{RGB}{0,255,0}
+\definecolor{color3}{RGB}{0,0,255}
+\definecolor{color4}{RGB}{255,255,0}
+\definecolor{color5}{RGB}{255,0,255}
+\definecolor{color6}{RGB}{0,255,255}
+\definecolor{color7}{RGB}{90,90,255}
+\definecolor{color8}{RGB}{90,255,90}
+\definecolor{darkorange}{RGB}{255,140,0}
+\begin{document}
+\section{Evaluation}
+{\large
+\begin{equation}
+f_{model}(x) = 3.09 + 0.462073 * x ^ {1.03} * log2(x) ^ {0.39}
+\end{equation}\begin{itemize}
+\item Thread 0 found solution in 18212007 steps requiring 32.3312 seconds.
+\item Cost ( raRSD ):0.0121623
+\item Metrics of our model: RSS: 2354.231881 / anRSS: 0.014856 / arNRS: 0.012162\end{itemize}
+}
+\begin{figure}[htb]
+\centering
+\newlength\figureheight
+\newlength\figurewidth
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\pgfplotsset{every tick label/.append style={font=\small}}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ylabel={runtime in s},
+xlabel={rank of lattice $n$},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [domain= 44:780, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {3.08647 + 0.462073 * ( \x ^ 1.03048) * log2(\x) ^0.392962)});;
+\addlegendentry{Our model $3.09 + 0.462073 * x ^ {1.03} * log2(x) ^ {0.39}$ };
+\addplot[only marks, mark=diamond*,mark options={scale=1.5, fill=red},draw=red] coordinates {	
+(44, 47.0419)
+(48, 54.2465)
+(52, 56.9877)
+(56, 61.304)
+(60, 66.043)
+(64, 70.9458)
+(68, 75.769)
+(72, 81.0002)
+(76, 85.4129)
+(80, 90.5268)
+(84, 94.8144)
+(88, 99.5791)
+(92, 104.076)
+(104, 120)
+(220, 258.13)
+(600, 848.776)
+(780, 1051.5)
+};
+\addlegendentry{ Training data };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\newpage
+\section{Prediction of Runtime}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+xlabel={rank of lattice $n$},
+ylabel={runtime in s},
+legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\addplot [name path=func, domain=214:780, samples=110,unbounded coords=jump, draw=blue, very thick] 
+(\x, {3.08647 + 0.462073 * ( \x ^ 1.03048) * log2(\x) ^0.392962)});;
+\addlegendentry{Our model $3.09 + 0.462073 * x ^ {1.03} * log2(x) ^ {0.39}$ };
+\addplot[only marks, mark = *, mark options = {scale=1.5, fill=color5}, draw = color5] coordinates { 
+( 220 , 258.13 )
+( 600 , 848.776 )
+( 780 , 1051.5 )
+};
+\addlegendentry{ Measurements };
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+{\large\begin{itemize}
+\item Deviation of our model and reference at x=780 is 59.5632\%.
+\end{itemize}}
+{\large\begin{itemize}
+\item Deviation of our model and measures at x=780 is 2.45173\%. (1077.28 vs. 1051.5)
+\item Deviation of reference model and measures at x=780 is 153.362\%.
+\end{itemize}}
+\newpage
+\section{Development of Costs}
+\begin{figure}[htb]
+\centering
+\setlength\figureheight{10cm}
+\setlength\figurewidth{10cm}
+\begin{tikzpicture}
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+ymode = log,
+ylabel={costs},
+xlabel={step},
+legend style={at={(0.99, 0.999)},anchor=north east, legend cell align=left, font=\footnotesize, fill=none, draw=none},
+]
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+\end{document}

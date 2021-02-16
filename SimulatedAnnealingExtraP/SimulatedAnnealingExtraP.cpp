@@ -72,21 +72,27 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
-	double ref_array[5] = { 0.101914 , 0.0713363, -0.146112 , 9.07771e-79 , 0 }; // ManSolFac
+	//double ref_array[5] = { 0.101914 , 0.0713363, -0.146112 , 9.07771e-79 , 0 }; // ManSolFac
 
-	//double ref_array[5] = { 0 , 0, 2.3 , 0 , 0 };
+	double ref_array[5] = { 0 , 0, 0.745 , 1.9 , 0 };
 	SolutionType ref_sol = SolutionType(ref_array);
-	newesti.estimateParameters(&ref_sol);
-	refCostCalc.calculateCost(&ref_sol);
+	//newesti.estimateParameters(&ref_sol);
+	//refCostCalc.calculateCost(&ref_sol);
+	//exit(123);
+	int ret = paramest.estimateParameters(&ref_sol);
+	if (ret > 0 && ret < 100) {
+		cout << "WARNING: Reference Solution Invalid!";
+	}
 
-	/*paramest.estimateParameters(&ref_sol);
-	refCostCalc.calculateCost(&ref_sol);
-	exit(123);*/
+	else {
+		refCostCalc.calculateCost(&ref_sol);
+	}
+
 
 	//cout << "Reference solution cost: " << ref_sol.get_costs() << endl;
 	int steps = 0;
 	//TemperatureInitializer<SolutionType, CostCalculatorType> tempin = TemperatureInitializer<SolutionType, CostCalculatorType>(inputDB);
-	double temp_init = 1.0;// tempin.estimateInitialCost(550, 32);
+	double temp_init = 1.0e-1;// tempin.estimateInitialCost(550, 32);
 	//target_temp = temp_init * target_temp;
 
 	const double cooling_rate = _cooling_rate;
@@ -125,7 +131,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 		// For decision if worse solution is accepted
 		std::mt19937 rng;
 		rng.seed(std::random_device()());
-		std::uniform_real_distribution<double> distreal(0, 1.0);
+		std::uniform_real_distribution<double> distreal(0.0001, 1.0);
 #if SIMANMO_VERBOSE > 0
 		cout << "Starting temp is: " << target_temp << endl;
 #endif
@@ -138,7 +144,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 		int without_glob_improve = 0;
 		int without_glob_improve2 = 0;		
-		while (T > target_temp) {    
+		while (T > target_temp) {  
 
 #if SIMANMO_VERBOSE > 0
 			if (tid == 0) {
@@ -154,7 +160,11 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				std::cout.flush();
 			}
 #endif
-
+			/*if (act_sol.get_costs() > 10E120Configurator::getInstance().max_cost) {
+				cout << act_sol.get_costs() << endl;
+				int stop = 1;
+				//cin >> stop;
+			}*/
 			progress += progressstepwidth; // for demonstration only
 			steps++;
 
@@ -166,7 +176,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 					//cout << "Backtracked";
 				}
 
-				if (without_glob_improve2 == 1000000) {
+				if (without_glob_improve2 == 250000) {
 					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;
@@ -175,14 +185,16 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				// Generate new solution candidate
 				SolutionType act_sol_now = solmod.randomModifySolution(&act_sol);
 
+					if (act_sol_now.get_costs() < 1e-10)
+					{
+						act_sol_now.printModelFunction();
+						cout << "ERRR" << endl;
+						int stop = 1;
+						//cin >> stop;
+					}
+				//cout << "c";
 				// Accept solution since it is better
 				if (act_sol_now.get_costs() < act_sol.get_costs()) {
-
-					//cout << "From " << act_sol.get_costs() << " / " << act_sol_now.get_costs() << endl;
-					//cout << "Find better one " << endl;
-					//int stop = 1;
-					//cin >> stop;
-
 					act_sol = act_sol_now;
 
 					if (do_quality_log) {
@@ -201,12 +213,22 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 				// Randomize if the worse solution is accepted
 				else if (act_sol_now.get_costs() >= act_sol.get_costs()) {
-					double prob = (exp(-(act_sol_now.get_costs() - act_sol.get_costs()) / T));
+					double prob = exp(-(act_sol_now.get_costs() - act_sol.get_costs()) / T);
 
-					//cout << prob << " : " << act_sol.get_costs() << " / " << act_sol_now.get_costs() << endl;
+					//
 					double accept_prob = distreal(rng);
+					
 
-					if (accept_prob > prob) {
+					if (prob > accept_prob) {
+						//cout << prob << " : " << act_sol_now.get_costs() / act_sol.get_costs() << endl;
+						if (act_sol_now.get_costs() / act_sol.get_costs() > 2) {
+							/*cout << accept_prob << " vs. " << prob 
+								<< " with T:" << T << endl;
+							int stop = 1;
+							//cin >> stop;*/
+						}
+						//cout << prob << " : " << act_sol_now.get_costs() / act_sol.get_costs() << endl;
+
 						act_sol = act_sol_now;
 						if (do_quality_log) {
 							std::pair<unsigned int, double> newpair(stepcount, act_sol.get_costs());
@@ -311,7 +333,7 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 
 		// Prepare the report generation	
 		// Get the minimal solution out of all
-		min_cost = std::numeric_limits<double>::infinity();
+		min_cost = std::numeric_limits<double>::max();
 		SolutionType abs_min_sol;
 		for (int i = 0; i < no_threads; i++) {
 			calcinf.sol_per_thread.push_back(sol_per_thread[i]);
@@ -490,12 +512,12 @@ int findAModel(std::string mtype, std::string costcaltype) {
 	}
 
 	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
-		cout << "factorialsolution/nnrrsscostcalculator" << endl;
+		cout << "exponentialsolution/nnrrsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
 	}
 
 	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("rsscostcalculator") == 0) {
-		cout << "factorialsolution/nnrrsscostcalculator" << endl;
+		cout << "exponentialsolution/rsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, RSSCostCalculator>();
 	}
 

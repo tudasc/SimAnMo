@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--ngr --npcd --ngl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 1 --ann_cooling_rate 0.0000001 --mipol -0.14612 --mepol  -0.14611 --milog -0.0001 --melog 0.0001</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--cct "nnrrsscostcalculator" --st "exponentialsolution"   --ngr --pcd --gl --logy --inputfile "../inputs/synt9.txt" --outpath "../outputs/" --texfile test --nt 1  --ann_steps 200 --ann_cooling_rate 0.999 --epmae 3.2 --epmie 1.4 --epmic 0.0001</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--ngr --npcd --gl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 45 --ann_cooling_rate 0.998 --mipol -0.1 --mepol  2 --milog -0.000001 --melog 2.000001</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--cct "nnrrsscostcalculator" --st "factorialsolution"   --ngr --pcd --gl --logy --inputfile "../inputs/StringPermutationPi.txt" --outpath "../outputs/" --texfile test --nt 8  --ann_steps 100 --ann_cooling_rate 0.999 </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

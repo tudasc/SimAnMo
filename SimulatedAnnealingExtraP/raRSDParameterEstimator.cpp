@@ -1,4 +1,5 @@
 #include "raRSDParameterEstimator.h"
+#include "EigenParameterEstimator.h"
 #include <iostream>
 
 raRSDParameterEstimator::raRSDParameterEstimator()
@@ -15,7 +16,7 @@ raRSDParameterEstimator::~raRSDParameterEstimator()
 	_mdb = nullptr;
 }
 
-void raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
+int raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
 	int m = _mdb->get_size();
 	int n = 2; // Nummber of variables
 
@@ -32,8 +33,16 @@ void raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double n
 		params.y_n[i] = _mdb->getPairAt(i).second;
 	}
 
-	real_1d_array v_init = "[ -15, 30 ]";
-	real_1d_array s = "[1,1]"; // scale does not make difference
+	EigenParameterEstimator eigpar = EigenParameterEstimator(_mdb);
+	if (eigpar.estimateParameters(sol))
+		return ERR_GENERAL_INVALID;
+
+	double par1 = sol->getAt(0);
+	double par2 = sol->getAt(1);
+
+	real_1d_array v_init; v_init.setlength(2);
+	v_init[0] = par1; v_init[1] = par2;
+	real_1d_array s = "[1 , 1]"; // scale does not make difference
 	real_2d_array c = "[[1, 0, 0.1], [0, 1 , 10e-9]]";
 	integer_1d_array ct = "[1,1]"; // >, >
 
@@ -51,7 +60,15 @@ void raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double n
 	minbleicoptguardsmoothness(state);
 	minbleicoptguardgradient(state, 0.001);
 	minbleicreport rep;
-	alglib::minbleicoptimize(state, raRSDParameterEstimatorFunctionGradEval, nullptr, &params);
+
+	try
+	{ 
+		alglib::minbleicoptimize(state, raRSDParameterEstimatorFunctionGradEval, nullptr, &params);
+	}
+
+	catch (...) {
+		return ERR_GENERAL_INVALID;
+	}
 
 	minbleicresults(state, v_init, rep);
 	//printf("%d\n", int(rep.terminationtype)); // EXPECTED: 4
@@ -66,11 +83,19 @@ void raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double n
 	sol->updateAt(0, v_init[0]);
 	sol->updateAt(1, v_init[1]);
 
+	if (v_init[0] < 10e-9 || v_init[0] < 10e-9) {
+		int stop = 1;
+		cin >> stop;
+	}
+		
+
 	/*cout << "OrgFunc: " << org_func(v_init[0], v_init[1], the_info.x_n, the_info.y_n) << endl;
 
 	for (int i = 0; i < the_info.y_n.size(); i++) {
 		cout << the_info.x_n[i] << " : " << v_init[0] + v_init[1] * g_x_n(the_info.x_n[i]) << endl;
 	}*/
+
+	return 0;
 }
 
 int raRSDParameterEstimatorFunctionGradAnalytical(

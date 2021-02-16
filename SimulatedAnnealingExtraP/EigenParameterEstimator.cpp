@@ -17,7 +17,7 @@ EigenParameterEstimator::~EigenParameterEstimator()
 {
 }
 
-void EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double newrelerr)
+int EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double newrelerr)
 {
 	int m = _mdb->get_size();
 	int n = 2;
@@ -52,15 +52,34 @@ void EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double 
 	/*cout << "The solution using the SVD decomposition is:\n"
 		<< x << endl;*/
 
+	bool x0_small = false;
+	bool x1_small = false;
+
 	// Update Solution
 	for (int i = 1; i <= n; ++i) {
 		if (abs(x[i - 1]) < 10e-11) {
-			if (abs(x[i - 1]) > 0.0)
+			if (abs(x[i - 1]) > 0.0) 
 				x[i - 1] = 10e-11;
 			else
-				x[i - 1] = -10e-11;
+				x[i - 1] = -10e-11;	
+
+			if (i == 1) x0_small = true;;
+			if (i == 2) x1_small = true;
+		}
+
+		if (x[i - 1] != x[i - 1]) {
+			if (i == 1) return ERR_X0_INF;
+			if (i == 2) return ERR_X1_INF;
 		}
 			
 		sol->updateAt(i - 1, x[i - 1]);
 	}
+
+	if (x0_small)
+		return WARN_SMALL_X0;
+
+	if (x1_small)
+		return WARN_SMALL_X1;
+
+	return 0;
 }

@@ -24,6 +24,9 @@ public:
 		return  this->glob_id++;
 	}*/
 
+	std::string solution_type;
+	std::string costcalc_type;
+
 	// Configuration variables
 	// For Standard Solution
 	double std_exp_range;
@@ -84,6 +87,9 @@ public:
 
 private:
 	Configurator() {
+		solution_type = "extrapsolution";
+		costcalc_type = "nnrrsscostcalculator";
+
 		// Configuration for annealing itself
 		ann_steps = 35;
 		ann_cooling_rate = 0.998;
@@ -99,10 +105,10 @@ private:
 		num_threads = 1;
 
 		// pol-log models
-		min_pol_range = 0.0;
+		min_pol_range = -0.5;
 		max_pol_range = 5.00;
 
-		min_log_range = 0.00;
+		min_log_range = -0.50;
 		max_log_range = 3.00;
 
 		// exp models
@@ -139,7 +145,7 @@ private:
 
 		glob_id = 1;
 
-		max_cost = std::numeric_limits<double>::max() * 10e-200;
+		max_cost = std::numeric_limits<double>::max() * 10e-300;
 		param_est_typ = TYPE_EIGENPARAMETER;
 	}
 

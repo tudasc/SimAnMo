@@ -10,7 +10,7 @@ public:
 	EigenParameterEstimator();
 	EigenParameterEstimator(MeasurementDB* mdb);
 	~EigenParameterEstimator();
-	void estimateParameters(AbstractSolution* sol, double newrelerr=0.0);
+	int estimateParameters(AbstractSolution* sol, double newrelerr=0.0);
 
 
 private:

@@ -75,6 +75,24 @@ using namespace std;
 		for (int i = 0; i < argc; i++) {
 			std::string input = std::string(argv[i]);
 
+			if (input == "--solution_type" || input == "--st") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter solution type. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().solution_type = string(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--costcalc_type" || input == "--cct") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter cost calcuator type. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().costcalc_type = string(argv[i + 1]);
+				i++;
+			}
+
 			if (input == "--number_of_trials" || input == "--tr") {
 				if (argc <= i) {
 					std::cerr << "Missing argument for parameter number of trials for annealing. Terminating." << std::endl;

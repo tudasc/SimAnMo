@@ -83,8 +83,10 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 	double start_vals[5] = { 0, 0, distc2(seeder), distc3(seeder), 0 };
 	for (int i = 0; i < _len; i++) _coefficients[i] = start_vals[i];
 
-	paramest.estimateParameters(this);
-	costcalc.calculateCost(this);
+	this->set_costs(std::numeric_limits<double>::max());
+
+	//paramest.estimateParameters(this);
+	//costcalc.calculateCost(this);
 
 	ExponentialPolynomSolution act_sol = *this;
 
@@ -103,24 +105,27 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 		if (++outercnt == 5) {
 			distc3 = std::uniform_real_distribution<double>(min_c_3, max_c_3);
 			act_sol.updateAt(3, distc3(seeder));
-			//cout << "Relaxing" << endl;
 			outercnt = 0;
 		}
 
 		act_sol.updateAt(2, distc2(seeder));
 		//act_sol.updateAt(3, distc3(seeder));
-
-		paramest.estimateParameters(&act_sol);
-		costcalc.calculateCost(&act_sol);
 		count++;
-
 		give_up_cnt++;
+
 		if (give_up_cnt > 10000) {
 			*this = act_sol;
 			break;
 		}
 
-	} while (act_sol.get_costs() == std::numeric_limits<double>::max() || std::isnan(act_sol.get_costs()));
+		// Values are too bad to estimate parameters
+		if (paramest.estimateParameters(&act_sol))
+			continue;
+
+		costcalc.calculateCost(&act_sol);
+
+	} while (act_sol.get_costs() > Configurator::getInstance().max_cost 
+		|| std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }
@@ -183,6 +188,11 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 
 	const double exp_diff = abs(Configurator::getInstance().max_exp_exp_range - Configurator::getInstance().min_exp_exp_range);
 	const double coeff_diff = abs(Configurator::getInstance().max_exp_coeff_range - Configurator::getInstance().min_exp_coeff_range);
+
+	double d1 = Configurator::getInstance().max_exp_exp_range;
+	double d2 = Configurator::getInstance().min_exp_exp_range;
+	double d3 = Configurator::getInstance().max_exp_coeff_range;
+	double d4 = Configurator::getInstance().min_exp_coeff_range;
 
 	std::uniform_int_distribution<int> dist2or3(2, 3);
 	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);

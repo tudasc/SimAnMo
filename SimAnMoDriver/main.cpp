@@ -48,15 +48,16 @@ int main(int argc, char** argv)
 	//Test
 	double coeff[5] = { 0.101914 , 0.0713363, -0.146112 , 4.32428e-66 , 0 };
 
-	FactorialSolution exsol = calculateFullModelMetrics<FactorialSolution>(coeff);
-	cout << "RSS: " << exsol._RSS << endl;
-	cout << "nnrRSS: " << exsol._nnrRSS << endl;
+	//FactorialSolution exsol = calculateFullModelMetrics<FactorialSolution>(coeff);
+	//cout << "RSS: " << exsol._RSS << endl;
+	//cout << "nnrRSS: " << exsol._nnrRSS << endl;
 
 	//return 0;
 	//return findAModel("extrapsolution", "nnrrsscostcalculator");
 	
-	return findAModel("factorialsolution", "nnrrsscostcalculator");
+	//return findAModel("factorialsolution", "nnrrsscostcalculator");
 	//return findAModel("factorialsolution", "rsscostcalculator");
 
 	//return findAModel("exponentialsolution", "nnrrsscostcalculator");
+	return findAModel(Configurator::getInstance().solution_type, Configurator::getInstance().costcalc_type);
 }

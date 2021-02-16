@@ -112,6 +112,7 @@
       <OpenMPSupport>false</OpenMPSupport>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>-Xclang -fopenmp %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -207,6 +208,7 @@
     <ClInclude Include="QualityLogger.h" />
     <ClInclude Include="RingQueue.h" />
     <ClInclude Include="RSSCostCalculator.h" />
+    <ClInclude Include="SimAnMoStatus.h" />
     <ClInclude Include="SimAnMoTools.h" />
     <ClInclude Include="SimulatedAnnealingExtraP.h" />
     <ClInclude Include="Solution.h" />

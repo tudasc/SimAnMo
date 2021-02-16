@@ -14,6 +14,11 @@ public:
 	{
 		setRandomID();
 		is_wrapped = false;
+
+		_costs = std::numeric_limits<double>::max();
+		_RSS = std::numeric_limits<double>::max();
+		_anRSS = std::numeric_limits<double>::max();
+		_nnrRSS = std::numeric_limits<double>::max();
 	}
 
 	/**
