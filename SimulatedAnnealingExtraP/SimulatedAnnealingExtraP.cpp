@@ -81,7 +81,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	//exit(123);
 	int ret = paramest.estimateParameters(&ref_sol);
 	if (ret > 0 && ret < 100) {
-		cout << "WARNING: Reference Solution Invalid!";
+		cout << "WARNING: Reference Solution Invalid!" << endl;
 	}
 
 	else {
@@ -111,7 +111,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #pragma omp barrier
 
 //#pragma omp critical
+		//cout << "Searching start solution " << endl;
 		startfind.findStartSolution(&act_sol, tid, no_threads);
+		//cout << "Found start solution " << endl;
 		//act_sol = ref_sol;
 
 #pragma omp critical
@@ -170,13 +172,13 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 			for (int i = 0; i < step_max; i++) {
 
-				if (without_glob_improve == 2000) {
+				if (without_glob_improve == 5000) {
 					act_sol = abs_min_sol_thread;
 					without_glob_improve = 0;
 					//cout << "Backtracked";
 				}
 
-				if (without_glob_improve2 == 250000) {
+				if (without_glob_improve2 == 500000) {
 					cout << "Thread " << tid << " ends." << endl;
 					T = 0;
 					break;

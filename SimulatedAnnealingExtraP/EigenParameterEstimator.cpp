@@ -63,7 +63,7 @@ int EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double n
 			else
 				x[i - 1] = -10e-11;	
 
-			if (i == 1) x0_small = true;;
+			if (i == 1) x0_small = true;
 			if (i == 2) x1_small = true;
 		}
 

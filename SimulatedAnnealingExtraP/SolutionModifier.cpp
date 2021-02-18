@@ -17,7 +17,7 @@ SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::SolutionModifie
 #ifdef USE_NAG
 	this->param_est = new ParameterEstimator(_mdb);
 #else
-	this->param_est = new ParamEstType(_mdb);
+	this->param_est = new GeneralParameterEstimator(_mdb);
 #endif
 	
 	this->cost_calc = CostCalulatorType(_mdb);
@@ -26,9 +26,9 @@ SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::SolutionModifie
 template<class SolutionType, class CostCalulatorType, class ParamEstType>
 SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::randomModifySolution(SolutionType * sol)
 {
-
 	SolutionType solBack = *sol;
 	SolutionType newsol = *sol;
+
 	int count = 0;
 	do
 	{
@@ -52,7 +52,7 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::ra
 		if (newsol.get_costs() < 1e-10)
 		{
 			newsol.printModelFunction();
-			cout << "ERRR" << endl;
+			cout << "ERRR2" << endl;
 			int stop = 1;
 			//cin >> stop;
 		}

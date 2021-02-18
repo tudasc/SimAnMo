@@ -120,9 +120,6 @@
     <ClInclude Include="AlglibLinearRegressionFinder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ExponentialSolution.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="nnrRSSCostCalculator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -169,6 +166,9 @@
       <Filter>Headerdateien\Solutions</Filter>
     </ClInclude>
     <ClInclude Include="ExponentialPolynomSolution.h">
+      <Filter>Headerdateien\Solutions</Filter>
+    </ClInclude>
+    <ClInclude Include="ExponentialSolution.h">
       <Filter>Headerdateien\Solutions</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,6 +23,8 @@ ExtraPSolution::ExtraPSolution()
 		_coefficients = new double[_len];
 
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
+
+	this->lin_log_sol = nullptr;
 }
 
 ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)

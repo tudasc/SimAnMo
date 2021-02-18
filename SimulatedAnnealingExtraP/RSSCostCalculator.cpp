@@ -7,7 +7,10 @@ RSSCostCalculator::RSSCostCalculator(MeasurementDB * mdb) : CostCalculator(mdb) 
 
 double RSSCostCalculator::calculateCost(AbstractSolution* sol) {
 	calculateMetrics(sol);
-	sol->set_costs( this->RSS );
+	if(Configurator::getInstance().costcalc_type=="nnrrsscostcalculator")
+		sol->set_costs( this->nnrRSS );
+	else
+		sol->set_costs(this->RSS);
 	return sol->get_costs();
 }
 

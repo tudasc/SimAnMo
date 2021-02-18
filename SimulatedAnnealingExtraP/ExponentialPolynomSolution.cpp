@@ -21,6 +21,7 @@ blaze_rng::xorshf128 ExponentialPolynomSolution::m_rng((uint32_t)time(NULL));
 
 
 ExponentialPolynomSolution::ExponentialPolynomSolution()
+	: AbstractSolution()
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -29,6 +30,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution()
 }
 
 ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
+	: AbstractSolution(mdb)
 {
 	double min_c_2 = Configurator::getInstance().min_exp_coeff_range;
 	double max_c_2 = Configurator::getInstance().max_exp_coeff_range;
@@ -113,10 +115,10 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 		count++;
 		give_up_cnt++;
 
-		if (give_up_cnt > 10000) {
+		/*if (give_up_cnt > 10000) {
 			*this = act_sol;
 			break;
-		}
+		}*/
 
 		// Values are too bad to estimate parameters
 		if (paramest.estimateParameters(&act_sol))
@@ -197,6 +199,9 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::uniform_int_distribution<int> dist2or3(2, 3);
 	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
 
+	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.03);
+	std::uniform_int_distribution<int> sign_for_change(0, 1);
+
 	int count = 0;
 
 	// What to change	
@@ -209,19 +214,30 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	do
 	{
 		// Backtrack
-		if (++count == 15) {
+		if (++count == 150) {
 			count = 0;
 			random_sol.updateAt(2, old_c2);
 			random_sol.updateAt(3, old_c3);
 		}
 
-		double t = (double)distc_2_3_change(m_rng) / 100;
+
+		double sign_pol = 1.0;
+		if (sign_for_change(m_rng) == 0) sign_pol = -1.0;
+		double temp = sign_pol * dist_pol_change(m_rng);
+		new_val_c2 = random_sol.getAt(2) + temp * abs(random_sol.getAt(2));
+
+		sign_pol = 1.0;
+		if (sign_for_change(m_rng) == 0) sign_pol = -1.0;
+		temp = sign_pol * dist_pol_change(m_rng);
+		new_val_c3 = random_sol.getAt(3) + temp * abs(random_sol.getAt(3));
+
+		/*double t = (double)distc_2_3_change(m_rng) / 100.0;
 		double change = (t / 100.0) * coeff_diff;
 		new_val_c2 = random_sol.getAt(2) + change;
 
 		t = (double)distc_2_3_change(m_rng) / 100;
 		change = (t / 100.0) * exp_diff;
-		new_val_c3 = random_sol.getAt(3) + change;
+		new_val_c3 = random_sol.getAt(3) + change;*/
 
 	} while (	new_val_c2 < Configurator::getInstance().min_exp_coeff_range ||
 				new_val_c2 > Configurator::getInstance().max_exp_coeff_range ||

@@ -4,7 +4,8 @@
 #include "Configurator.h"
 
 GeneralParameterEstimator::GeneralParameterEstimator() {
-
+	this->_inputDB = nullptr;
+	this->_esti = nullptr;
 }
 
 GeneralParameterEstimator::GeneralParameterEstimator(MeasurementDB* mdb) {

@@ -8,6 +8,9 @@
 #define TYPE_EIGENPARAMETER 0
 #define TYPE_ALGLIBPARAMETER 1
 
+#define TYPE_COST_RSS 0
+#define TYPE_COST_RARSD 1
+
 class Configurator {
 public:
 	static Configurator& getInstance()
@@ -109,7 +112,7 @@ private:
 		max_pol_range = 5.00;
 
 		min_log_range = -0.50;
-		max_log_range = 3.00;
+		max_log_range = 0.50;
 
 		// exp models
 		max_exp_range = 3.0;

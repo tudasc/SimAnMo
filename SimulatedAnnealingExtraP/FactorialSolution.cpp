@@ -5,9 +5,9 @@
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #else
-#include "EigenParameterEstimator.h"
+#include "GeneralParameterEstimator.h"
 #endif
-#include "RSSCostCalculator.h"
+#include "nnrRSSCostCalculator.h"
 #include "Configurator.h"
 #include <iomanip>
 
@@ -40,9 +40,9 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb, 0.0);
 #else
-	EigenParameterEstimator paramest = EigenParameterEstimator(mdb);
+	GeneralParameterEstimator paramest = GeneralParameterEstimator(mdb);
 #endif
-	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
+	nnrRSSCostCalculator costcalc = nnrRSSCostCalculator(mdb);
 
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -62,13 +62,40 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 
 	FactorialSolution act_sol = *this;
 
+	int max_cost_overflow_cnt = 0;
+
 	do
 	{
 		act_sol.updateAt(2, distc23_pol(m_rng));
 		act_sol.updateAt(3, distc23_log(m_rng));
-		paramest.estimateParameters(&act_sol);
+
+		//cout << "Hanging" << endl;
+		//act_sol.printModelFunction();
+		//int stop = 1;
+		//cin >> stop;
+		int ret = paramest.estimateParameters(&act_sol);
+		if (ret > 0 && ret < 100) {
+			continue;
+		}
+
 		costcalc.calculateCost(&act_sol);
-	} while (act_sol.get_costs() > (numeric_limits<double>::max() * 10e-250));
+
+		if (act_sol.get_costs() > Configurator::getInstance().max_cost) {
+			max_cost_overflow_cnt++;
+		}
+
+		// Relaxing condition if it seems impossible to find a good enough solution
+		if (max_cost_overflow_cnt == 500) {
+#pragma omp critical
+			{
+				Configurator::getInstance().max_cost *= 2.0;
+				max_cost_overflow_cnt = 0;
+			}
+		}
+		
+
+	} while (act_sol.get_costs() > Configurator::getInstance().max_cost
+		|| std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
 }
@@ -120,7 +147,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 	//double pos_pol_diff = Configurator::getInstance().max_pol_range - Configurator::getInstance().min_pol_range;
 	//double pos_log_diff = Configurator::getInstance().max_log_range - Configurator::getInstance().min_log_range;
 
-	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.33);
+	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.03);
 	std::uniform_int_distribution<int> sign_for_change(0, 1);
 	//std::uniform_real_distribution<double> dist_log_change(pos_log_diff*(-300), pos_log_diff*(300));
 
@@ -135,6 +162,7 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 		double val_c3 = random_sol.getAt(3);
 
 		int cnt = 0;
+
 		do {
 			//double temp = (double)distc_2_3_change(engine);
 			double sign_pol = 1.0;

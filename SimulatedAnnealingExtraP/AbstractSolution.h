@@ -28,6 +28,10 @@ public:
 	{
 		setRandomID();
 		is_wrapped = false;
+		_costs = std::numeric_limits<double>::max();
+		_RSS = std::numeric_limits<double>::max();
+		_anRSS = std::numeric_limits<double>::max();
+		_nnrRSS = std::numeric_limits<double>::max();
 	}
 
 	AbstractSolution(double* coefficients) {
@@ -42,7 +46,7 @@ public:
 		_nnrRSS = other._nnrRSS;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
-		is_wrapped = other.is_wrapped;
+		is_wrapped = other.is_wrapped;	
 	}
 
 	AbstractSolution & operator= (const AbstractSolution & other) {
