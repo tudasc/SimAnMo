@@ -112,7 +112,7 @@ private:
 		max_pol_range = 5.00;
 
 		min_log_range = -0.50;
-		max_log_range = 0.50;
+		max_log_range = 1.50;
 
 		// exp models
 		max_exp_range = 3.0;
@@ -148,7 +148,7 @@ private:
 
 		glob_id = 1;
 
-		max_cost = std::numeric_limits<double>::max() * 10e-300;
+		max_cost = std::numeric_limits<double>::max();// 10e70;// std::numeric_limits<double>::max() * 10e-300;
 		param_est_typ = TYPE_EIGENPARAMETER;
 	}
 

@@ -189,9 +189,9 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 
 					if (act_sol_now.get_costs() < 1e-10)
 					{
-						act_sol_now.printModelFunction();
-						cout << "ERRR" << endl;
-						int stop = 1;
+						//act_sol_now.printModelFunction();
+						//cout << "ERRR" << endl;
+						//int stop = 1;
 						//cin >> stop;
 					}
 				//cout << "c";
@@ -470,8 +470,20 @@ SimAnMo::FunctionModel findBestModel(std::map<double, double>& training_points,
 	if (funcmod_pollog.getCosts() > 0.1) {
 		ExponentialPolynomSolution expolsol =
 			annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>(&mdb);
+
+		// Inrease the parameters for exponential
+
+		int ann_steps_old = Configurator::getInstance().ann_steps;
+		double ann_cooling_rate = Configurator::getInstance().ann_cooling_rate;
+
+		Configurator::getInstance().ann_steps = Configurator::getInstance().ann_steps * 2;
+		Configurator::getInstance().ann_cooling_rate = Configurator::getInstance().ann_cooling_rate * 1.1;
+
 		SimAnMo::FunctionModel funcmod_expol =
 			SimAnMo::FunctionModel(new ExponentialPolynomSolution(expolsol));
+
+		Configurator::getInstance().ann_steps = ann_steps_old;
+		Configurator::getInstance().ann_cooling_rate = ann_cooling_rate;
 
 		if (funcmod_pollog.getCosts() < funcmod_expol.getCosts())
 			return funcmod_pollog;

@@ -23,7 +23,6 @@ int main(int argc, char** argv)
 	SimAnMo::parseConsoleParameters(argc, argv, depp);
 
 	if (Configurator::getInstance().costcalc_type == "rsscostcalculator") {
-		cout << "NAM" << endl;
 		Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
 	}
 

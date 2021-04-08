@@ -199,7 +199,8 @@ ExponentialPolynomSolution ExponentialPolynomSolution::getNeighborSolution() {
 	std::uniform_int_distribution<int> dist2or3(2, 3);
 	//std::uniform_real_distribution<double> distTrial(1e-4, 3e-1);
 
-	std::uniform_real_distribution<double> dist_pol_change(0.005, 0.03);
+	//std::uniform_real_distribution<double> dist_pol_change(0.005, 0.03);
+	std::uniform_real_distribution<double> dist_pol_change(0.01, 0.08);
 	std::uniform_int_distribution<int> sign_for_change(0, 1);
 
 	int count = 0;

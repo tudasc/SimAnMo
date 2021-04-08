@@ -48,6 +48,7 @@ using namespace std;
 
 		// Pol-Log
 		cout << endl << "SECTION: Polynomial-logarithmic (pol-log) model configuration" << endl;
+		cout << "--min_log_range / --milog + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent for lorarithms (default=0.00)" << endl;
 		cout << "--max_log_range / --melog + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for lorarithms (default=4.00)" << endl;
 		cout << "--min_pol_range / --mipol + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent for polynoms (default=-2.00)" << endl;
 		cout << "--max_pol_range / --mepol + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent for polynoms (default=6.00)" << endl;
@@ -255,6 +256,15 @@ using namespace std;
 				i++;
 			}
 
+			if (input == "--min_log_range" || input == "--milog") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter min_log_range. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().min_log_range = atof(argv[i + 1]);
+				i++;
+			}
+
 			if (input == "--max_pol_range" || input == "--mepol") {
 				if (argc <= i) {
 					std::cerr << "Missing argument for parameter max_pol_range. Terminating." << std::endl;
@@ -269,6 +279,7 @@ using namespace std;
 					std::cerr << "Missing argument for parameter min_pol_range. Terminating." << std::endl;
 					exit(-1);
 				}
+
 				Configurator::getInstance().min_pol_range = atof(argv[i + 1]);
 				i++;
 			}
@@ -278,6 +289,7 @@ using namespace std;
 					std::cerr << "Missing argument for parameter min_log_range. Terminating." << std::endl;
 					exit(-1);
 				}
+				cout << string(argv[i + 1]) << endl;
 				Configurator::getInstance().min_log_range = atof(argv[i + 1]);
 				i++;
 			}

@@ -51,9 +51,9 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::ra
 
 		if (newsol.get_costs() < 1e-10)
 		{
-			newsol.printModelFunction();
-			cout << "ERRR2" << endl;
-			int stop = 1;
+			//newsol.printModelFunction();
+			//cout << "ERRR2" << endl;
+			//int stop = 1;
 			//cin >> stop;
 		}
 
@@ -63,9 +63,9 @@ SolutionType SolutionModifier<SolutionType, CostCalulatorType, ParamEstType>::ra
 
 	if (newsol.get_costs() < 1e-10)
 	{
-		newsol.printModelFunction();
-		cout << "ERRR" << endl;
-		int stop = 1;
+		//newsol.printModelFunction();
+		//cout << "ERRR" << endl;
+		//int stop = 1;
 		//cin >> stop;
 	}
 

@@ -65,13 +65,18 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
 	{
 		double v1 = distc23_pol(seeder);
 		act_sol.updateAt(2, v1);
+
 		double v2 = distc23_log(seeder);
 		act_sol.updateAt(3, v2);
 		paramest.estimateParameters(&act_sol);
 		costcalc.calculateCost(&act_sol);
 		//count++;
-	} while (  /*act_sol.get_costs() == std::numeric_limits<double>::infinity() || */
-		std::isnan(act_sol.get_costs())
+	} while (  /*act_sol.get_costs() == std::numeric_limits<double>::infinity() || */ 
+		std::isnan(act_sol.get_costs()) &&
+		(act_sol.getAt(2) >= min_c_2) && 
+		(act_sol.getAt(2) <= max_c_2) &&
+		(act_sol.getAt(3) <= min_c_3) &&
+		(act_sol.getAt(3) <= max_c_3)
 	);
 
 	/*} while ((act_sol.get_costs() > this->get_costs())  ||
@@ -79,6 +84,12 @@ ExtraPSolution::ExtraPSolution(MeasurementDB* mdb)
 	);*/
 
 	*this = act_sol;
+	/*if (act_sol.getAt(2) < 0) {
+		int stop = 0;
+		cerr << "Maaaax3" << min_c_2 << endl;
+		cin >> stop;
+		exit(0);
+	}*/
 }
 
 ExtraPSolution::ExtraPSolution(double* coefficients)
@@ -224,7 +235,7 @@ std::string ExtraPSolution::printModelFunctionLatex(double scale, bool powed) co
 	{
 		func += "(\\x, {" + str_c0 + " + " + str_c1 + " * ( "
 			+ "\\x ^ " + str_c2 + ") * log2(\\x) ^" + str_c3
-			+ ")});";
+			+ "});";
 	}
 
 	else if (powed) {
