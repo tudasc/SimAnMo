@@ -59,7 +59,7 @@ First, we describe all calling parameter and second, the code changes regquired 
 ### Execution and Parameter
 The application is highly configurable. The main usage (depending on the OS) is:
 
-`(./) SiMaNo(.exe) [options]  --inputfile PATH_AND_NAME_OF_INPUTFILE --outpath PATH_WHERE_TO_PLACE_OUTPUT --texfile NAME_OF_TEX_AND_PDF_FILES`
+`(./) SiMaNo(.exe) [options]  --inputfile PATH_AND_NAME_OF_INPUTFILE --gl --outpath PATH_WHERE_TO_PLACE_OUTPUT --texfile NAME_OF_TEX_AND_PDF_FILES`
 
 There are many command line parameter which influence the behavior. These are:
 #### General and Annealing Process
@@ -75,6 +75,8 @@ There are many command line parameter which influence the behavior. These are:
 * `--ann_steps_wo_mod / --awm + INT` Heuristic: Stop if no improvement after this number of steps (default=200000)
 * `--ann_steps_backtrack / --abt + INT`Heuristic: Backtrack per thread after this number of steps (default=20000)
 
+#### Model and Cost Calculation Configuration
+* `--costcalc_type / --cct + STRING` Decides whether to use RSS (STRING="rsscost") or raRSD (STRING="rarsdcost") as cost metric to minimize (default="rsscost")
 
 #### LaTeX Printing
 * `--genlatex / --gl` Activate the LaTeX report generation (default=false)
@@ -102,6 +104,12 @@ There are many command line parameter which influence the behavior. These are:
 * `-exp_pol_max_coeff / --epmac + FLOAT` Maximum coefficient in the exponent of exp-pol models (default=2.0)
 * `--exp_pol_min_exp / --epmie + FLOAT` Minimum exponent in the exponent of exp-pol models (default=0.5)
 * `--exp_pol_max_exp / --epmae + FLOAT` Maximum exponent in the exponent of exp-pol models (default=3.0)
+
+##### Factorial (fac) Model Configuration [Introduced in [BUR21]]
+* `--fac_pol_min_coeff / --fpmic + FLOAT` Minimum coefficient in the exponent of the polynomial part of the fac models (default=-0.5)
+* `--fac_pol_max_coeff / --fpmac + FLOAT` Maximum coefficient in the exponent of the polynomial part of the fac models (default=3.0)
+* `--fac_log_min_coeff  / --flmic + FLOAT` Minimum coefficient in the exponent of the logarithmic part of the fac models (default=1e-3)
+* `--fac_log_max_coeff  / --flmac + FLOAT` Maximum coefficient in the exponent of the logarithmic part of the fac models (default=1.5)
 
 ### Different Models and Metrics
 #### Changing the Models
@@ -132,8 +140,13 @@ To reproduce the results presented in [BUR20], execute the respective script (*b
        Developing Models for the Runtime of Programs
 With Exponential Runtime Behavior.</td>
 </tr>
+<tr>
+    <td valign="top"><a name="ref-MACH20"></a>[BUR21]</td>
+    <td>Burger, Michael ; Bischof, Christian ; Nguyen, Giang Nam :
+       SimAnMo: A Parallelized Runtime Model Generator.</td>
+</tr>
 </table>
 
 ## Contact
-michael.burger@tu-darmstadt.de  
+michael.burger@tu-darmstadt.de
 giang_nam.nguyen@tu-darmstadt.de

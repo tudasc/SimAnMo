@@ -69,6 +69,14 @@ using namespace std;
 		cout << "--exp_pol_max_coeff / --epmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of exp-pol models (default=2.0)" << endl;
 		cout << "--exp_pol_min_exp / --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=0.5)" << endl;
 		cout << "--exp_pol_max_exp / --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=3.0)" << endl;
+		
+		// Exp-Pol
+		cout << endl << "SECTION: Factorial (fac) model configuration" << endl;
+		cout << "--fac_pol_min_coeff / --fpmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of the polynomial part of the fac models (default=-0.5)" << endl;
+		cout << "--fac_pol_max_coeff / --fpmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of the polynomial part of the fac models (default=3.0)" << endl;
+		cout << "--fac_log_min_coeff / --flmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of the logarithmic part of the fac models (default=1e-3)" << endl;
+		cout << "--fac_log_max_coeff / --flmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of the logarithmic part of the fac models (default=1.5)" << endl;
+
 		exit(0);
 	}
 
@@ -338,6 +346,44 @@ using namespace std;
 					exit(-1);
 				}
 				Configurator::getInstance().max_exp_exp_range = atof(argv[i + 1]);
+				i++;
+			}
+
+
+			// Factorial model
+			if (input == "--fac_pol_min_coeff" || input == "--fpmic") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter fac_pol_min_coeff. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().min_fac_pol_range = atof(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--fac_pol_max_coeff" || input == "--fpmac") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter fac_pol_max_coeff. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().max_fac_pol_range = atof(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--fac_log_min_coeff" || input == "--flmic") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter fac_log_min_coeff. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().min_fac_log_range = atof(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--fac_log_max_coeff" || input == "--flmac") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter fac_log_max_coeff. Terminating." << std::endl;
+					exit(-1);
+				}
+				Configurator::getInstance().max_fac_log_range = atof(argv[i + 1]);
 				i++;
 			}
 

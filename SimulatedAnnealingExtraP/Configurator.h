@@ -42,8 +42,12 @@ public:
 	int ann_steps_wo_mod;
 	int ann_steps_backtrack;
 
+	// pol-log models
 	double min_pol_range;
 	double max_pol_range;
+
+	double min_log_range;
+	double max_log_range;
 
 	// exp models
 	double max_exp_range;
@@ -56,11 +60,12 @@ public:
 	double max_exp_exp_range;
 
 	// factorial models
-	double min_fac_coeff_range;
-	double max_fac_coeff_range;
+	double min_fac_pol_range;
+	double max_fac_pol_range;
 
-	double min_log_range;
-	double max_log_range;
+	double min_fac_log_range;
+	double max_fac_log_range;
+
 	std::string inputfile;
 	std::string texfile;
 	std::string outpath;
@@ -125,8 +130,11 @@ private:
 		max_exp_exp_range = 2.5;
 
 		// factorial models
-		min_fac_coeff_range = 1e-3;
-		max_fac_coeff_range = 1e-1;
+		min_fac_pol_range = -0.5;
+		max_fac_pol_range = 3.0;
+
+		min_fac_log_range = -0.50;
+		max_fac_log_range = 1.5;
 
 		no_of_trials = 1;
 

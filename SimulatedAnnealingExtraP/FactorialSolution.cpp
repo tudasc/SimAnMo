@@ -16,7 +16,7 @@
 blaze_rng::xorshf128 FactorialSolution::m_rng( std::random_device{}() );
 
 /****************
-Represents a model of form c_0 + c_1 * ( p!) * log2(p)^c_2
+Represents a model of form c_0 + c_1 * ( p!) * p^c2 * log2(p)^c_3
 ****************/
 
 FactorialSolution::FactorialSolution()
@@ -32,11 +32,11 @@ FactorialSolution::FactorialSolution()
 FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 	: AbstractSolution(mdb) {
 
-	double min_c_2 = Configurator::getInstance().min_pol_range;
-	double max_c_2 = Configurator::getInstance().max_pol_range;
+	double min_c_2 = Configurator::getInstance().min_fac_pol_range;
+	double max_c_2 = Configurator::getInstance().max_fac_pol_range;
 
-	double min_c_3 = Configurator::getInstance().min_log_range;
-	double max_c_3 = Configurator::getInstance().max_log_range;
+	double min_c_3 = Configurator::getInstance().min_fac_log_range;
+	double max_c_3 = Configurator::getInstance().max_fac_log_range;
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(mdb, 0.0);
 #else
@@ -186,11 +186,11 @@ FactorialSolution FactorialSolution::getNeighborSolution() {
 			}
 
 		} while (!	(
-				(val_c2 + change_c2) >= Configurator::getInstance().min_pol_range 
-			&&	(val_c2 + change_c2) <= Configurator::getInstance().max_pol_range
+				(val_c2 + change_c2) >= Configurator::getInstance().min_fac_pol_range
+			&&	(val_c2 + change_c2) <= Configurator::getInstance().max_fac_pol_range
 #ifdef LOGVARIANT
-			&& (val_c3 + change_c3) >= Configurator::getInstance().min_pol_range
-			&& (val_c3 + change_c3) <= Configurator::getInstance().max_pol_range
+			&& (val_c3 + change_c3) >= Configurator::getInstance().min_fac_log_range
+			&& (val_c3 + change_c3) <= Configurator::getInstance().max_fac_log_range
 #endif
 			)
 		);

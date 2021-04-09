@@ -501,36 +501,60 @@ int findAModel(std::string mtype, std::string costcaltype) {
 	std::transform (mtype.begin(), mtype.end(), mtype.begin(), ::tolower);
 	std::transform (costcaltype.begin(), costcaltype.end(), costcaltype.begin(), ::tolower);
 
-	if(mtype.compare("extrapsolution") == 0 && costcaltype.compare("nnrrsscostcalculator")==0) {
+	if(mtype.compare("extrapsolution") == 0 && 
+		(costcaltype.compare("nnrrsscostcalculator")==0 ||
+			costcaltype.compare("rarsdcost")
+		)
+	) {
 		cout << "extrapsolution/nnrrsscostcalculator" << endl;
 		//annealingManager<Solution>();
 		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 		annealingManager<ExtraPSolution, nnrRSSCostCalculator>();
 	}
 
-	else if (mtype.compare("extrapsolution") == 0 && costcaltype.compare("rsscostcalculator") == 0) {
-		cout << "extrapsolution/nnrrsscostcalculator" << endl;
+	else if (mtype.compare("extrapsolution") == 0 && 
+		(costcaltype.compare("rsscostcalculator") == 0 ||
+			costcaltype.compare("rsscost")
+		)
+		) {
+		cout << "extrapsolution/rsscostcalculator" << endl;
 		//annealingManager<Solution>();
 		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 		annealingManager<ExtraPSolution, RSSCostCalculator>();
 	}
 
-	else if (mtype.compare("factorialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
+	else if (mtype.compare("factorialsolution") == 0 && 
+		(costcaltype.compare("nnrrsscostcalculator") == 0 ||
+			costcaltype.compare("rarsdcost")
+			)
+		) {
 		cout << "factorialsolution/nnrrsscostcalculator" << endl;
 		annealingManager<FactorialSolution, nnrRSSCostCalculator>();
 	}
 
-	else if (mtype.compare("factorialsolution") == 0 && costcaltype.compare("rsscostcalculator") == 0) {
+	else if (mtype.compare("factorialsolution") == 0 && 
+		(costcaltype.compare("rsscostcalculator") == 0 ||
+			costcaltype.compare("rsscost")
+			)
+		) {
 		cout << "factorialsolution/rsscostcalculator" << endl;
 		annealingManager<FactorialSolution, RSSCostCalculator>();
 	}
 
-	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("nnrrsscostcalculator") == 0) {
+	else if (mtype.compare("exponentialsolution") == 0 && 
+		(costcaltype.compare("nnrrsscostcalculator") == 0 ||
+			costcaltype.compare("rarsdcost")
+			)
+		) {
 		cout << "exponentialsolution/nnrrsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
 	}
 
-	else if (mtype.compare("exponentialsolution") == 0 && costcaltype.compare("rsscostcalculator") == 0) {
+	else if (mtype.compare("exponentialsolution") == 0 && 
+		(costcaltype.compare("rsscostcalculator") == 0 ||
+			costcaltype.compare("rsscost")
+			)
+		) {
 		cout << "exponentialsolution/rsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, RSSCostCalculator>();
 	}
