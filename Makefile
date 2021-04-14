@@ -68,10 +68,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mburger/Dokumente/extrap-annaeling
+CMAKE_SOURCE_DIR = /home/mburger/git/extrap-annaeling
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mburger/Dokumente/extrap-annaeling
+CMAKE_BINARY_DIR = /home/mburger/git/extrap-annaeling
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mburger/Dokumente/extrap-annaeling/CMakeFiles /home/mburger/Dokumente/extrap-annaeling/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mburger/git/extrap-annaeling/CMakeFiles /home/mburger/git/extrap-annaeling/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mburger/Dokumente/extrap-annaeling/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mburger/git/extrap-annaeling/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -131,17 +131,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named SimAnMoTester
+# Target rules for targets named SimAnMoLibraryTester
 
 # Build rule for target.
-SimAnMoTester: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SimAnMoTester
-.PHONY : SimAnMoTester
+SimAnMoLibraryTester: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SimAnMoLibraryTester
+.PHONY : SimAnMoLibraryTester
 
 # fast build rule for target.
-SimAnMoTester/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/build
-.PHONY : SimAnMoTester/fast
+SimAnMoLibraryTester/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoLibraryTester.dir/build.make CMakeFiles/SimAnMoLibraryTester.dir/build
+.PHONY : SimAnMoLibraryTester/fast
 
 #=============================================================================
 # Target rules for targets named SimAnMo
@@ -215,7 +215,7 @@ SimAnMoTest/main.o: SimAnMoTest/main.cpp.o
 
 # target to build an object file
 SimAnMoTest/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoLibraryTester.dir/build.make CMakeFiles/SimAnMoLibraryTester.dir/SimAnMoTest/main.cpp.o
 .PHONY : SimAnMoTest/main.cpp.o
 
 SimAnMoTest/main.i: SimAnMoTest/main.cpp.i
@@ -224,7 +224,7 @@ SimAnMoTest/main.i: SimAnMoTest/main.cpp.i
 
 # target to preprocess a source file
 SimAnMoTest/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoLibraryTester.dir/build.make CMakeFiles/SimAnMoLibraryTester.dir/SimAnMoTest/main.cpp.i
 .PHONY : SimAnMoTest/main.cpp.i
 
 SimAnMoTest/main.s: SimAnMoTest/main.cpp.s
@@ -233,7 +233,7 @@ SimAnMoTest/main.s: SimAnMoTest/main.cpp.s
 
 # target to generate assembly for a file
 SimAnMoTest/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoTester.dir/build.make CMakeFiles/SimAnMoTester.dir/SimAnMoTest/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimAnMoLibraryTester.dir/build.make CMakeFiles/SimAnMoLibraryTester.dir/SimAnMoTest/main.cpp.s
 .PHONY : SimAnMoTest/main.cpp.s
 
 # Help Target
@@ -247,7 +247,7 @@ help:
 	@echo "... AlgLib"
 	@echo "... SimAnMo"
 	@echo "... SimAnMoLib"
-	@echo "... SimAnMoTester"
+	@echo "... SimAnMoLibraryTester"
 	@echo "... SimAnMoDriver/main.o"
 	@echo "... SimAnMoDriver/main.i"
 	@echo "... SimAnMoDriver/main.s"

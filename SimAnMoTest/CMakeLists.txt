@@ -1,4 +1,4 @@
-target_sources(SimAnMoTester
+target_sources(SimAnMoLibraryTester
 	PRIVATE 
 		${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )

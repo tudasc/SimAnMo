@@ -2,6 +2,7 @@
 #define SOLUTIONCONFIGURATOR_H
 #include <cstring>
 #include <string>
+#include <limits>
 
 //using namespace std;
 

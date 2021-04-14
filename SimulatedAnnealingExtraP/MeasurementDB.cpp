@@ -2,6 +2,7 @@
 #include "Configurator.h"
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -61,7 +62,7 @@ MeasurementDB* MeasurementDB::cloneToLogVersion(MeasurementDB* inputDB) {
 int MeasurementDB::unifyMeasurementsToTraining() {
 	for (int i = 0; i < this->_no_measurements; i++) {
 		// Avoid double insertion
-		if (std::find(_xvals.begin(), _xvals.end(), this->_xmeasure[i]) != _xvals.end())
+		if (	std::find(_xvals.begin(), _xvals.end(), this->_xmeasure[i]) != _xvals.end()	)
 			continue;
 
 		this->_xvals.push_back(this->_xmeasure[i]);

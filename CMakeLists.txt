@@ -31,7 +31,7 @@ add_subdirectory(SimulatedAnnealingExtraP)
 
 # add the executable
 add_executable(SimAnMo "")
-add_executable(SimAnMoTester "")
+add_executable(SimAnMoLibraryTester "")
 
 add_subdirectory(SimAnMoDriver)
 add_subdirectory(SimAnMoTest)
@@ -46,7 +46,7 @@ target_link_libraries(SimAnMo PUBLIC
 #	AlgLib	
 )
 
-target_link_libraries(SimAnMoTester PUBLIC 
+target_link_libraries(SimAnMoLibraryTester PUBLIC 
 	SimAnMoLib
 #	AlgLib	
 )

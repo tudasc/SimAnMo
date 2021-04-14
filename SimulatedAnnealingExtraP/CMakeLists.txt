@@ -6,6 +6,7 @@ ExponentialPolynomSolution.cpp
 ExponentialSolution.cpp
 ExtraPSolution.cpp
 FactorialSolution.cpp
+GeneralParameterEstimator.cpp
 LatexPrinter.cpp
 LibraryInterface.cpp
 LinearRegressionFinder.cpp
@@ -15,6 +16,7 @@ MeasurementDBReader.cpp
 nnrRSSCostCalculator.cpp
 ParameterEstimator.cpp
 QualityLogger.cpp
+raRSDParameterEstimator.cpp
 RSSCostCalculator.cpp
 SimAnMoTools.cpp
 SimulatedAnnealingExtraP.cpp

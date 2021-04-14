@@ -169,7 +169,7 @@ std::string ExponentialSolution::getModelFunction() {
 	double * c = _coefficients;
 
 	std::stringstream strstr;
-	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " \cdot 2^ ("
+	strstr << setprecision(10) << "(ID: " << this->id << ") \t f(p) = " << c[0] << " + " << c[1] << " * 2^ ("
 		<< c[2] << " * p)" << std::endl;
 
 	return strstr.str();
