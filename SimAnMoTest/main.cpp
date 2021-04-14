@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	//std::map<double, double> mtrai{ {1,3.72}, {2,3.74}, {3,3.72}, {4,3.74}, {5,3.72}, {6,3.74}, {17,3.72}, {45,3.74} };
 	std::map<double, double> mmess{  };
 
-/*	SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 25 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+	SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 25 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 
 	cout << "I found model " << modi4.getModelFunction() << " of type " << modi4.getTypeOfModelFunction()
 		<< " with RSS " << modi4.getRSS() << " and arnRSS " << modi4.getraRSD()
-		<< ". It is constant: " << modi4.isConstant() << endl;*/
+		<< ". It is constant: " << modi4.isConstant() << endl;
 
 	// Mod 5
 	SimAnMo::FunctionModel modi5 = SimAnMo::findModel(m5, mmess, "--logy --texfile fplll1.00vTest --outpath ../outputs  --nt 8  --ann_steps_wo_mod 20000 --ann_steps 35 --ann_cooling_rate 0.997 --ann_target_temp 1e-14");

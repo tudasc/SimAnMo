@@ -21,14 +21,24 @@ public:
 	FunctionModel();
 	FunctionModel(AbstractSolution* insol);
 
+	// Gives the estimate of the model at x-axis value x
 	double evaluateModelFunctionAt(double x);
 
+	// A string containing the type of model 
+	// (PolyomialLogarithmical or ExponentialPolynomial)
 	std::string getTypeOfModelFunction();
+
+	// A string containing the model in a human readable form 
 	std::string getModelFunction();
+
+	// If we have a constant model f(x) = a, then it returns true
 	bool isConstant();
 
 	double getRSS();
 	double getraRSD();
+
+	// Returns the RSS or the raRSD, depending on the configuration
+	// of the annealing process
 	double getCosts();
 
 private:
