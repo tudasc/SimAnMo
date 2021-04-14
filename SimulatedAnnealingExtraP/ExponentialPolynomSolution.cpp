@@ -126,7 +126,7 @@ ExponentialPolynomSolution::ExponentialPolynomSolution(MeasurementDB* mdb)
 
 		costcalc.calculateCost(&act_sol);
 
-	} while (act_sol.get_costs() > Configurator::getInstance().max_cost 
+	} while (act_sol.get_costs() >= Configurator::getInstance().max_cost 
 		|| std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;
