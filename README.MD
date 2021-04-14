@@ -1,4 +1,4 @@
-# SimAnMo: Simulated Annealing Modeler
+# SimAnMo: Simulated Annealing Modeler V2
 
 ## Introduction
 SimAnMo (SIMulated Anealing Modeler) is a C++-software to generate runtime performance models for programs. It is based on principles of [Extra-P](https://www.scalasca.org/software/extra-p/download.html) and was presented in [BUR18]. Besides models for programs with polynomial runtime behavior, meaning that the runtime increases polynomially with the size of an input parameter *p*, SiMaNo is also able to model exponential runtime behavior where the runtime grows exponentially in *p*. The models are exported as LaTeX documents.
