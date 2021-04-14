@@ -29,6 +29,7 @@ public:
 
 	std::string solution_type;
 	std::string costcalc_type;
+	int param_est_typ;
 
 	// Configuration variables
 	// For Standard Solution
@@ -91,7 +92,7 @@ public:
 	unsigned long long glob_id;
 
 	double max_cost; // A cap for the costs within the Solultion initializer
-	int param_est_typ;
+
 
 private:
 	Configurator() {

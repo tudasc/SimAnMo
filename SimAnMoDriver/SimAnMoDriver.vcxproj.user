@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test3000EP.txt" --texfile "polynomial" --nt 1 --mepol 1.5 --mipol 0.5--milog 0.5 --cct "rsscostcalculator" --st "extrapsolution"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test3000EP.txt" --texfile "polynomial" --nt 1 --mepol 1.5 --mipol 0.5--milog 0.5 --cct "nnrrsscostcalculator" --pet "rarsdest" --st "extrapsolution"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test_5000_16ref.txt" --outpath "../outputs" --texfile "polynomial16nnr" --nt 8 --melog 0.001 --mepol 1.2 --milog 0.0 --cct "nnrrsscostcalculator" --st "extrapsolution" --mipol 0.7  </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test3000EP.txt" --texfile "polynomial" --nt 1 --mepol 1.5 --mipol 0.5--milog 0.5 --cct "nnrrsscostcalculator" --pet "rarsdest" --st "extrapsolution"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

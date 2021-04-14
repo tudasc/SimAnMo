@@ -34,8 +34,12 @@ Example files are given in the *inputs* directory.
 * [Eigen Library](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 * Optional: [NAG Library](https://www.nag.com/content/nag-library)
 
+### Included Libaries
+The following libaries are integrated in the shipped code.
+* [ALGLIB 3.17.0](https://www.alglib.net/)
+
 ### Windows
-SiMaNo has successfully been tested with Visual Studio 2017/2019, Eigen 3.3 and NAG C-library 24/25/26.
+SimAnMo has successfully been tested with Visual Studio 2017/2019, Eigen 3.3 and NAG C-library 24/25/26.
 
 Open the Visual Studio and build the Release (x64) configuration. Debug (x64) is also supported. The path to Eigen must be integrated into Windows' %INCLUDE% system variable or has to be added to the addional include directories in the VS project settings.
 
@@ -76,7 +80,9 @@ There are many command line parameter which influence the behavior. These are:
 * `--ann_steps_backtrack / --abt + INT`Heuristic: Backtrack per thread after this number of steps (default=20000)
 
 #### Model and Cost Calculation Configuration
+
 * `--costcalc_type / --cct + STRING` Decides whether to use RSS (STRING="rsscost") or raRSD (STRING="rarsdcost") as cost metric to minimize (default="rsscost")
+* `--paramest_type / --pet + STRING` Decides whether to use RSS (STRING="rssest") or raRSD (STRING="rarsdest") as cost metric to minimize within the parameter estimation if raRSD cost estimator is chosen BEFORE. (default="rsscost")
 
 #### LaTeX Printing
 * `--genlatex / --gl` Activate the LaTeX report generation (default=false)

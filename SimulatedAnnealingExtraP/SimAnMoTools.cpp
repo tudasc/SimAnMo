@@ -83,6 +83,7 @@ using namespace std;
 	int SimAnMo::parseConsoleParameters(int argc, char** argv, int& no_threads) {
 		for (int i = 0; i < argc; i++) {
 			std::string input = std::string(argv[i]);
+			cout << "Parsing: " << input << endl;
 
 			if (input == "--solution_type" || input == "--st") {
 				if (argc <= i) {
@@ -99,6 +100,29 @@ using namespace std;
 					exit(-1);
 				}
 				Configurator::getInstance().costcalc_type = string(argv[i + 1]);
+				i++;
+			}
+
+			if (input == "--paramest_type" || input == "--pet") {
+				if (argc <= i) {
+					std::cerr << "Missing argument for parameter estimation type. Terminating." << std::endl;
+					exit(-1);
+				}
+				string strtoparse = string(argv[i + 1]);
+
+				if (strtoparse.compare("rarsdest") == 0 &&
+					(Configurator::getInstance().costcalc_type.compare("rarsdcost")==0
+					|| Configurator::getInstance().costcalc_type.compare("nnrrsscostcalculator") == 0
+						)) {
+					Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
+					cout << "Choosing experimentally raRSD parameter estimator"
+						<< endl;
+				}
+					
+				else
+					Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
+
+				Configurator::getInstance().param_est_typ = 
 				i++;
 			}
 
