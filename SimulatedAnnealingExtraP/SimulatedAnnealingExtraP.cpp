@@ -543,7 +543,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 
 	else if (mtype.compare("exponentialsolution") == 0 && 
 		(costcaltype.compare("nnrrsscostcalculator") == 0 ||
-			costcaltype.compare("rarsdcost")
+			costcaltype.compare("rarsdcost") == 0
 			)
 		) {
 		cout << "exponentialsolution/nnrrsscostcalculator" << endl;

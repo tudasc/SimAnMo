@@ -7,14 +7,14 @@
 
 int main(int argc, char** argv)
 {
-	std::ofstream out("out6.txt");
+	std::ofstream out("out7.txt");
 	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
 	//std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out2.txt!
 
 	//std::map<double, double> mtrai{ {1,3.72}, {2,3.74}, {3,3.72}, {4,3.74}, {5,3.72}, {6,3.74}, {17,3.72}, {45,3.74} };
 	std::map<double, double> mmess{  };
 
-	SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 25 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
+	/*SimAnMo::FunctionModel modi = SimAnMo::findModel(m1, mmess, "--pcd --texfile fplll1.00vTest --outpath ../outputs  --nt 4  --ann_steps_wo_mod 20000 --ann_steps 25 --ann_cooling_rate 0.998 --ann_target_temp 1e-14");
 
 	cout << "I found model " << modi.getModelFunction() << " of type " << modi.getTypeOfModelFunction()
 		<< " with RSS " << modi.getRSS() << " and arnRSS " << modi.getraRSD()
@@ -46,11 +46,18 @@ int main(int argc, char** argv)
 
 	cout << "I found model " << modi5.getModelFunction() << " of type " << modi5.getTypeOfModelFunction()
 		<< " with RSS " << modi5.getRSS() << " and arnRSS " << modi5.getraRSD()
-		<< ". It is constant: " << modi5.isConstant() << endl;
+		<< ". It is constant: " << modi5.isConstant() << endl;*/
+
+	// Mod 6
+	SimAnMo::FunctionModel modi6 = SimAnMo::findModel(m6, mmess, "--gl --logy --texfile fplll1.00vTest --outpath ../outputs  --nt 8  --ann_steps_wo_mod 20000 --ann_steps 35 --ann_cooling_rate 0.997 --ann_target_temp 1e-14");
+
+	cout << "I found model " << modi6.getModelFunction() << " of type " << modi6.getTypeOfModelFunction()
+		<< " with RSS " << modi6.getRSS() << " and arnRSS " << modi6.getraRSD()
+		<< ". It is constant: " << modi6.isConstant() << endl;
 
 
 	std::cout.rdbuf(coutbuf); //reset to standard output again
-
+	out.close();
 	return 0;
 /*#ifdef USE_NAG
 	cout << "Running Modeler with NAG-Support" << endl;

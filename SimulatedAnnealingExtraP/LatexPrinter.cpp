@@ -106,8 +106,8 @@ void LatexPrinter<SolType>::printSolution(std::string filename, AbstractSolution
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
 		//<< "ymax=" << mdb->getPairAt(mdb->get_size() - 1).second << "," << endl
-		<< "ylabel={runtime in s}," << endl
-		<< "xlabel={rank of lattice $n$}," << endl
+		<< "ylabel={ " << Configurator::getInstance().yaxislabel << " }," << endl
+		<< "xlabel={ " << Configurator::getInstance().xaxislabel << " }," << endl
 		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
@@ -302,8 +302,8 @@ void LatexPrinter<SolType>::printLogModel(ofstream & myfile, AbstractSolution* s
 		<< "width=\\figurewidth," << endl
 		<< "height=\\figureheight," << endl
 		<< "scale only axis," << endl
-		<< "ylabel={runtime in s}," << endl
-		<< "xlabel={rank of lattice $n$}," << endl
+		<< "ylabel={ " << Configurator::getInstance().yaxislabel << " }," << endl
+		<< "xlabel={ " << Configurator::getInstance().xaxislabel << " }," << endl
 		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 
@@ -391,8 +391,8 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 	if (Configurator::getInstance().ymode_log == true) {
 		myfile << "ymode=log," << endl;
 	}		
-	myfile << "xlabel={rank of lattice $n$}," << endl
-		<< "ylabel={runtime in s}," << endl
+	myfile << "ylabel={ " << Configurator::getInstance().yaxislabel << " }," << endl
+		<< "xlabel={ " << Configurator::getInstance().xaxislabel << " }," << endl
 		<< "legend style={at={(0.03, 0.999)},anchor=north west, legend cell align=left, font=\\footnotesize, fill=none, draw=none}," << endl
 		<< "]" << endl;
 

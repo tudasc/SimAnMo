@@ -86,6 +86,9 @@ public:
 	bool print_confidence;
 	double confidence_interval;
 
+	std::string xaxislabel;
+	std::string yaxislabel;
+
 	int base_for_lin_log;
 
 	bool print_costs;
@@ -144,6 +147,9 @@ private:
 		do_latex_output = false;
 		open_latex_output = false;
 		path_pdf_xchange = "C:\\Program Files\\Tracker Software\\PDF Viewer";
+
+		xaxislabel = "Rank of lattice $n$";
+		yaxislabel = "Runtime in $s$";
 
 		ymode_log = false;
 		gen_robust = false;
