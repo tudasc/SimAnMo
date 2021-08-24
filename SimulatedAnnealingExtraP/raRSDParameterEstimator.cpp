@@ -35,8 +35,10 @@ int raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double ne
 
 	EigenParameterEstimator eigpar = EigenParameterEstimator(_mdb);
 	int ret = eigpar.estimateParameters(sol);
-	if (ret > 0 && ret < 100)
+	if (ret > 0 && ret < 100) {
+		cout << "General error " << endl;
 		return ERR_GENERAL_INVALID;
+	}
 
 	double par1 = sol->getAt(0);
 	double par2 = sol->getAt(1);
@@ -44,7 +46,7 @@ int raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double ne
 	real_1d_array v_init; v_init.setlength(2);
 	v_init[0] = par1; v_init[1] = par2;
 	real_1d_array s = "[1 , 1]"; // scale does not make difference
-	real_2d_array c = "[[1, 0, 10e-12], [0, 1 , 10e-12]]";
+	real_2d_array c = "[[1, 0, 10e-12], [0, 1 , 10e-18]]";
 	integer_1d_array ct = "[1,1]"; // >, >
 
 	minbleicstate state;
@@ -84,8 +86,9 @@ int raRSDParameterEstimator::estimateParameters(AbstractSolution* sol, double ne
 	sol->updateAt(0, v_init[0]);
 	sol->updateAt(1, v_init[1]);
 
-	if (v_init[0] < 10e-9 || v_init[0] < 10e-9) {
+	if (v_init[0] < 10e-9 || v_init[1] < 10e-9) {
 		int stop = 1;
+		//cerr << "Very small: " << v_init[0] << " / " << v_init[1] << endl;
 	}
 		
 
@@ -164,9 +167,9 @@ void raRSDParameterEstimatorFunctionGradEval(const real_1d_array& v_i, double& f
 	grad[0] = v0.d(0); // Value of df/dx (index 0 of 1)
 	grad[1] = v1.d(0); // Value of df/dy (index 0 of 1)
 
-
 	double f1 = 0;
 	double grad2[2];*/
+
 
 	raRSDParameterEstimatorFunctionGradAnalytical(v0.x(), v1.x(), params, func, &grad[0]);
 }

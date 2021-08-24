@@ -207,6 +207,8 @@
     <ClInclude Include="ParameterEstimator.h" />
     <ClInclude Include="QualityLogger.h" />
     <ClInclude Include="RingQueue.h" />
+    <ClInclude Include="RMSECostCalculator.h" />
+    <ClInclude Include="RMSEParameterEstimator.h" />
     <ClInclude Include="RSSCostCalculator.h" />
     <ClInclude Include="SimAnMoStatus.h" />
     <ClInclude Include="SimAnMoTools.h" />
@@ -249,6 +251,8 @@
     <ClCompile Include="raRSDParameterEstimator.cpp" />
     <ClCompile Include="ParameterEstimator.cpp" />
     <ClCompile Include="QualityLogger.cpp" />
+    <ClCompile Include="RMSECostCalculator.cpp" />
+    <ClCompile Include="RMSEParameterEstimator.cpp" />
     <ClCompile Include="RSSCostCalculator.cpp" />
     <ClCompile Include="SimAnMoTools.cpp" />
     <ClCompile Include="SimulatedAnnealingExtraP.cpp" />

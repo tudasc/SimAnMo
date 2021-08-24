@@ -4,6 +4,7 @@
 #include "Configurator.h"
 #include "RSSCostCalculator.h"
 #include "nnrRSSCostCalculator.h"
+#include "RMSECostCalculator.h"
 #include "LinearSolution.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
@@ -94,3 +95,10 @@ template class SolutionModifier<ExtraPSolution, nnrRSSCostCalculator>;
 template class SolutionModifier<ExponentialSolution, nnrRSSCostCalculator>;
 template class SolutionModifier<ExponentialPolynomSolution, nnrRSSCostCalculator>;
 template class SolutionModifier<FactorialSolution, nnrRSSCostCalculator>;
+
+template class SolutionModifier<Solution, RMSECostCalculator>;
+template class SolutionModifier<LinearSolution, RMSECostCalculator>;
+template class SolutionModifier<ExtraPSolution, RMSECostCalculator>;
+template class SolutionModifier<ExponentialSolution, RMSECostCalculator>;
+template class SolutionModifier<ExponentialPolynomSolution, RMSECostCalculator>;
+template class SolutionModifier<FactorialSolution, RMSECostCalculator>;

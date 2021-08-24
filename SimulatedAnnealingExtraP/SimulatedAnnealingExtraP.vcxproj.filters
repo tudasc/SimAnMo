@@ -31,15 +31,15 @@
     <Filter Include="Headerdateien\Solutions">
       <UniqueIdentifier>{b63ec128-8814-48a9-a0b3-a3cc7ef731b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\CostCalculators">
+      <UniqueIdentifier>{32b9b5b8-88f1-42e5-92b9-387675f66950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\CostCalculators">
+      <UniqueIdentifier>{44f319e6-7231-4e43-affa-6c6297b407f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Solution.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="CostCalculator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="RSSCostCalculator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="MeasurementDB.h">
@@ -120,9 +120,6 @@
     <ClInclude Include="AlglibLinearRegressionFinder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="nnrRSSCostCalculator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="LinLogConversionRSSCalculator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -171,15 +168,27 @@
     <ClInclude Include="ExponentialSolution.h">
       <Filter>Headerdateien\Solutions</Filter>
     </ClInclude>
+    <ClInclude Include="CostCalculator.h">
+      <Filter>Headerdateien\CostCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="nnrRSSCostCalculator.h">
+      <Filter>Headerdateien\CostCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="RSSCostCalculator.h">
+      <Filter>Headerdateien\CostCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="RMSECostCalculator.h">
+      <Filter>Headerdateien\CostCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="RMSEParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MeasurementDB.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="RSSCostCalculator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MeasurementDBReader.cpp">
@@ -248,12 +257,6 @@
     <ClCompile Include="AlglibLinearRegressionFinder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="nnrRSSCostCalculator.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CostCalculator.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ExponentialPolynomSolution.cpp">
       <Filter>Quelldateien\SolutionTypes</Filter>
     </ClCompile>
@@ -285,6 +288,21 @@
       <Filter>Quelldateien\Estimators</Filter>
     </ClCompile>
     <ClCompile Include="GeneralParameterEstimator.cpp">
+      <Filter>Quelldateien\Estimators</Filter>
+    </ClCompile>
+    <ClCompile Include="CostCalculator.cpp">
+      <Filter>Quelldateien\CostCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="RSSCostCalculator.cpp">
+      <Filter>Quelldateien\CostCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="nnrRSSCostCalculator.cpp">
+      <Filter>Quelldateien\CostCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="RMSECostCalculator.cpp">
+      <Filter>Quelldateien\CostCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="RMSEParameterEstimator.cpp">
       <Filter>Quelldateien\Estimators</Filter>
     </ClCompile>
   </ItemGroup>

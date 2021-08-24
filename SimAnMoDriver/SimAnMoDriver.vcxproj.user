@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test_5000_19ref.txt" --outpath "../outputs"  --texfile "polynomialref3" --nt 6 --mepol 2.5 --mipol 0.5--milog 0.5 --cct "rsscostcalculator" --pet "rssdest" --st "exponentialsolution"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test_5000_18Exp.txt" --outpath "../outputs"  --texfile "SparsePoly8192" --nt 6 --mepol 2.5 --mipol 0.5--milog 0.5 --cct "rsscostcalculator" --pet "rssdest" --st "extrapsolution"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--gl --inputfile "../inputs/test_5000_7Exp.txt" --outpath "../outputs"  --texfile "SparsePoly8192" --nt 6 --mepol 2.5 --mipol 0.5--milog 0.5 --cct "rsscostcalculator" --pet "rssdest" --st "extrapsolution"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--ann_target_temp 1e-9 --ann_steps 50   --bll 10 --ll --gl --inputfile "../inputs/HashSieve.txt" --outpath "../outputs"  --texfile "HashSieveNewraRSD" --nt 8 --mepol 17.2 --mipol 0.01 --milog 0.0 --melog 9.9 --cct "rarsdcost" --pet "rssdest" --st "exponentialsolution"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

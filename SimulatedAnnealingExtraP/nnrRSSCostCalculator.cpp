@@ -7,9 +7,13 @@ nnrRSSCostCalculator::nnrRSSCostCalculator(MeasurementDB * mdb) : CostCalculator
 
 double nnrRSSCostCalculator::calculateCost(AbstractSolution* sol) {
 	calculateMetrics(sol);
+
 	if (Configurator::getInstance().costcalc_type == "nnrrsscostcalculator" ||
 		Configurator::getInstance().costcalc_type == "rarsdcost")
 		sol->set_costs(this->nnrRSS);
+	else if (Configurator::getInstance().costcalc_type == "rmsescostcalculator" ||
+		Configurator::getInstance().costcalc_type == "rmsecost")
+		sol->set_costs(this->RMSE);
 	else
 		sol->set_costs(this->RSS);
 	

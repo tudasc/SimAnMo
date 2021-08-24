@@ -8,9 +8,11 @@
 
 #define TYPE_EIGENPARAMETER 0
 #define TYPE_ALGLIBPARAMETER 1
+#define TYPE_RMSEPARAMETER 2
 
 #define TYPE_COST_RSS 0
 #define TYPE_COST_RARSD 1
+#define TYPE_COST_RMSE 2
 
 class Configurator {
 public:
@@ -104,8 +106,8 @@ private:
 		costcalc_type = "nnrrsscostcalculator";
 
 		// Configuration for annealing itself
-		ann_steps = 35;
-		ann_cooling_rate = 0.998;
+		ann_steps = 45;
+		ann_cooling_rate = 0.999;
 		ann_target_temp = 1e-14;
 		ann_steps_wo_mod = 200000;
 		ann_steps_backtrack = 200000;
@@ -129,10 +131,10 @@ private:
 
 		// exp-pol models
 		min_exp_coeff_range = 1e-3;
-		max_exp_coeff_range = 2.5;
+		max_exp_coeff_range = 15.5;
 
 		min_exp_exp_range = 0.1;
-		max_exp_exp_range = 2.5;
+		max_exp_exp_range = 3.5;
 
 		// factorial models
 		min_fac_pol_range = -0.5;

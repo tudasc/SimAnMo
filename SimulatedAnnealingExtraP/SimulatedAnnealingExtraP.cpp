@@ -4,6 +4,7 @@
 #include "SolutionModifier.h"
 #include "RSSCostCalculator.h"
 #include "nnrRSSCostCalculator.h"
+#include "RMSECostCalculator.h"
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #include "LinearRegressionFinder.h"
@@ -503,7 +504,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 
 	if(mtype.compare("extrapsolution") == 0 && 
 		(costcaltype.compare("nnrrsscostcalculator")==0 ||
-			costcaltype.compare("rarsdcost")
+			costcaltype.compare("rarsdcost") == 0
 		)
 	) {
 		cout << "extrapsolution/nnrrsscostcalculator" << endl;
@@ -514,7 +515,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 
 	else if (mtype.compare("extrapsolution") == 0 && 
 		(costcaltype.compare("rsscostcalculator") == 0 ||
-			costcaltype.compare("rsscost")
+			costcaltype.compare("rsscost") == 0
 		)
 		) {
 		cout << "extrapsolution/rsscostcalculator" << endl;
@@ -525,7 +526,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 
 	else if (mtype.compare("factorialsolution") == 0 && 
 		(costcaltype.compare("nnrrsscostcalculator") == 0 ||
-			costcaltype.compare("rarsdcost")
+			costcaltype.compare("rarsdcost") == 0
 			)
 		) {
 		cout << "factorialsolution/nnrrsscostcalculator" << endl;
@@ -534,7 +535,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 
 	else if (mtype.compare("factorialsolution") == 0 && 
 		(costcaltype.compare("rsscostcalculator") == 0 ||
-			costcaltype.compare("rsscost")
+			costcaltype.compare("rsscost") == 0
 			)
 		) {
 		cout << "factorialsolution/rsscostcalculator" << endl;
@@ -546,13 +547,24 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			costcaltype.compare("rarsdcost") == 0
 			)
 		) {
-		cout << "exponentialsolution/nnrrsscostcalculator" << endl;
+		Configurator::getInstance().param_est_typ = TYPE_ALGLIBPARAMETER;
+		cout << "exponentialsolution/nnrrsscostcalculator/TYPE_ALGLIBPARAMETER" << endl;
 		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
+	}
+
+	else if (mtype.compare("exponentialsolution") == 0 &&
+		(costcaltype.compare("rmsecostcalculator") == 0 ||
+			costcaltype.compare("rmsecost") == 0
+			)
+		) {
+		//Configurator::getInstance().param_est_typ = TYPE_RMSEPARAMETER;
+		cout << "exponentialsolution/rmsecostcalculator/rmseparameterestimator" << endl;
+		annealingManager<ExponentialPolynomSolution, RMSECostCalculator>();
 	}
 
 	else if (mtype.compare("exponentialsolution") == 0 && 
 		(costcaltype.compare("rsscostcalculator") == 0 ||
-			costcaltype.compare("rsscost")
+			costcaltype.compare("rsscost") == 0
 			)
 		) {
 		cout << "exponentialsolution/rsscostcalculator" << endl;

@@ -11,8 +11,9 @@ double RMSECostCalculator::calculateCost(AbstractSolution* sol) {
 		Configurator::getInstance().costcalc_type == "rarsdcost")
 		sol->set_costs(this->nnrRSS);
 	else if (Configurator::getInstance().costcalc_type == "rmsescostcalculator" ||
-		Configurator::getInstance().costcalc_type == "rmsecost")
+		Configurator::getInstance().costcalc_type == "rmsecost") {
 		sol->set_costs(this->RMSE);
+	}
 	else
 		sol->set_costs(this->RSS);
 

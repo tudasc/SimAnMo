@@ -15,6 +15,7 @@
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
 #include "nnrRSSCostCalculator.h"
+#include "RMSECostCalculator.h"
 
 template <class SolutionType, class CostCalcType>
 StartSolutionFinder<SolutionType, CostCalcType>::StartSolutionFinder(MeasurementDB * mdb) : _mdb(mdb)
@@ -56,3 +57,10 @@ template class StartSolutionFinder<ExtraPSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<ExponentialSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<ExponentialPolynomSolution, nnrRSSCostCalculator>;
 template class StartSolutionFinder<FactorialSolution, nnrRSSCostCalculator>;
+
+template class StartSolutionFinder<Solution, RMSECostCalculator>;
+template class StartSolutionFinder<LinearSolution, RMSECostCalculator>;
+template class StartSolutionFinder<ExtraPSolution, RMSECostCalculator>;
+template class StartSolutionFinder<ExponentialSolution, RMSECostCalculator>;
+template class StartSolutionFinder<ExponentialPolynomSolution, RMSECostCalculator>;
+template class StartSolutionFinder<FactorialSolution, RMSECostCalculator>;

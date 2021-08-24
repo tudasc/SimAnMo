@@ -5,6 +5,7 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 	double constrsscost = 0.0;
 	double rsscosts = 0.0;
 	double nnrrsscost = 0.0;
+	double rmsecost = 0.0;
 	double constnnrrsscost = 0.0;
 	double averagelen = 0;
 
@@ -22,6 +23,9 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 		nnrrsscost += (abs(act_point.second - f_i) / abs(act_point.second));
 		constnnrrsscost += (abs(act_point.second - const_model) / abs(act_point.second));
 
+		// RMSE
+		rmsecost += (act_point.second - f_i) * (act_point.second - f_i);
+
 #ifdef RSSCOSTCALCULATORDEBUG
 		std::cout << "Costs for " << act_point.first << " = "
 			<< act_point.second << " - " << f_i << std::endl;
@@ -32,14 +36,17 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 	averagelen /= _mdb->get_size();
 	nnrrsscost /= _mdb->get_size();
 	constnnrrsscost /= _mdb->get_size();
+	rmsecost = sqrt(rmsecost / (double)_mdb->get_size());
 
 	// Set costs in relation to costs of constant model
 	this->RSS = rsscosts;
 	this->nnrRSS = nnrrsscost;
+	this->RMSE = rmsecost;
 
 	// Set also to solution
 	sol->_RSS = rsscosts;
 	sol->_nnrRSS = nnrrsscost;
+	sol->_RMSE = rmsecost;
 	// anRSS
 	sol->_anRSS = (sqrt(rsscosts) / averagelen) / _mdb->get_size();
 	sol->_cost_calc_type = getCostTypeString();

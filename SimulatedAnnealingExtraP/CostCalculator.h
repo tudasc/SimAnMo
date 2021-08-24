@@ -24,6 +24,10 @@ public:
 		return nnrRSS;
 	}
 
+	double getRMSE() const {
+		return RMSE;
+	}
+
 protected:
 	double calculateMetrics(AbstractSolution* sol);
 	MeasurementDB* _mdb;
@@ -32,6 +36,7 @@ protected:
 
 	double RSS;
 	double nnrRSS;
+	double RMSE;
 };
 
 #endif // ! COSTCALCULATOR_H

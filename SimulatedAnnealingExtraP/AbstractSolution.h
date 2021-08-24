@@ -19,6 +19,7 @@ public:
 		_RSS = std::numeric_limits<double>::max();
 		_anRSS = std::numeric_limits<double>::max();
 		_nnrRSS = std::numeric_limits<double>::max();
+		_RMSE = std::numeric_limits<double>::max();
 	}
 
 	/**
@@ -32,6 +33,7 @@ public:
 		_RSS = std::numeric_limits<double>::max();
 		_anRSS = std::numeric_limits<double>::max();
 		_nnrRSS = std::numeric_limits<double>::max();
+		_RMSE = std::numeric_limits<double>::max();
 	}
 
 	AbstractSolution(double* coefficients) {
@@ -44,6 +46,7 @@ public:
 		_RSS = other._RSS;
 		_anRSS = other._anRSS;
 		_nnrRSS = other._nnrRSS;
+		_RMSE = other._RMSE;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
 		is_wrapped = other.is_wrapped;	
@@ -54,6 +57,7 @@ public:
 		_RSS = other._RSS;
 		_nnrRSS = other._nnrRSS;
 		_anRSS = other._anRSS;
+		_RMSE = other._RMSE;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
 		is_wrapped = other.is_wrapped;
@@ -95,13 +99,15 @@ public:
 		std::string str = "";
 		str += "RSS: " + std::to_string(this->_RSS) + " / ";
 		str += "anRSS: " + std::to_string(this->_anRSS) + " / ";
-		str += "arNRS: " + std::to_string(this->_nnrRSS);		
+		str += "arNRS: " + std::to_string(this->_nnrRSS) + " / ";
+		str += "RMSE: " + std::to_string(this->_RMSE);
 		return str;
 	}
 
 	double _RSS;
 	double _anRSS;
 	double _nnrRSS;
+	double _RMSE;
 	string _cost_calc_type;
 
 protected:

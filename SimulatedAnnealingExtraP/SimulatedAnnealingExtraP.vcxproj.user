@@ -7,7 +7,7 @@
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--ngr --npcd --gl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 20 --ann_cooling_rate 0.99 --mipol --0.14612 --mepol  -0.14611 --milog -0.0001 --melog 0.0001</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-h --ngr --npcd --gl --logy --inputfile "../inputs/StringPermutations.txt" --outpath "../outputs/" --texfile TMPStringPermutations --nt 1 --ann_steps 20 --ann_cooling_rate 0.99 --mipol --0.14612 --mepol  -0.14611 --milog -0.0001 --melog 0.0001</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>

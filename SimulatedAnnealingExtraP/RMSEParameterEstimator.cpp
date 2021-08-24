@@ -9,7 +9,7 @@ RMSEParameterEstimator::RMSEParameterEstimator()
 
 RMSEParameterEstimator::RMSEParameterEstimator(MeasurementDB* mdb) : _mdb(mdb)
 {
-	cout << "RMSEParameterEstimator employed." << endl;
+
 }
 
 RMSEParameterEstimator::~RMSEParameterEstimator()
@@ -57,7 +57,7 @@ int RMSEParameterEstimator::estimateParameters(AbstractSolution* sol, double new
 	ae_int_t maxits = 0;
 
 	minbleiccreate(v_init, state);
-	minbleicsetlc(state, c, ct);
+	minbleicsetlc(state, c, ct, 0);
 	minbleicsetscale(state, s);
 	minbleicsetcond(state, epsg, epsf, epsx, maxits);
 
