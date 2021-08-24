@@ -1,0 +1,12 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(37,5): warning MSB4211: The property "IntermediateOutputPath" is being set to a value for the first time, but it was already consumed at "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets (36,5)".
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(340,5): warning MSB4211: The property "CleanFile" is being set to a value for the first time, but it was already consumed at "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets (36,5)".
+cl : command line warning D9002: ignoring unknown option '/clr:oldSyntax'
+  TestAll.cpp
+  TestFADBAD.cpp
+  TestTAD.cpp
+  TestUDT.cpp
+  .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+  Generating Code...
+LINK : warning LNK4044: unrecognized option '/clr'; ignored
+LINK : warning LNK4044: unrecognized option '/bigobj'; ignored
+  MSCPPNET8.00.vcxproj -> C:\Users\tuxed\Downloads\FADBAD++-2.1\FADBAD++\test\MSCPPNET\Release\MSCPPNET.exe
