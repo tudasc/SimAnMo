@@ -19,12 +19,7 @@ int main(int argc, char** argv)
 	cout << "Running Modeler with NAG-Support" << endl;
 #endif
 	int depp = 1;
-	Configurator::getInstance().param_est_typ = TYPE_ALGLIBPARAMETER;
 	SimAnMo::parseConsoleParameters(argc, argv, depp);
-
-	if (Configurator::getInstance().costcalc_type == "rsscostcalculator") {
-		Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
-	}
 
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(Configurator::getInstance().num_threads); // Use X threads for all consecutive parallel regions

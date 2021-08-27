@@ -202,6 +202,8 @@
     <ClInclude Include="MeasurementDB.h" />
     <ClInclude Include="MeasurementDBReader.h" />
     <ClInclude Include="ParameterEstimatorInterface.h" />
+    <ClInclude Include="R2CostCalculator.h" />
+    <ClInclude Include="R2ParameterEstimator.h" />
     <ClInclude Include="raRSDParameterEstimator.h" />
     <ClInclude Include="nnrRSSCostCalculator.h" />
     <ClInclude Include="ParameterEstimator.h" />
@@ -248,6 +250,8 @@
     <ClCompile Include="MeasurementDB.cpp" />
     <ClCompile Include="MeasurementDBReader.cpp" />
     <ClCompile Include="nnrRSSCostCalculator.cpp" />
+    <ClCompile Include="R2CostCalculator.cpp" />
+    <ClCompile Include="R2ParamterEstimator.cpp" />
     <ClCompile Include="raRSDParameterEstimator.cpp" />
     <ClCompile Include="ParameterEstimator.cpp" />
     <ClCompile Include="QualityLogger.cpp" />

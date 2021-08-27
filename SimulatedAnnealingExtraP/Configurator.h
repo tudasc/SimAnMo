@@ -9,10 +9,12 @@
 #define TYPE_EIGENPARAMETER 0
 #define TYPE_ALGLIBPARAMETER 1
 #define TYPE_RMSEPARAMETER 2
+#define TYPE_R2PARAMETER 3
 
 #define TYPE_COST_RSS 0
 #define TYPE_COST_RARSD 1
 #define TYPE_COST_RMSE 2
+#define TYPE_COST_R2 3
 
 class Configurator {
 public:
@@ -131,7 +133,7 @@ private:
 
 		// exp-pol models
 		min_exp_coeff_range = 1e-3;
-		max_exp_coeff_range = 15.5;
+		max_exp_coeff_range = 2.5;
 
 		min_exp_exp_range = 0.1;
 		max_exp_exp_range = 3.5;

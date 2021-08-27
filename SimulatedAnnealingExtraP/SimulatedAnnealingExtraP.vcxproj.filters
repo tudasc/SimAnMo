@@ -183,6 +183,12 @@
     <ClInclude Include="RMSEParameterEstimator.h">
       <Filter>Headerdateien\ParameterEstimation</Filter>
     </ClInclude>
+    <ClInclude Include="R2CostCalculator.h">
+      <Filter>Headerdateien\CostCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="R2ParameterEstimator.h">
+      <Filter>Headerdateien\ParameterEstimation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SimulatedAnnealingExtraP.cpp">
@@ -303,6 +309,12 @@
       <Filter>Quelldateien\CostCalculators</Filter>
     </ClCompile>
     <ClCompile Include="RMSEParameterEstimator.cpp">
+      <Filter>Quelldateien\Estimators</Filter>
+    </ClCompile>
+    <ClCompile Include="R2CostCalculator.cpp">
+      <Filter>Quelldateien\CostCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="R2ParamterEstimator.cpp">
       <Filter>Quelldateien\Estimators</Filter>
     </ClCompile>
   </ItemGroup>

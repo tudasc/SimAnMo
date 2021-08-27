@@ -11,6 +11,7 @@ EigenParameterEstimator::EigenParameterEstimator()
 
 EigenParameterEstimator::EigenParameterEstimator(MeasurementDB * mdb) : _mdb(mdb)
 {
+	//cout << "Created EigenParameterEstimator" << endl;
 }
 
 EigenParameterEstimator::~EigenParameterEstimator()

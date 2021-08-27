@@ -1,27 +1,27 @@
-#include "RMSEParameterEstimator.h"
+#include "R2ParameterEstimator.h"
 #include "EigenParameterEstimator.h"
 #include <iostream>
 
-RMSEParameterEstimator::RMSEParameterEstimator()
+R2ParameterEstimator::R2ParameterEstimator()
 {
 	_mdb = nullptr;
 }
 
-RMSEParameterEstimator::RMSEParameterEstimator(MeasurementDB* mdb) : _mdb(mdb)
+R2ParameterEstimator::R2ParameterEstimator(MeasurementDB* mdb) : _mdb(mdb)
 {
-	cout << "Created RMSEParameterEstimator" << endl;
+	cout << "Created R2ParameterEstimator" << endl;
 }
 
-RMSEParameterEstimator::~RMSEParameterEstimator()
+R2ParameterEstimator::~R2ParameterEstimator()
 {
 	_mdb = nullptr;
 }
 
-int RMSEParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
+int R2ParameterEstimator::estimateParameters(AbstractSolution* sol, double newrelerr) {
 	int m = _mdb->get_size();
 	int n = 2; // Nummber of variables
 
-	RMSEParameterEstimatorAlglibParameter params;
+	R2ParameterEstimatorAlglibParameter params;
 
 	params.x_n.resize(m);
 	params.y_n.resize(m);
@@ -67,7 +67,7 @@ int RMSEParameterEstimator::estimateParameters(AbstractSolution* sol, double new
 
 	try
 	{
-		alglib::minbleicoptimize(state, RMSEParameterEstimatorFunctionGradEval, nullptr, &params);
+		alglib::minbleicoptimize(state, R2ParameterEstimatorFunctionGradEval, nullptr, &params);
 	}
 
 	catch (...) {
@@ -92,22 +92,18 @@ int RMSEParameterEstimator::estimateParameters(AbstractSolution* sol, double new
 		//cerr << "Very small: " << v_init[0] << " / " << v_init[1] << endl;
 	}
 
-
-	/*cout << "OrgFunc: " << org_func(v_init[0], v_init[1], the_info.x_n, the_info.y_n) << endl;
-
-	for (int i = 0; i < the_info.y_n.size(); i++) {
-		cout << the_info.x_n[i] << " : " << v_init[0] + v_init[1] * g_x_n(the_info.x_n[i]) << endl;
-	}*/
-
 	return 0;
 }
 
-int raRSDParameterEstimatorFunctionGradAnalytical(
+int R2ParameterEstimatorFunctionGradAnalytical(
 	const double& v0, const double& v1,
-	const RMSEParameterEstimatorAlglibParameter& params,
+	const R2ParameterEstimatorAlglibParameter& params,
 	double& f, double* grad)
 {
-	f = 0;
+	cerr << "Calling non-implemted function R2ParameterEstimatorFunctionGradAnalytical" << endl;
+	exit(11);
+
+	/*f = 0;
 	grad[0] = 0;
 	grad[1] = 0;
 
@@ -125,40 +121,58 @@ int raRSDParameterEstimatorFunctionGradAnalytical(
 		grad[1] += (-2.0 / y_i) * gxn * ((y_i - v0 - v1 * gxn) / y_i);
 	}
 
-	return 0;
+	return 0;*/
+
 }
 
-B<double> RMSEParameterEstimatorFunction(const B<double>& v0, const B<double>& v1,
-	const RMSEParameterEstimatorAlglibParameter& params) {
-	B<double> z = 0;
+B<double> R2ParameterEstimatorFunction(const B<double>& v0, const B<double>& v1,
+	const R2ParameterEstimatorAlglibParameter& params) {
+	B<double> r2 = 0;
+
+	double xtimesy = 0.0;
+	double xx = 0.0;
+	double yy = 0.0;
+	double sx = 0.0;
+	double sy = 0.0;
+
+	const double n = (double)params.x_n.size();
+
 
 	for (int i = 0; i < params.y_n.size(); i++)
 	{
-		double x_i = params.x_n[i];
-		double y_i = params.y_n[i];
-		double gxn = params.sol->evaluateConstantTermAt(x_i);
+		std::pair<double, double> act_point{ params.x_n[i] , params.y_n[i] };
+		double gxn = params.sol->evaluateConstantTermAt(act_point.first);
 
-		// RMSE formula
-		z += ((y_i - v0 - v1 * gxn)) * ((y_i - v0 - v1 * gxn));
+		// R2 intermediate data
+		sx += act_point.second;
+		sy += gxn;
+		xx += act_point.second * act_point.second;
+		yy += gxn * gxn;
+		xtimesy += act_point.second * gxn;
 	}
-	z /= (double)params.y_n.size();
-	z = sqrt(z);
-	return z;
+
+	double nSxy = n * xtimesy;
+	double nominator = nSxy - sx * sy;
+	double denominator = sqrt((n * xx - sx * sx) * (n * yy - sy * sy));
+	double r = nominator / denominator;
+
+	r2 = 1.0 - r *r ; // In order to maximize, not to minimize
+	return r2;
 }
 
 
-void RMSEParameterEstimatorFunctionGradEval(const real_1d_array& v_i, double& func,
+void R2ParameterEstimatorFunctionGradEval(const real_1d_array& v_i, double& func,
 	real_1d_array& grad, void* ptr)
 {
 
-	RMSEParameterEstimatorAlglibParameter& params =
-		*((RMSEParameterEstimatorAlglibParameter*)ptr);
+	R2ParameterEstimatorAlglibParameter& params =
+		*((R2ParameterEstimatorAlglibParameter*)ptr);
 
 	B<double> v0 = v_i[0];
 	B<double> v1 = v_i[1];
 	B<double> fval;
 
-	fval = RMSEParameterEstimatorFunction(v0, v1, params);
+	fval = R2ParameterEstimatorFunction(v0, v1, params);
 	fval.diff(0, 1);        // Differentiate f (index 0 of 1)
 
 	func = fval.x();

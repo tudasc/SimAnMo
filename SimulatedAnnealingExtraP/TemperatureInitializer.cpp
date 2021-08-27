@@ -8,6 +8,8 @@
 #include "SolutionModifier.h"
 #include "RSSCostCalculator.h"
 #include "nnrRSSCostCalculator.h"
+#include "RMSECostCalculator.h"
+#include "R2CostCalculator.h"
 #include "ExtraPSolution.h"
 #include "ExponentialSolution.h"
 #include "ExponentialPolynomSolution.h"
@@ -131,3 +133,13 @@ template class TemperatureInitializer<Solution, nnrRSSCostCalculator>;
 template class TemperatureInitializer<ExtraPSolution, nnrRSSCostCalculator>;
 template class TemperatureInitializer<ExponentialSolution, nnrRSSCostCalculator>;
 template class TemperatureInitializer<ExponentialPolynomSolution, nnrRSSCostCalculator>;
+
+template class TemperatureInitializer<Solution, RMSECostCalculator>;
+template class TemperatureInitializer<ExtraPSolution, RMSECostCalculator>;
+template class TemperatureInitializer<ExponentialSolution, RMSECostCalculator>;
+template class TemperatureInitializer<ExponentialPolynomSolution, RMSECostCalculator>;
+
+template class TemperatureInitializer<Solution, R2CostCalculator>;
+template class TemperatureInitializer<ExtraPSolution, R2CostCalculator>;
+template class TemperatureInitializer<ExponentialSolution, R2CostCalculator>;
+template class TemperatureInitializer<ExponentialPolynomSolution, R2CostCalculator>;

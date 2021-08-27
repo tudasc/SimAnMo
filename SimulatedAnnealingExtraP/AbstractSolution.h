@@ -19,6 +19,7 @@ public:
 		_RSS = std::numeric_limits<double>::max();
 		_anRSS = std::numeric_limits<double>::max();
 		_nnrRSS = std::numeric_limits<double>::max();
+		_R2 = std::numeric_limits<double>::max();
 		_RMSE = std::numeric_limits<double>::max();
 	}
 
@@ -33,6 +34,7 @@ public:
 		_RSS = std::numeric_limits<double>::max();
 		_anRSS = std::numeric_limits<double>::max();
 		_nnrRSS = std::numeric_limits<double>::max();
+		_R2 = std::numeric_limits<double>::max();
 		_RMSE = std::numeric_limits<double>::max();
 	}
 
@@ -46,6 +48,7 @@ public:
 		_RSS = other._RSS;
 		_anRSS = other._anRSS;
 		_nnrRSS = other._nnrRSS;
+		_R2 = other._R2;
 		_RMSE = other._RMSE;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
@@ -57,6 +60,7 @@ public:
 		_RSS = other._RSS;
 		_nnrRSS = other._nnrRSS;
 		_anRSS = other._anRSS;
+		_R2 = other._R2;
 		_RMSE = other._RMSE;
 		_cost_calc_type = other._cost_calc_type;
 		setRandomID();
@@ -100,6 +104,7 @@ public:
 		str += "RSS: " + std::to_string(this->_RSS) + " / ";
 		str += "anRSS: " + std::to_string(this->_anRSS) + " / ";
 		str += "arNRS: " + std::to_string(this->_nnrRSS) + " / ";
+		str += "R2: " + std::to_string(this->_R2) + " / ";
 		str += "RMSE: " + std::to_string(this->_RMSE);
 		return str;
 	}
@@ -108,6 +113,7 @@ public:
 	double _anRSS;
 	double _nnrRSS;
 	double _RMSE;
+	double _R2;
 	string _cost_calc_type;
 
 protected:

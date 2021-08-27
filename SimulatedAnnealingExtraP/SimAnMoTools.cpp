@@ -70,7 +70,7 @@ using namespace std;
 		cout << "--exp_pol_min_exp / --epmie + FLOAT" << setfill(' ') << setw(55) << "Minimum exponent in the exponent of exp-pol models (default=0.5)" << endl;
 		cout << "--exp_pol_max_exp / --epmae + FLOAT" << setfill(' ') << setw(55) << "Maximum exponent in the exponent of exp-pol models (default=3.0)" << endl;
 		
-		// Exp-Pol
+		// Fac-Pol
 		cout << endl << "SECTION: Factorial (fac) model configuration" << endl;
 		cout << "--fac_pol_min_coeff / --fpmic + FLOAT" << setfill(' ') << setw(55) << "Minimum coefficient in the exponent of the polynomial part of the fac models (default=-0.5)" << endl;
 		cout << "--fac_pol_max_coeff / --fpmac + FLOAT" << setfill(' ') << setw(55) << "Maximum coefficient in the exponent of the polynomial part of the fac models (default=3.0)" << endl;

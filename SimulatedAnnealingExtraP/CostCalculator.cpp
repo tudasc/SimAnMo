@@ -1,5 +1,50 @@
 #include "CostCalculator.h"
 
+double CostCalculator::calculateR2(MeasurementDB* _mdb, AbstractSolution* sol, double avg) {
+	
+	double xtimesy = 0.0;
+	double xx = 0.0;
+	double yy = 0.0;
+	double sx = 0.0;
+	double sy = 0.0;
+
+	const double n = (double)_mdb->get_size();
+
+	for (int i = 0; i < n; i++) {
+		std::pair<double, double> act_point = _mdb->getPairAt(i);
+
+		sx += act_point.second;
+		sy += sol->evaluateModelFunctionAt(act_point.first);
+		xx += act_point.second * act_point.second;
+		yy += sol->evaluateModelFunctionAt(act_point.first) * sol->evaluateModelFunctionAt(act_point.first);
+		xtimesy += act_point.second * sol->evaluateModelFunctionAt(act_point.first);
+	}
+
+	double nSxy = n * xtimesy;
+	double nominator = nSxy - sx * sy;
+	double denominator = sqrt((n * xx - sx * sx) * (n * yy - sy * sy));
+	double r = nominator / denominator;
+	return r * r;
+
+	double SStot = 0.0;
+	double SSres = 0.0;
+	double residual = 0.0;
+	double residual2 = 0.0;
+
+	for (int i = 0; i < _mdb->get_size(); i++) {
+		std::pair<double, double> act_point = _mdb->getPairAt(i);
+
+		// sum up the square of the residual 
+		residual = act_point.second - avg;
+		SStot = SStot + (residual * residual);
+
+		residual2 = act_point.second - sol->evaluateModelFunctionAt(act_point.first);
+		SSres = SSres + (residual2 * residual2);
+	}
+
+	return (1.0 - SSres/SStot);
+}
+
 double CostCalculator::calculateMetrics(AbstractSolution* sol)
 {
 	double constrsscost = 0.0;
@@ -42,6 +87,7 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 	this->RSS = rsscosts;
 	this->nnrRSS = nnrrsscost;
 	this->RMSE = rmsecost;
+	this->R2 = calculateR2(_mdb, sol, averagelen);
 
 	// Set also to solution
 	sol->_RSS = rsscosts;
@@ -50,6 +96,8 @@ double CostCalculator::calculateMetrics(AbstractSolution* sol)
 	// anRSS
 	sol->_anRSS = (sqrt(rsscosts) / averagelen) / _mdb->get_size();
 	sol->_cost_calc_type = getCostTypeString();
+
+	sol->_R2 = this->R2;
 
 	return rsscosts;
 	//

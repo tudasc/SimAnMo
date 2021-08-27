@@ -5,6 +5,7 @@
 #include "RSSCostCalculator.h"
 #include "nnrRSSCostCalculator.h"
 #include "RMSECostCalculator.h"
+#include "R2CostCalculator.h"
 #ifdef USE_NAG
 #include "ParameterEstimator.h"
 #include "LinearRegressionFinder.h"
@@ -68,8 +69,6 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #endif
 	stepcount = 1;
 
-	raRSDParameterEstimator newesti = raRSDParameterEstimator(inputDB);
-
 	//double ref_array[5] = { 25, 3.75E-18, 0.1, 1, 0.0 }; // LLLRRDelta
 
 	//double ref_array[5] = { 2.71575, 3.31285e-09, 1.00153e-06, 0.0, 0.0 }; // BestSolFac
@@ -112,9 +111,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #pragma omp barrier
 
 //#pragma omp critical
-		//cout << "Searching start solution " << endl;
 		startfind.findStartSolution(&act_sol, tid, no_threads);
-		//cout << "Found start solution " << endl;
 		//act_sol = ref_sol;
 
 #pragma omp critical
@@ -163,11 +160,6 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 				std::cout.flush();
 			}
 #endif
-			/*if (act_sol.get_costs() > 10E120Configurator::getInstance().max_cost) {
-				cout << act_sol.get_costs() << endl;
-				int stop = 1;
-				//cin >> stop;
-			}*/
 			progress += progressstepwidth; // for demonstration only
 			steps++;
 
@@ -195,7 +187,6 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 						//int stop = 1;
 						//cin >> stop;
 					}
-				//cout << "c";
 				// Accept solution since it is better
 				if (act_sol_now.get_costs() < act_sol.get_costs()) {
 					act_sol = act_sol_now;
@@ -273,17 +264,6 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 #if SIMANMO_VERBOSE > 1
 	linsol.printModelFunction();
 #endif
-
-	refCostCalc.calculateCost(&sol_per_thread[0]);
-	cout << "Cost before: " << sol_per_thread[0].get_costs() << endl;
-	
-	sol_per_thread[0].updateAt(0, 0.101966);
-	paramest.estimateParameters(&sol_per_thread[0]);
-	cout << "Cost between: " << sol_per_thread[0].get_costs() << endl;
-
-	sol_per_thread[0].updateAt(0, 0.101966);
-	refCostCalc.calculateCost(&sol_per_thread[0]);
-	cout << "Cost after: " << sol_per_thread[0].get_costs() << endl;
 
 	calcinf.iterations = stepcount;	
 	calcinf.lin_sol = linsol;
@@ -382,13 +362,17 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 	// If it is desired to create a solution based on logarithmic curve fitting
 	if (Configurator::getInstance().create_log_exp_model)
 	{
+		double min_log_range_back = Configurator::getInstance().min_log_range;
 		double max_log_range_back = Configurator::getInstance().max_log_range;
 		double max_pol_range_back = Configurator::getInstance().max_pol_range;
 		double min_pol_range_back = Configurator::getInstance().min_pol_range;
+		int param_est_typ_back = Configurator::getInstance().param_est_typ;
 
-		Configurator::getInstance().max_log_range = 0.0;
+		Configurator::getInstance().min_log_range = 0.000001;
+		Configurator::getInstance().max_log_range = 0.000002;
 		Configurator::getInstance().max_pol_range = 1.001;
 		Configurator::getInstance().min_pol_range = 0.999;
+		Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
 
 		stepcount = 1;
 
@@ -397,11 +381,13 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 		//inputDB = inputDB_log;
 
 		doAnnealing<ExtraPSolution, RSSCostCalculator>(inputDB_log, sol_per_thread_log, calcinf_log, stepcount, false,
-			10, 1e-8, 0.99);
+			2, 1e-6, 0.99);
 
+		Configurator::getInstance().min_log_range = min_log_range_back;
 		Configurator::getInstance().max_log_range = max_log_range_back;
 		Configurator::getInstance().max_pol_range = max_pol_range_back;
 		Configurator::getInstance().min_pol_range = min_pol_range_back;
+		Configurator::getInstance().param_est_typ = param_est_typ_back;
 
 		min_cost = std::numeric_limits<double>::max();
 		for (int i = 0; i < Configurator::getInstance().num_threads; i++) {
@@ -508,8 +494,6 @@ int findAModel(std::string mtype, std::string costcaltype) {
 		)
 	) {
 		cout << "extrapsolution/nnrrsscostcalculator" << endl;
-		//annealingManager<Solution>();
-		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 		annealingManager<ExtraPSolution, nnrRSSCostCalculator>();
 	}
 
@@ -557,9 +541,19 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			costcaltype.compare("rmsecost") == 0
 			)
 		) {
-		//Configurator::getInstance().param_est_typ = TYPE_RMSEPARAMETER;
+		Configurator::getInstance().param_est_typ = TYPE_RMSEPARAMETER;
 		cout << "exponentialsolution/rmsecostcalculator/rmseparameterestimator" << endl;
 		annealingManager<ExponentialPolynomSolution, RMSECostCalculator>();
+	}
+
+	else if (mtype.compare("exponentialsolution") == 0 &&
+		(costcaltype.compare("r2costcalculator") == 0 ||
+			costcaltype.compare("r2cost") == 0
+			)
+		) {
+		Configurator::getInstance().param_est_typ = TYPE_R2PARAMETER;
+		cout << "exponentialsolution/r2costcalculator/r2parameterestimator" << endl;
+		annealingManager<ExponentialPolynomSolution, R2CostCalculator>();
 	}
 
 	else if (mtype.compare("exponentialsolution") == 0 && 
