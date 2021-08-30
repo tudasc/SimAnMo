@@ -16,7 +16,11 @@ MeasurementDBReader.cpp
 nnrRSSCostCalculator.cpp
 ParameterEstimator.cpp
 QualityLogger.cpp
+R2CostCalculator.cpp
+R2ParamterEstimator.cpp
 raRSDParameterEstimator.cpp
+RMSECostCalculator.cpp
+RMSEParameterEstimator.cpp
 RSSCostCalculator.cpp
 SimAnMoTools.cpp
 SimulatedAnnealingExtraP.cpp

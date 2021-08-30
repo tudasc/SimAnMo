@@ -503,8 +503,6 @@ int findAModel(std::string mtype, std::string costcaltype) {
 		)
 		) {
 		cout << "extrapsolution/rsscostcalculator" << endl;
-		//annealingManager<Solution>();
-		//annealingManager<ExponentialSolution, nnrRSSCostCalculator>();
 		annealingManager<ExtraPSolution, RSSCostCalculator>();
 	}
 
@@ -561,6 +559,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			costcaltype.compare("rsscost") == 0
 			)
 		) {
+		Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
 		cout << "exponentialsolution/rsscostcalculator" << endl;
 		annealingManager<ExponentialPolynomSolution, RSSCostCalculator>();
 	}

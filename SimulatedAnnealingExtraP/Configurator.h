@@ -105,7 +105,7 @@ public:
 private:
 	Configurator() {
 		solution_type = "extrapsolution";
-		costcalc_type = "nnrrsscostcalculator";
+		costcalc_type = "rsscostcalculator";
 
 		// Configuration for annealing itself
 		ann_steps = 45;
