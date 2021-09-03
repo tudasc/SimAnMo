@@ -530,6 +530,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			)
 		) {
 		Configurator::getInstance().param_est_typ = TYPE_ALGLIBPARAMETER;
+		//Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
 		cout << "exponentialsolution/nnrrsscostcalculator/TYPE_ALGLIBPARAMETER" << endl;
 		annealingManager<ExponentialPolynomSolution, nnrRSSCostCalculator>();
 	}

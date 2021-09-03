@@ -102,12 +102,16 @@ int RMSEParameterEstimator::estimateParameters(AbstractSolution* sol, double new
 	return 0;
 }
 
-int raRSDParameterEstimatorFunctionGradAnalytical(
+int RMSEParameterEstimatorFunctionGradAnalytical(
 	const double& v0, const double& v1,
 	const RMSEParameterEstimatorAlglibParameter& params,
 	double& f, double* grad)
 {
-	f = 0;
+	cerr << "Calling non implemented function RMSEParameterEstimatorFunctionGradAnalytical" 
+		<< endl;
+	return 2;
+
+	/*f = 0;
 	grad[0] = 0;
 	grad[1] = 0;
 
@@ -125,7 +129,7 @@ int raRSDParameterEstimatorFunctionGradAnalytical(
 		grad[1] += (-2.0 / y_i) * gxn * ((y_i - v0 - v1 * gxn) / y_i);
 	}
 
-	return 0;
+	return 0;*/
 }
 
 B<double> RMSEParameterEstimatorFunction(const B<double>& v0, const B<double>& v1,

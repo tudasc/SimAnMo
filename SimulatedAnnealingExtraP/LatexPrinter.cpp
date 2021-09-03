@@ -516,6 +516,19 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 				<< " is " << refdef << "\\%." << std::endl;
 		}
 
+		if (Configurator::getInstance().create_log_exp_model) {
+			double refly = cinfo.min_sol_log->evaluateModelFunctionAt(measurex);
+			double refdef = (abs(refly - measurey) / (measurey)) * 100.0;
+
+			/*cout << refly << " / " << refdef << endl;
+			int stop = 1;
+			cin >> stop;*/
+
+			myfile << "\\item " << "Deviation of lin-log model and measures at x=" << measurex
+				<< " is " << refdef << "\\% (" << refly / 
+				<< "." << std::endl;
+		}
+
 		myfile << "\\end{itemize}}" << std::endl;
 	}
 }

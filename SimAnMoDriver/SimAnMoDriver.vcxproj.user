@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--cct "rmsecost" --texfile "newsynth01raRSD" --pcd --ann_target_temp 1e-11 --epmie 0.29 --epmae 3.01 --ann_steps 30  --bll 2 --ll --gl --inputfile "../inputs/20221newsynth01.txt" --outpath "../outputs"  --nt 8 --mepol 17.2 --mipol 0.01 -- 0.0 --melog 9.9  --st "exponentialsolution"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--cct "rsscost" --texfile "hashsieverss" --st "exponentialsolution" --inputfile "../inputs/hashsieve.txt"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
