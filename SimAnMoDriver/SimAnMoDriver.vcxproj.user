@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>--pcd --ann_target_temp 1e-11 --epmie 0.01 --epmae 4.1 --ann_steps 25  --bll 2 --ll --gl --inputfile "../inputs/subsieve.txt" --outpath "../outputs"  --texfile "posrateR2" --nt 1 --cct "rsscost"  --st "exponentialsolution"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--cct "rsscost" --st "factorialsolution" --inputfile "../inputs/FacSynth3.txt" --texfile "FacSynth3rss"  --logy --gll --ll --outpath "../outputs/n5" --nt 8 --fpmic -2.001 --fpmac 1.51 --logy --flmic -2.001 --flmac 1.51 --ann_steps_wo_mod 100000 --ann_steps 2 --ann_cooling_rate 0.999 --ann_target_temp 1e-12</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>--cct "rsscost" --texfile "hashsieverss" --st "exponentialsolution" --inputfile "../inputs/hashsieve.txt"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--cct "rsscost" --st "factorialsolution" --inputfile "../inputs/FacSynth3.txt" --texfile "FacSynth3rss"  --logy --gl --ll --outpath "../outputs/n5" --nt 8 --fpmic -1.0 --fpmac 1.0 --logy --flmic -1.0 --flmac 1.0 --ann_steps_wo_mod 100000 --ann_steps 35 --ann_cooling_rate 0.999 --ann_target_temp 1e-12</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

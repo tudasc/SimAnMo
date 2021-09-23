@@ -13,8 +13,8 @@ GeneralParameterEstimator::GeneralParameterEstimator() {
 GeneralParameterEstimator::GeneralParameterEstimator(MeasurementDB* mdb) {
 	this->_inputDB = mdb;
 
-	cout << "Created GeneralParameterEstimator with: " 
-		<< Configurator::getInstance().param_est_typ <<  endl;
+	//cout << "Created GeneralParameterEstimator with: " 
+	//	<< Configurator::getInstance().param_est_typ <<  endl;
 
 	if (Configurator::getInstance().param_est_typ == TYPE_EIGENPARAMETER)
 		this->_esti = new EigenParameterEstimator(mdb);

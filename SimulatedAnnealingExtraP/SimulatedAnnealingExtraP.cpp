@@ -62,6 +62,7 @@ double doAnnealing(MeasurementDB* inputDB, SolutionType* sol_per_thread, Calcuat
 	unsigned int& stepcount, bool do_quality_log = false,
 	int steps_per_it = 25, double target_temp = 1e-9, double _cooling_rate = 0.99) {
 	CostCalculatorType refCostCalc = CostCalculatorType(inputDB);
+
 #ifdef USE_NAG
 	ParameterEstimator paramest = ParameterEstimator(inputDB);
 #else
@@ -354,6 +355,23 @@ SolutionType annealingManager(MeasurementDB* idb = nullptr) {
 
 	best_calcinf.datapoints = inputDB;
 	
+	bool fullmodeleval = true;
+	if (fullmodeleval && inputDB->get_measures_size() > 0) {
+		MeasurementDB newDB;
+		for (int i = 0; i < inputDB->get_measures_size(); i++) {
+			std::pair<double, double> newpair = 
+				std::pair<double, double>( inputDB->getMeasurePairAt(i).first, inputDB->getMeasurePairAt(i).second);
+			newDB.addTrainingPoint(newpair);
+		}
+
+		AbstractSolution* newSol = (AbstractSolution*) new SolutionType(best_abs_min_sol);
+		CostCalcType newCostCalc = CostCalcType(&newDB);
+		newCostCalc.calculateCost(newSol);
+
+		best_calcinf.fulleval = fullmodeleval;
+		best_calcinf.fullevalsol = newSol;
+	}
+	
 
 	CalcuationInfo<ExtraPSolution> calcinf_log = CalcuationInfo<ExtraPSolution>();
 	ExtraPSolution abs_min_sol_log;
@@ -511,6 +529,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			costcaltype.compare("rarsdcost") == 0
 			)
 		) {
+		Configurator::getInstance().param_est_typ = TYPE_ALGLIBPARAMETER;
 		cout << "factorialsolution/nnrrsscostcalculator" << endl;
 		annealingManager<FactorialSolution, nnrRSSCostCalculator>();
 	}
@@ -520,6 +539,7 @@ int findAModel(std::string mtype, std::string costcaltype) {
 			costcaltype.compare("rsscost") == 0
 			)
 		) {
+		Configurator::getInstance().param_est_typ = TYPE_EIGENPARAMETER;
 		cout << "factorialsolution/rsscostcalculator" << endl;
 		annealingManager<FactorialSolution, RSSCostCalculator>();
 	}

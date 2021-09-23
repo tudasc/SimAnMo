@@ -525,11 +525,22 @@ void LatexPrinter<SolType>::printPrediction(ofstream & myfile, CalcuationInfo<So
 			cin >> stop;*/
 
 			myfile << "\\item " << "Deviation of lin-log model and measures at x=" << measurex
-				<< " is " << refdef << "\\% (" << refly / 
+				<< " is " << refdef << "\\% (" << refly / refdef
 				<< "." << std::endl;
 		}
-
 		myfile << "\\end{itemize}}" << std::endl;
+
+		// Print the full evaluation
+		if (cinfo.fulleval) {
+			myfile << "{\\large "
+				<< "Evaluation against the measurement points:"
+				<< "\\begin{itemize}" << std::endl
+				<< "\\item " << "RSS=" << cinfo.fullevalsol->_RSS
+				<< "\\item " << "raRSD=" << cinfo.fullevalsol->_nnrRSS
+				<< "\\item " << "R2=" << cinfo.fullevalsol->_R2
+				<< "\\item " << "RMSE=" << cinfo.fullevalsol->_RMSE
+				<< "\\end{itemize}}" << std::endl;
+		}		
 	}
 }
 

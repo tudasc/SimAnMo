@@ -46,9 +46,10 @@ int EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double n
 	// Try with perhaps more stable version
 	/*cout << "The solution using the QR decomposition is:\n"
 		<< A.colPivHouseholderQr().solve(b) << endl;*/
+	x = A.colPivHouseholderQr().solve(b);
 
 	// Old Way
-	x = A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b);
+	//x = A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b);
 
 	/*cout << "The solution using the SVD decomposition is:\n"
 		<< x << endl;*/
@@ -58,16 +59,22 @@ int EigenParameterEstimator::estimateParameters(AbstractSolution * sol, double n
 
 	// Update Solution
 	for (int i = 1; i <= n; ++i) {
-		if (abs(x[i - 1]) < 10e-11) {
-			if (abs(x[i - 1]) > 0.0) 
-				x[i - 1] = 10e-11;
-			else
-				x[i - 1] = -10e-11;	
+		// The first entry may be as small as required
+		if(i==2) {
+			if (abs(x[i - 1]) < 10e-16) {
+				if (abs(x[i - 1]) > 0.0) {
+					x[i - 1] = 10e-16;
+				}
+				else {
+					x[i - 1] = -10e-16;				
+				}
 
-			if (i == 1) x0_small = true;
-			if (i == 2) x1_small = true;
+				if (i == 1) x0_small = true;
+				if (i == 2) x1_small = true;
+			}
 		}
 
+		// But both must be a legal number
 		if (x[i - 1] != x[i - 1]) {
 			if (i == 1) return ERR_X0_INF;
 			if (i == 2) return ERR_X1_INF;

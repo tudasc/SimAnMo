@@ -8,6 +8,7 @@
 #include "GeneralParameterEstimator.h"
 #endif
 #include "nnrRSSCostCalculator.h"
+#include "RSSCostCalculator.h"
 #include "Configurator.h"
 #include <iomanip>
 
@@ -24,6 +25,8 @@ FactorialSolution::FactorialSolution()
 {
 	if (_len > 0)
 		_coefficients = new double[_len];
+
+	this->_costs = std::numeric_limits<double>::max();
 
 	for (int i = 0; i < _len; i++) _coefficients[i] = 0.0;
 	lin_log_sol = nullptr;
@@ -42,7 +45,7 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 #else
 	GeneralParameterEstimator paramest = GeneralParameterEstimator(mdb);
 #endif
-	nnrRSSCostCalculator costcalc = nnrRSSCostCalculator(mdb);
+	RSSCostCalculator costcalc = RSSCostCalculator(mdb);
 
 	if (_len > 0)
 		_coefficients = new double[_len];
@@ -68,13 +71,8 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 	{
 		act_sol.updateAt(2, distc23_pol(m_rng));
 		act_sol.updateAt(3, distc23_log(m_rng));
-
-		//cout << "Hanging" << endl;
-		//act_sol.printModelFunction();
-		//int stop = 1;
-		//cin >> stop;
 		int ret = paramest.estimateParameters(&act_sol);
-		if (ret > 0 && ret < 100) {
+		if (ret > 0 && ret < 103) {
 			continue;
 		}
 
@@ -94,7 +92,7 @@ FactorialSolution::FactorialSolution(MeasurementDB* mdb)
 		}
 		
 
-	} while (act_sol.get_costs() > Configurator::getInstance().max_cost
+	} while (act_sol.get_costs() >= Configurator::getInstance().max_cost
 		|| std::isnan(act_sol.get_costs()));
 
 	*this = act_sol;

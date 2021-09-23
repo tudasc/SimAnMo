@@ -26,6 +26,8 @@ struct CalcuationInfo{
 	SolType ref_solution;
 	bool print_ref_solution = false;
 	bool print_measurepoints = false;
+	bool fulleval = false;
+	AbstractSolution* fullevalsol = NULL;
 };
 
 template<class SolType>

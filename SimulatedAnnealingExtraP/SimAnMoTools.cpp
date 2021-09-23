@@ -235,6 +235,7 @@ using namespace std;
 
 			if (input == "--generate_robust" || input == "--gr") {
 				Configurator::getInstance().gen_robust = true;
+				cout << "Will also create robust model." << endl;
 			}
 
 			// Printing Configuration
