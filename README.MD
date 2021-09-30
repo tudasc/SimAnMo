@@ -1,7 +1,7 @@
-# SimAnMo: Simulated Annealing Modeler V2
+# SimAnMo: Simulated Annealing Modeler V. 2.0
 
 ## Introduction
-SimAnMo (SIMulated Anealing Modeler) is a C++-software to generate runtime performance models for programs. It is based on principles of [Extra-P](https://www.scalasca.org/software/extra-p/download.html) and was presented in [BUR18]. Besides models for programs with polynomial runtime behavior, meaning that the runtime increases polynomially with the size of an input parameter *p*, SiMaNo is also able to model exponential runtime behavior where the runtime grows exponentially in *p*. The models are exported as LaTeX documents.
+SimAnMo (SIMulated Anealing Modeler) is a C++-software to generate runtime performance models for programs. It is based on principles of [Extra-P](https://www.scalasca.org/software/extra-p/download.html) and was presented in [BUR18]. Besides models for programs with polynomial runtime behavior, meaning that the runtime increases polynomially with the size of an input parameter *p*, SiMaNo is also able to model exponential runtime behavior where the runtime grows exponentially or even factorial in *p*. The models and data to analyze their quality are exported as LaTeX documents.
 
 The model generation process is based on an SMP-parallelized simulated annealing procedure. Training data is required in files of the following format:
 
@@ -32,11 +32,13 @@ Example files are given in the *inputs* directory.
 ### Prerequistes
 * Microsoft Visual Studio 2017 (or higher) or gcc/g++ 6.0 (or higher, -std=c++-17 must be supported)
 * [Eigen Library](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-* Optional: [NAG Library](https://www.nag.com/content/nag-library)
+* Optional (deprecated): [NAG Library](https://www.nag.com/content/nag-library)
+*  `pdflatex` command must be available
 
 ### Included Libaries
 The following libaries are integrated in the shipped code.
 * [ALGLIB 3.17.0](https://www.alglib.net/)
+* [FADBAD++](http://www.imm.dtu.dk/~kajm/FADBAD/)
 
 ### Windows
 SimAnMo has successfully been tested with Visual Studio 2017/2019, Eigen 3.3 and NAG C-library 24/25/26.
@@ -82,7 +84,7 @@ There are many command line parameter which influence the behavior. These are:
 #### Model and Cost Calculation Configuration
 
 * `--costcalc_type / --cct + STRING` Decides whether to use RSS (STRING="rsscost") or raRSD (STRING="rarsdcost") as cost metric to minimize (default="rsscost")
-* `--paramest_type / --pet + STRING` Decides whether to use RSS (STRING="rssest") or raRSD (STRING="rarsdest") as cost metric to minimize within the parameter estimation if raRSD cost estimator is chosen BEFORE. (default="rsscost")
+* `--paramest_type / --pet + STRING` (deprecated) Decides whether to use RSS (STRING="rssest") or raRSD (STRING="rarsdest") as cost metric to minimize within the parameter estimation if raRSD cost estimator is chosen BEFORE. (default="rsscost")
 
 #### LaTeX Printing
 * `--genlatex / --gl` Activate the LaTeX report generation (default=false)
